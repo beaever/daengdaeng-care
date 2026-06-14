@@ -1,0 +1,125 @@
+/* DaengDaeng Care — Design Tokens CSS
+   Import this ONCE at the app root. Single source of truth. */
+
+@import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
+
+:root {
+  --brand-50:  #FFF8EC;
+  --brand-100: #FEEFD0;
+  --brand-200: #FCDDA1;
+  --brand-300: #FAC768;
+  --brand-400: #F8B13C;
+  --brand-500: #F59E0B;
+  --brand-600: #DB8504;
+  --brand-700: #B56807;
+  --brand-800: #92520D;
+  --brand-900: #78440F;
+
+  --stone-0:   #FFFFFF;
+  --stone-50:  #FFFDF9;
+  --stone-100: #FAF6EF;
+  --stone-150: #F4EFE6;
+  --stone-200: #ECE5D9;
+  --stone-300: #DBD2C2;
+  --stone-400: #B9AE9B;
+  --stone-500: #938A78;
+  --stone-600: #6B6354;
+  --stone-700: #4C4537;
+  --stone-800: #2E2A21;
+  --stone-900: #1C1913;
+
+  --safe:         #16A34A;
+  --safe-strong:  #15803D;
+  --safe-soft:    #E7F6EC;
+  --caution:         #C98A05;
+  --caution-strong:  #A26F04;
+  --caution-soft:    #FBF1D4;
+  --danger:         #E0413B;
+  --danger-strong:  #C32D2D;
+  --danger-soft:    #FCE9E7;
+  --info:        #2D74E0;
+  --info-soft:   #E6EFFC;
+
+  /* Semantic aliases — USE THESE IN COMPONENTS */
+  --bg:             var(--stone-50);
+  --surface:        var(--stone-0);
+  --surface-2:      var(--stone-100);
+  --surface-sunken: var(--stone-150);
+  --border:         var(--stone-200);
+  --border-strong:  var(--stone-300);
+  --text:     #1F1B13;
+  --text-2:   var(--stone-600);
+  --text-3:   var(--stone-500);
+  --text-on-brand: #FFFFFF;
+  --brand:          var(--brand-500);
+  --brand-press:    var(--brand-600);
+  --brand-soft:     var(--brand-50);
+  --brand-soft-border: var(--brand-100);
+  --brand-text:     var(--brand-700);
+  --scrim: rgba(28, 25, 19, 0.45);
+
+  --shadow-sm: 0 1px 2px rgba(40,33,20,.05), 0 1px 1px rgba(40,33,20,.04);
+  --shadow-md: 0 2px 6px rgba(40,33,20,.07), 0 1px 2px rgba(40,33,20,.05);
+  --shadow-lg: 0 8px 24px rgba(40,33,20,.12), 0 2px 6px rgba(40,33,20,.06);
+  --shadow-brand: 0 6px 18px rgba(245,158,11,.32);
+
+  --r-xs:  8px;
+  --r-sm:  12px;
+  --r-md:  16px;
+  --r-lg:  20px;
+  --r-xl:  26px;
+  --r-pill: 999px;
+
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 20px; --s6: 24px; --s7: 28px; --s8: 32px;
+  --s10: 40px; --s12: 48px; --s16: 64px;
+
+  --font: 'SUIT', 'SUIT Variable', -apple-system, BlinkMacSystemFont,
+          'Apple SD Gothic Neo', 'Pretendard', system-ui, sans-serif;
+
+  --fs-display: 30px; --lh-display: 1.22; --fw-display: 800;
+  --fs-h1: 24px;      --lh-h1: 1.28;      --fw-h1: 800;
+  --fs-h2: 20px;      --lh-h2: 1.32;      --fw-h2: 700;
+  --fs-title: 17px;   --lh-title: 1.40;   --fw-title: 700;
+  --fs-callout: 16px; --lh-callout: 1.50; --fw-callout: 600;
+  --fs-body: 15px;    --lh-body: 1.55;    --fw-body: 500;
+  --fs-sub: 14px;     --lh-sub: 1.50;     --fw-sub: 500;
+  --fs-caption: 13px; --lh-caption: 1.45; --fw-caption: 500;
+  --fs-micro: 11px;   --lh-micro: 1.30;   --fw-micro: 700;
+
+  --tabbar-h: 58px;
+  --header-h: 52px;
+  --ad-banner-h: 52px;
+  --hit: 44px;
+  --page-pad: 20px;
+
+  --ease-out: cubic-bezier(.22,.61,.36,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+}
+
+[data-theme="dark"] {
+  --bg:             #14110B;
+  --surface:        #201B13;
+  --surface-2:      #2A2419;
+  --surface-sunken: #1A150E;
+  --border:         #36301F;
+  --border-strong:  #4A4230;
+  --text:    #F8F3E9;
+  --text-2:  #BDB3A0;
+  --text-3:  #877E6C;
+  --text-on-brand: #2A1A03;
+  --brand:          #FBAE2B;
+  --brand-press:    #F59E0B;
+  --brand-soft:     #2E2410;
+  --brand-soft-border: #483814;
+  --brand-text:     #FBC56A;
+  --safe-soft:    #14271A;
+  --caution-soft: #2C2410;
+  --danger-soft:  #301715;
+  --info-soft:    #15233B;
+  --scrim: rgba(0,0,0,0.6);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 2px 8px rgba(0,0,0,.45);
+  --shadow-lg: 0 10px 28px rgba(0,0,0,.55);
+  --shadow-brand: 0 6px 18px rgba(0,0,0,.5);
+}

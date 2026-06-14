@@ -1,0 +1,36 @@
+/* Prototype harness chrome */
+html, body { height: 100%; margin: 0; overflow: hidden; }
+#root { height: 100vh; display: flex; flex-direction: column; font-family: var(--font); }
+
+.pt-toolbar {
+  flex-shrink: 0; height: 54px; display: flex; align-items: center; gap: 16px; padding: 0 18px;
+  background: var(--surface); border-bottom: 1px solid var(--border); z-index: 30; position: relative;
+}
+.pt-brand { display: flex; align-items: center; gap: 8px; font-size: 15px; letter-spacing: -.02em; }
+.pt-brand strong { font-weight: 800; }
+.pt-tag { font-size: 11px; font-weight: 700; color: var(--text-3); border: 1px solid var(--border); border-radius: 6px; padding: 2px 7px; }
+
+.pt-seg { display: inline-flex; background: var(--surface-sunken); border-radius: 10px; padding: 3px; gap: 2px; }
+.pt-seg button {
+  border: none; background: transparent; cursor: pointer; padding: 6px 14px; border-radius: 8px;
+  font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text-2); transition: .15s;
+}
+.pt-seg button.on { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+
+.pt-jump { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--text-3); }
+.pt-jump select {
+  font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--text);
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; cursor: pointer; outline: none;
+}
+.pt-theme {
+  display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--font); font-weight: 700; font-size: 13px; cursor: pointer;
+}
+
+.pt-stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--surface-sunken); }
+.pt-row { display: flex; gap: 56px; align-items: flex-start; transform-origin: center center; }
+.pt-device { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.pt-plat { font-size: 14px; font-weight: 700; color: var(--text-2); }
+
+.no-tablabels .app-tab span { display: none; }
+.no-tablabels .app-tab { padding-top: 6px; padding-bottom: 8px; }

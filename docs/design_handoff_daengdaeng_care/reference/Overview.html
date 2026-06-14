@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>댕댕케어 — 디자인 패키지</title>
+<link rel="stylesheet" href="daeng/tokens.css" />
+<style>
+  body { margin: 0; font-family: var(--font); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; word-break: keep-all; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 72px 28px 100px; }
+  .mark { width: 76px; height: 76px; border-radius: 22px; background: linear-gradient(150deg, var(--brand-400), var(--brand-600)); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-brand); margin-bottom: 26px; }
+  h1 { font-size: 44px; font-weight: 800; letter-spacing: -.035em; margin: 0 0 12px; }
+  .lede { font-size: 18px; color: var(--text-2); margin: 0 0 8px; max-width: 540px; line-height: 1.6; }
+  .meta { font-size: 14px; color: var(--text-3); margin: 0 0 48px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .card { display: block; text-decoration: none; color: inherit; border: 1px solid var(--border); border-radius: 22px; background: var(--surface); padding: 28px; transition: transform .15s, box-shadow .15s, border-color .15s; position: relative; overflow: hidden; }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--brand-soft-border); }
+  .card__n { font-size: 13px; font-weight: 800; letter-spacing: .04em; color: var(--brand-text); }
+  .card__t { font-size: 23px; font-weight: 800; letter-spacing: -.02em; margin: 8px 0 8px; }
+  .card__d { font-size: 14.5px; color: var(--text-2); line-height: 1.55; margin: 0; }
+  .card__tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+  .tag { font-size: 12px; font-weight: 700; color: var(--text-2); background: var(--surface-2); border-radius: 999px; padding: 5px 11px; }
+  .arrow { position: absolute; top: 28px; right: 26px; color: var(--text-3); transition: transform .15s, color .15s; }
+  .card:hover .arrow { transform: translate(3px,-3px); color: var(--brand-text); }
+  .foot { margin-top: 40px; font-size: 13.5px; color: var(--text-3); line-height: 1.7; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } h1 { font-size: 34px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mark">
+    <svg width="46" height="46" viewBox="0 0 96 96" fill="#fff">
+      <ellipse cx="24" cy="43" rx="7.5" ry="9.5" transform="rotate(-20 24 43)"/>
+      <ellipse cx="39" cy="32" rx="8" ry="10.5"/><ellipse cx="57" cy="32" rx="8" ry="10.5"/>
+      <ellipse cx="72" cy="43" rx="7.5" ry="9.5" transform="rotate(20 72 43)"/>
+      <path d="M48 82 C 25 65 21 51 32 45 C 39 41 45 45 48 50 C 51 45 57 41 64 45 C 75 51 71 65 48 82 Z"/>
+    </svg>
+  </div>
+  <h1>댕댕케어 디자인 패키지</h1>
+  <p class="lede">반려견 건강 관리 올인원 앱. 작은 컴포넌트부터 조립해 만든 iOS · Android 디자인 시스템과 프로토타입.</p>
+  <p class="meta">v1.0 · 라이트/다크 · SUIT · 컴파운드 컴포넌트 패턴</p>
+
+  <div class="grid">
+    <a class="card" href="Design System.html">
+      <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="card__n">① DESIGN SYSTEM</div>
+      <div class="card__t">컴포넌트 라이브러리</div>
+      <p class="card__d">토큰 · 아톰 · 몰리큘 · 컴파운드 컴포넌트까지. 각 조합형 컴포넌트의 API와 함께 문서화했어요.</p>
+      <div class="card__tags"><span class="tag">컬러·타입·스페이싱</span><span class="tag">FoodResult 등 7종</span><span class="tag">라이트/다크</span></div>
+    </a>
+    <a class="card" href="Brand.html">
+      <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="card__n">② BRAND</div>
+      <div class="card__t">로고 · 아이콘 · 스플래시</div>
+      <p class="card__d">발바닥에 건강·안심을 담은 마크 3종. 앱 아이콘, 락업, 스플래시까지 — 카드를 눌러 방향을 비교해요.</p>
+      <div class="card__tags"><span class="tag">로고 3안</span><span class="tag">앱 아이콘</span><span class="tag">스플래시</span></div>
+    </a>
+    <a class="card" href="Prototype.html">
+      <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="card__n">③ PROTOTYPE</div>
+      <div class="card__t">인터랙티브 프로토타입</div>
+      <p class="card__d">16개 화면을 실제로 눌러보는 프로토타입. iPhone · Android 프레임을 나란히 두고 안전하게 비교해요.</p>
+      <div class="card__tags"><span class="tag">16 화면</span><span class="tag">iOS + Android</span><span class="tag">Tweaks</span></div>
+    </a>
+    <a class="card" href="Store Screenshots.html">
+      <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      <div class="card__n">④ STORE</div>
+      <div class="card__t">스토어 릴리즈 스크린샷</div>
+      <p class="card__d">App Store · Play 스토어 제출용 스크린샷 5종. 동일 컴포넌트라 라이트·다크, 두 플랫폼 모두 자동 대응돼요.</p>
+      <div class="card__tags"><span class="tag">5 컷</span><span class="tag">App Store</span><span class="tag">Play 스토어</span></div>
+    </a>
+  </div>
+
+  <p class="foot">현재 접유율이 높은 iPhone(390–402pt) · Galaxy(360–412dp) 화면 폭에서 안전하게 동작하도록 Safe Area · 탭바 · 광고 배너(50pt) 영역을 모두 예약했습니다.</p>
+</div>
+</body>
+</html>

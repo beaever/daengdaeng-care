@@ -1,0 +1,25 @@
+/* Store screenshots page */
+.st-body { background: var(--bg); margin: 0; min-height: 100vh; }
+.st-top { position: sticky; top: 0; z-index: 40; height: 58px; display: flex; align-items: center; gap: 14px; padding: 0 26px; background: var(--bg); border-bottom: 1px solid var(--border); }
+.st-top .ver { font-size: 12px; font-weight: 700; color: var(--text-3); border: 1px solid var(--border); border-radius: 6px; padding: 2px 7px; }
+.st-seg { margin-left: auto; display: inline-flex; background: var(--surface-sunken); border-radius: 10px; padding: 3px; gap: 2px; }
+.st-seg button { border: none; background: transparent; cursor: pointer; padding: 7px 16px; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text-2); }
+.st-seg button.on { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+
+.st-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 26px 100px; }
+.st-intro { margin-bottom: 32px; }
+.st-intro h1 { font-size: 30px; font-weight: 800; letter-spacing: -.03em; margin: 0 0 8px; }
+.st-intro p { font-size: 15px; color: var(--text-2); margin: 0; }
+
+.st-rail { display: flex; gap: 22px; overflow-x: auto; padding: 6px 2px 22px; scroll-snap-type: x mandatory; }
+.st-panel {
+  flex: 0 0 auto; width: 296px; height: 624px; border-radius: 30px; overflow: hidden; position: relative;
+  scroll-snap-align: center; box-shadow: var(--shadow-lg);
+}
+.st-panel__cap { position: absolute; top: 0; left: 0; right: 0; padding: 36px 30px 0; z-index: 2; text-align: center; }
+.st-panel__h { font-size: 26px; font-weight: 800; letter-spacing: -.03em; line-height: 1.22; white-space: pre-line; }
+.st-panel__sub { font-size: 14px; font-weight: 600; margin-top: 8px; opacity: .82; }
+.st-panel__phone { position: absolute; left: 50%; top: 158px; transform-origin: top center; }
+.st-panel__blob { position: absolute; border-radius: 50%; filter: blur(2px); opacity: .5; }
+
+.st-note { margin-top: 14px; font-size: 13px; color: var(--text-3); display: flex; align-items: center; gap: 7px; }

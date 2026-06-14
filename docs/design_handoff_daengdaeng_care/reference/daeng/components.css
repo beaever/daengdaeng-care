@@ -1,0 +1,273 @@
+/* ============================================================
+   DaengDaeng Care — Component Classes
+   Consumed by JSX compound components.
+   ============================================================ */
+
+/* Buttons reset `color` instead of inheriting — make card-like buttons
+   inherit the themed text color (zero-specificity so real rules win). */
+:where(.dd-scope button) { color: inherit; }
+
+/* ---------- Button ---------- */
+.dd-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: var(--hit); padding: 0 20px;
+  border: none; border-radius: var(--r-sm);
+  font-family: var(--font); font-size: var(--fs-callout); font-weight: 700;
+  letter-spacing: -.01em; cursor: pointer; user-select: none;
+  transition: transform .12s var(--ease-out), background .15s, box-shadow .15s, opacity .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.dd-btn:active { transform: scale(.97); }
+.dd-btn--block { display: flex; width: 100%; }
+.dd-btn--lg { min-height: 54px; font-size: 17px; border-radius: var(--r-md); }
+.dd-btn--sm { min-height: 36px; padding: 0 14px; font-size: var(--fs-sub); border-radius: var(--r-xs); }
+
+.dd-btn--primary { background: var(--brand); color: var(--text-on-brand); box-shadow: var(--shadow-brand); }
+.dd-btn--primary:active { background: var(--brand-press); }
+.dd-btn--secondary { background: var(--surface-2); color: var(--text); }
+.dd-btn--secondary:active { background: var(--surface-sunken); }
+.dd-btn--ghost { background: transparent; color: var(--brand-text); box-shadow: none; }
+.dd-btn--outline { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1.5px var(--border-strong); }
+.dd-btn--danger { background: var(--danger); color: #fff; box-shadow: 0 6px 18px rgba(224,65,59,.3); }
+.dd-btn:disabled { opacity: .45; box-shadow: none; pointer-events: none; }
+
+/* ---------- Icon button ---------- */
+.dd-iconbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--hit); height: var(--hit); border-radius: var(--r-pill);
+  border: none; background: transparent; color: var(--text); cursor: pointer;
+  transition: background .15s, transform .12s; -webkit-tap-highlight-color: transparent;
+}
+.dd-iconbtn:active { background: var(--surface-2); transform: scale(.92); }
+
+/* ---------- Badge: safety level ---------- */
+.dd-safety {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  padding: 6px 12px; border-radius: var(--r-pill);
+  font-size: var(--fs-sub); font-weight: 800; letter-spacing: -.01em;
+}
+.dd-safety .ic { font-size: 15px; line-height: 1; }
+.dd-safety--safe { background: var(--safe-soft); color: var(--safe-strong); }
+.dd-safety--caution { background: var(--caution-soft); color: var(--caution-strong); }
+.dd-safety--danger { background: var(--danger-soft); color: var(--danger-strong); }
+
+/* Big filled result hero */
+.dd-verdict {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 28px 20px; border-radius: var(--r-lg); text-align: center; color: #fff;
+  position: relative; overflow: hidden;
+}
+.dd-verdict .emoji { font-size: 40px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,.15)); }
+.dd-verdict .label { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+.dd-verdict--safe { background: linear-gradient(150deg, #1FB85A, #14924A); }
+.dd-verdict--watch { background: linear-gradient(150deg, #1FB85A, #14924A); }
+.dd-verdict--caution { background: linear-gradient(150deg, #EBA417, #C98A05); }
+.dd-verdict--today { background: linear-gradient(150deg, #EBA417, #C98A05); }
+.dd-verdict--danger { background: linear-gradient(150deg, #ED5A52, #C32D2D); }
+.dd-verdict--emergency { background: linear-gradient(150deg, #EF4B43, #B01F1F); }
+.dd-verdict .pulse {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+}
+
+/* ---------- Status badge (hospital) ---------- */
+.dd-status { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-size: var(--fs-caption); font-weight: 700; }
+.dd-status .dot { width: 7px; height: 7px; border-radius: 50%; }
+.dd-status--open { color: var(--safe-strong); }
+.dd-status--open .dot { background: var(--safe); box-shadow: 0 0 0 3px var(--safe-soft); }
+.dd-status--closed { color: var(--text-3); }
+.dd-status--closed .dot { background: var(--stone-400); }
+.dd-status--24h { color: var(--brand-text); }
+.dd-status--24h .dot { background: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+
+/* ---------- Grade badge ---------- */
+.dd-grade {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px; border-radius: var(--r-md);
+  font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -.02em;
+}
+.dd-grade--a { background: linear-gradient(150deg, #1FB85A, #14924A); }
+.dd-grade--b { background: linear-gradient(150deg, #6BB23E, #4E8F2C); }
+.dd-grade--c { background: linear-gradient(150deg, #EBA417, #C98A05); }
+.dd-grade--d { background: linear-gradient(150deg, #ED5A52, #C32D2D); }
+
+/* ---------- Chip ---------- */
+.dd-chip {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  min-height: 36px; padding: 0 14px; border-radius: var(--r-pill);
+  background: var(--surface-2); color: var(--text); border: none; cursor: pointer;
+  font-size: var(--fs-sub); font-weight: 600; transition: background .15s, transform .12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.dd-chip:active { transform: scale(.95); }
+.dd-chip--brand { background: var(--brand-soft); color: var(--brand-text); }
+.dd-chip--selected { background: var(--brand); color: var(--text-on-brand); }
+.dd-chip .x { opacity: .5; font-weight: 700; }
+
+/* ---------- Input / Field ---------- */
+.dd-field { display: flex; flex-direction: column; gap: 8px; }
+.dd-field__label { font-size: var(--fs-sub); font-weight: 700; color: var(--text-2); display: flex; gap: 4px; }
+.dd-field__label .req { color: var(--danger); }
+.dd-input {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 52px; padding: 0 16px; border-radius: var(--r-sm);
+  background: var(--surface-2); border: 1.5px solid transparent;
+  font-size: var(--fs-callout); color: var(--text); width: 100%;
+  transition: border-color .15s, background .15s;
+}
+.dd-input input, .dd-input textarea {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-family: var(--font); font-size: var(--fs-callout); color: var(--text); width: 100%;
+}
+.dd-input textarea { resize: none; padding: 14px 0; line-height: 1.5; }
+.dd-input input::placeholder, .dd-input textarea::placeholder { color: var(--text-3); }
+.dd-input--focus, .dd-input:focus-within { border-color: var(--brand); background: var(--surface); }
+.dd-input .lead { color: var(--text-3); display: flex; }
+.dd-input--search { background: var(--surface-2); }
+
+/* ---------- Search bar (prominent) ---------- */
+.dd-searchbar {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 50px; padding: 0 16px; border-radius: var(--r-md);
+  background: var(--surface-2); color: var(--text);
+}
+
+/* ---------- Segmented control ---------- */
+.dd-segment {
+  display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--r-sm);
+  background: var(--surface-sunken); position: relative;
+}
+.dd-segment button {
+  flex: 1; border: none; background: transparent; cursor: pointer;
+  padding: 8px 16px; border-radius: calc(var(--r-sm) - 3px);
+  font-family: var(--font); font-size: var(--fs-sub); font-weight: 700; color: var(--text-2);
+  transition: color .2s; z-index: 1; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+}
+.dd-segment button.active { color: var(--text); }
+.dd-segment__thumb {
+  position: absolute; top: 3px; bottom: 3px; border-radius: calc(var(--r-sm) - 3px);
+  background: var(--surface); box-shadow: var(--shadow-sm);
+  transition: transform .28s var(--ease-spring), width .28s var(--ease-spring);
+}
+
+/* ---------- Radio / Option row ---------- */
+.dd-option {
+  display: flex; align-items: center; gap: 14px;
+  min-height: 58px; padding: 14px 18px; width: 100%;
+  border-radius: var(--r-sm); background: var(--surface); border: 1.5px solid var(--border);
+  cursor: pointer; transition: border-color .15s, background .15s, transform .12s;
+  font-family: var(--font); text-align: left; -webkit-tap-highlight-color: transparent;
+}
+.dd-option:active { transform: scale(.99); }
+.dd-option__check {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--border-strong); display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s, background .15s;
+}
+.dd-option__check svg { opacity: 0; transform: scale(.5); transition: .2s var(--ease-spring); }
+.dd-option__label { font-size: var(--fs-callout); font-weight: 600; color: var(--text); white-space: nowrap; }
+.dd-option--selected { border-color: var(--brand); background: var(--brand-soft); }
+.dd-option--selected .dd-option__check { border-color: var(--brand); background: var(--brand); }
+.dd-option--selected .dd-option__check svg { opacity: 1; transform: scale(1); }
+
+/* Pill toggle group (Sex / Neutered) */
+.dd-pillgroup { display: flex; gap: 8px; }
+.dd-pillgroup button {
+  flex: 1; min-height: 48px; border-radius: var(--r-sm); cursor: pointer;
+  border: 1.5px solid var(--border); background: var(--surface); color: var(--text-2);
+  font-family: var(--font); font-size: var(--fs-sub); font-weight: 700;
+  transition: all .15s; -webkit-tap-highlight-color: transparent;
+}
+.dd-pillgroup button.active { border-color: var(--brand); background: var(--brand-soft); color: var(--brand-text); }
+
+/* ---------- Avatar ---------- */
+.dd-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--brand-soft); color: var(--brand-text);
+  overflow: hidden; flex-shrink: 0; font-weight: 800;
+}
+.dd-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dd-avatar--lg { width: 92px; height: 92px; font-size: 38px; }
+.dd-avatar--md { width: 52px; height: 52px; font-size: 24px; }
+.dd-avatar--sm { width: 40px; height: 40px; font-size: 18px; }
+
+/* ---------- Progress bar ---------- */
+.dd-progress { height: 8px; border-radius: var(--r-pill); background: var(--surface-sunken); overflow: hidden; }
+.dd-progress__fill { height: 100%; border-radius: inherit; background: var(--brand); transition: width .4s var(--ease-out); }
+
+/* ---------- Card ---------- */
+.dd-card {
+  background: var(--surface); border-radius: var(--r-md);
+  border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+}
+.dd-card--pad { padding: 18px; }
+.dd-card--flat { box-shadow: none; }
+
+/* List card row */
+.dd-row {
+  display: flex; align-items: center; gap: 14px; width: 100%;
+  padding: 16px 18px; background: var(--surface); border: none; cursor: pointer;
+  font-family: var(--font); text-align: left; -webkit-tap-highlight-color: transparent;
+  transition: background .12s;
+}
+.dd-row:active { background: var(--surface-2); }
+.dd-row__icon {
+  width: 40px; height: 40px; border-radius: var(--r-xs); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+  background: var(--brand-soft); color: var(--brand-text);
+}
+.dd-row__body { flex: 1; min-width: 0; }
+.dd-row__title { font-size: var(--fs-callout); font-weight: 700; color: var(--text); }
+.dd-row__sub { font-size: var(--fs-caption); color: var(--text-2); margin-top: 4px; }
+.dd-row__chev { color: var(--text-3); flex-shrink: 0; }
+
+/* divider */
+.dd-divider { height: 1px; background: var(--border); border: none; margin: 0; }
+.dd-divider--inset { margin-left: 18px; }
+
+/* ---------- Section heading ---------- */
+.dd-section-h { font-size: var(--fs-sub); font-weight: 800; color: var(--text-2); letter-spacing: -.01em; margin: 0 0 10px; }
+
+/* ---------- Ad banner ---------- */
+.dd-ad {
+  height: var(--ad-banner-h); display: flex; align-items: center; gap: 10px;
+  padding: 0 14px; background: var(--surface-2);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.dd-ad__tag {
+  font-size: 9px; font-weight: 800; letter-spacing: .04em; color: var(--text-3);
+  border: 1px solid var(--border-strong); border-radius: 3px; padding: 1px 4px; flex-shrink: 0;
+}
+.dd-ad__body { flex: 1; min-width: 0; }
+.dd-ad__title { font-size: var(--fs-caption); font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dd-ad__sub { font-size: 11px; color: var(--text-3); }
+.dd-ad__thumb { width: 34px; height: 34px; border-radius: 7px; background: var(--surface-sunken); flex-shrink: 0; }
+
+/* ---------- Empty state ---------- */
+.dd-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 48px 32px; }
+.dd-empty__icon { font-size: 44px; opacity: .7; margin-bottom: 4px; }
+.dd-empty__title { font-size: var(--fs-title); font-weight: 800; color: var(--text); }
+.dd-empty__desc { font-size: var(--fs-sub); color: var(--text-2); }
+
+/* ---------- Info note / disclaimer ---------- */
+.dd-note {
+  display: flex; gap: 8px; padding: 12px 14px; border-radius: var(--r-sm);
+  background: var(--surface-2); font-size: var(--fs-caption); color: var(--text-2); line-height: 1.5;
+}
+.dd-note .ic { flex-shrink: 0; opacity: .7; }
+
+/* ---------- List item bullets ---------- */
+.dd-bullets { display: flex; flex-direction: column; gap: 10px; }
+.dd-bullets li { display: flex; gap: 10px; font-size: var(--fs-callout); color: var(--text); line-height: 1.45; list-style: none; }
+.dd-bullets li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); margin-top: 9px; flex-shrink: 0; }
+.dd-bullets--danger li::before { background: var(--danger); }
+.dd-bullets--safe li::before { background: var(--safe); }
+
+/* ---------- Ingredient row ---------- */
+.dd-ingredient { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+.dd-ingredient__rank { width: 22px; height: 22px; border-radius: 50%; background: var(--surface-sunken); color: var(--text-2); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dd-ingredient__name { flex: 1; font-size: var(--fs-callout); font-weight: 600; }
+.dd-ingredient__tag { font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: var(--r-pill); }
+.dd-ingredient__tag--safe { background: var(--safe-soft); color: var(--safe-strong); }
+.dd-ingredient__tag--caution { background: var(--caution-soft); color: var(--caution-strong); }
+.dd-ingredient__tag--danger { background: var(--danger-soft); color: var(--danger-strong); }

@@ -1,0 +1,38 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-body);
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button { cursor: pointer; border: none; background: none; padding: 0; font-family: inherit; }
+input, textarea { font-family: inherit; }
+
+/* Type utilities */
+.t-display { font-size: var(--fs-display); line-height: var(--lh-display); font-weight: var(--fw-display); letter-spacing: -.02em; }
+.t-h1      { font-size: var(--fs-h1);      line-height: var(--lh-h1);      font-weight: var(--fw-h1);      letter-spacing: -.02em; }
+.t-h2      { font-size: var(--fs-h2);      line-height: var(--lh-h2);      font-weight: var(--fw-h2);      letter-spacing: -.015em; }
+.t-title   { font-size: var(--fs-title);   line-height: var(--lh-title);   font-weight: var(--fw-title);   letter-spacing: -.01em; }
+.t-callout { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: var(--fw-callout); }
+.t-body    { font-size: var(--fs-body);    line-height: var(--lh-body);    font-weight: var(--fw-body); }
+.t-sub     { font-size: var(--fs-sub);     line-height: var(--lh-sub);     font-weight: var(--fw-sub); }
+.t-caption { font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: var(--fw-caption); }
+.t-micro   { font-size: var(--fs-micro);   line-height: var(--lh-micro);   font-weight: var(--fw-micro);   letter-spacing: .02em; }
+
+.text-2 { color: var(--text-2); }
+.text-3 { color: var(--text-3); }
+.text-brand { color: var(--brand-text); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,118 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  padding-bottom: var(--ad-banner-h);
+}
+
+.header {
+  font-size: var(--fs-h1);
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin: 0;
+  padding: 0 var(--page-pad);
+  word-break: keep-all;
+}
+
+.description {
+  padding: var(--s5) var(--page-pad);
+  background: var(--surface);
+  border-radius: var(--r-md);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 var(--page-pad);
+  box-shadow: var(--shadow-sm);
+}
+
+.reason {
+  font-size: var(--fs-body);
+  color: var(--text);
+  line-height: 1.55;
+  margin: 0;
+  word-break: keep-all;
+}
+
+.serve {
+  font-size: var(--fs-sub);
+  color: var(--text-2);
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  word-break: keep-all;
+}
+
+.serveLabel {
+  font-weight: 700;
+  color: var(--brand-text);
+  flex-shrink: 0;
+}
+
+.ingredient {
+  font-size: var(--fs-caption);
+  color: var(--danger-strong);
+  margin: 0;
+}
+
+.section {
+  padding: 0 var(--page-pad);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-size: var(--fs-sub);
+  font-weight: 700;
+  color: var(--text-2);
+  margin: 0;
+}
+
+.bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bullets li {
+  position: relative;
+  padding-left: 14px;
+  font-size: var(--fs-body);
+  color: var(--text);
+  word-break: keep-all;
+}
+
+.bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+
+.bullets--danger li::before { background: var(--danger); }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+.chip--safe    { background: var(--safe-soft);    color: var(--safe-strong); }
+.chip--danger  { background: var(--danger-soft);  color: var(--danger-strong); }

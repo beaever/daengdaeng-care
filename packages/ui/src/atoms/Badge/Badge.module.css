@@ -1,0 +1,66 @@
+.safety {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.safety--safe    { background: var(--safe-soft);    color: var(--safe-strong); }
+.safety--caution { background: var(--caution-soft); color: var(--caution-strong); }
+.safety--danger  { background: var(--danger-soft);  color: var(--danger-strong); }
+
+.icon { font-size: 14px; }
+
+/* StatusBadge */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status--24h    { background: var(--brand-soft); color: var(--brand-text); }
+.status--24h .dot { background: var(--brand); }
+.status--open   { background: var(--safe-soft); color: var(--safe-strong); }
+.status--open .dot { background: var(--safe); }
+.status--closed { background: var(--surface-2); color: var(--text-3); }
+.status--closed .dot { background: var(--text-3); }
+
+/* GradeBadge */
+.grade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-md);
+}
+.gradeLetter {
+  font-size: 30px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+.gradeLabel {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+  margin-top: 2px;
+}
+
+.grade--a { background: linear-gradient(135deg, #1FB85A, #14924A); }
+.grade--b { background: linear-gradient(135deg, #4CAF50, #388E3C); }
+.grade--c { background: linear-gradient(135deg, #EBA417, #C98A05); }
+.grade--d { background: linear-gradient(135deg, #ED5A52, #C32D2D); }
