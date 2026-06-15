@@ -17,3 +17,5 @@ export { HospitalCard } from './HospitalCard';
 export type { HospitalCardProps } from './HospitalCard';
 export { HospitalList } from './HospitalList';
 export type { HospitalListProps } from './HospitalList';
+export { HealthRecord, RECORD_META } from './HealthRecord';
+export type { HealthRecordProps, RecordTab } from './HealthRecord';
