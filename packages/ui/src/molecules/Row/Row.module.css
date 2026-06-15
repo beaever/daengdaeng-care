@@ -1,0 +1,53 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  background: var(--surface);
+  text-align: left;
+  transition: background 120ms var(--ease-out);
+}
+
+.row--interactive { cursor: pointer; }
+.row--interactive:active { background: var(--surface-2); }
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  background: var(--brand-soft);
+  color: var(--brand-text);
+  flex-shrink: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* title↔sub 간격 4px 고정 */
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font);
+  font-size: var(--fs-callout);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sub {
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  color: var(--text-2);
+}
+
+.chevron {
+  color: var(--text-3);
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}

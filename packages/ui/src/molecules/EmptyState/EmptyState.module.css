@@ -1,0 +1,30 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 48px 24px;
+}
+
+.icon {
+  font-size: 44px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-family: var(--font);
+  font-size: var(--fs-title);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.desc {
+  font-family: var(--font);
+  font-size: var(--fs-sub);
+  line-height: var(--lh-sub);
+  color: var(--text-2);
+}
+
+.action { margin-top: 12px; }
