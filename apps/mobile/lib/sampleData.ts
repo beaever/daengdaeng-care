@@ -260,3 +260,26 @@ export const symptomResults: Record<SeverityLevel, SymptomResultData> = {
     hospital: false,
   },
 };
+
+// ── 근처 동물병원 (SCR-012·013) ──────────────────────────────────────
+export interface Hospital {
+  id: number;
+  name: string;
+  /** 현재 위치 기준 거리 */
+  dist: string;
+  /** 현재 진료 중 여부 */
+  open: boolean;
+  /** 24시간 운영 여부 */
+  is24h: boolean;
+  /** 진료 시간 표기 */
+  hours: string;
+  phone: string;
+  addr: string;
+}
+
+export const hospitals: Hospital[] = [
+  { id: 1, name: '행복동물병원', dist: '0.3km', open: true, is24h: false, hours: '09:00 – 21:00', phone: '02-123-4567', addr: '서울 강남구 역삼로 12' },
+  { id: 2, name: '강남응급동물의료센터', dist: '1.1km', open: true, is24h: true, hours: '24시간 연중무휴', phone: '02-999-0000', addr: '서울 강남구 역삼동 123-45' },
+  { id: 3, name: '미소동물병원', dist: '1.4km', open: false, is24h: false, hours: '09:00 – 19:00', phone: '02-456-7890', addr: '서울 강남구 테헤란로 88' },
+  { id: 4, name: '튼튼동물메디컬', dist: '2.0km', open: true, is24h: false, hours: '10:00 – 20:00', phone: '02-321-9876', addr: '서울 서초구 서초대로 30' },
+];

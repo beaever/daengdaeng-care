@@ -39,3 +39,5 @@ export { IngredientItem } from './IngredientItem';
 export type { IngredientItemProps } from './IngredientItem';
 export { AdBanner } from './AdBanner';
 export type { AdBannerProps } from './AdBanner';
+export { NativeAd } from './NativeAd';
+export type { NativeAdProps } from './NativeAd';
