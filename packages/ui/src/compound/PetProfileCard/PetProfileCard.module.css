@@ -1,0 +1,44 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-family: var(--font);
+  font-size: var(--fs-title);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.detail {
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  color: var(--text-2);
+}
+
+.vaccineChip {
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--brand-soft);
+  color: var(--brand-text);
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

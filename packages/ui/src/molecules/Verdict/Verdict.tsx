@@ -15,8 +15,8 @@ const VERDICT_MAP: Record<VerdictLevel, { icon: string; label: string; gradient:
 
 export interface VerdictProps {
   level: VerdictLevel;
-  label?: string;
-  sub?: string;
+  label?: string | undefined;
+  sub?: string | undefined;
 }
 
 export function Verdict({ level, label, sub }: VerdictProps) {

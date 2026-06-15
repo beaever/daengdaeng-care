@@ -1,0 +1,82 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.radius {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+/* 목업 지도 */
+.map {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: var(--r-md);
+  background:
+    linear-gradient(var(--border) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0 / 24px 24px,
+    var(--surface-2);
+  overflow: hidden;
+}
+
+.pin {
+  position: absolute;
+  font-size: 24px;
+  transform: translate(-50%, -100%);
+}
+
+.count {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--fs-sub);
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+/* HospitalCard */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 120ms var(--ease-out);
+}
+.card:active { transform: scale(0.99); }
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.distance {
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--text-3);
+}
+
+.name {
+  font-family: var(--font);
+  font-size: var(--fs-title);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.hours,
+.phone {
+  font-family: var(--font);
+  font-size: var(--fs-sub);
+  color: var(--text-2);
+}

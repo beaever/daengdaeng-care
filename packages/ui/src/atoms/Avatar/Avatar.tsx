@@ -4,12 +4,12 @@ import styles from './Avatar.module.css';
 export type AvatarSize = 'sm' | 'md' | 'lg';
 
 export interface AvatarProps {
-  src?: string;
-  alt?: string;
+  src?: string | undefined;
+  alt?: string | undefined;
   /** 이미지가 없을 때 표시할 이모지 폴백 (기본 🐶) */
-  emoji?: string;
-  size?: AvatarSize;
-  className?: string;
+  emoji?: string | undefined;
+  size?: AvatarSize | undefined;
+  className?: string | undefined;
 }
 
 export function Avatar({ src, alt = '', emoji = '🐶', size = 'md', className }: AvatarProps) {

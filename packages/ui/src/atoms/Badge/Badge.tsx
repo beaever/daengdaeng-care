@@ -27,7 +27,7 @@ export function SafetyBadge({ level, label }: SafetyBadgeProps) {
 // ── StatusBadge ───────────────────────────────────────────────────
 export interface StatusBadgeProps {
   isOpen: boolean;
-  is24h?: boolean;
+  is24h?: boolean | undefined;
 }
 
 export function StatusBadge({ isOpen, is24h }: StatusBadgeProps) {
