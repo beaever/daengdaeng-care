@@ -8,7 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "type-check": "tsc --noEmit",
-    "lint": "expo lint",
+    "lint": "eslint .",
     "clean": "rm -rf .expo node_modules"
   },
   "dependencies": {
@@ -26,6 +26,8 @@
   },
   "devDependencies": {
     "@types/react": "~18.3.12",
+    "eslint": "^9.17.0",
+    "eslint-config-expo": "~9.2.0",
     "typescript": "~5.7.3"
   }
 }
