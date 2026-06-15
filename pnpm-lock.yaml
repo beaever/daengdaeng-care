@@ -62,6 +62,10 @@ importers:
         version: 5.7.3
 
   packages/constants:
+    dependencies:
+      '@daengdaeng/tokens':
+        specifier: workspace:*
+        version: link:../tokens
     devDependencies:
       typescript:
         specifier: ^5.7.3

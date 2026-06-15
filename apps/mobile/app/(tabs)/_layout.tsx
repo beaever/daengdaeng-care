@@ -24,7 +24,7 @@ export default function TabsLayout() {
         tabBarLabelStyle: { fontFamily, fontSize: 11, fontWeight: '700' },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: '홈', tabBarIcon: tabIcon('🏠') }} />
+      <Tabs.Screen name="home" options={{ title: '홈', tabBarIcon: tabIcon('🏠') }} />
       <Tabs.Screen name="food" options={{ title: '음식', tabBarIcon: tabIcon('🍖') }} />
       <Tabs.Screen name="symptom" options={{ title: '증상', tabBarIcon: tabIcon('🩺') }} />
       <Tabs.Screen name="hospital" options={{ title: '병원', tabBarIcon: tabIcon('🏥') }} />
