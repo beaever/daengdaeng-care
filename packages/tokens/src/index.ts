@@ -176,3 +176,13 @@ export type SafetyLevel = 'safe' | 'caution' | 'danger';
 export type SeverityLevel = 'emergency' | 'today' | 'watch';
 export type GradeLevel = 'A' | 'B' | 'C' | 'D';
 export type ColorScheme = 'light' | 'dark';
+
+// Verdict 히어로 그라데이션 (start → end). 웹은 CSS gradient, RN은 LinearGradient에서 사용.
+export const verdictGradients = {
+  safe:      ['#1FB85A', '#14924A'],
+  caution:   ['#EBA417', '#C98A05'],
+  danger:    ['#ED5A52', '#C32D2D'],
+  emergency: ['#EF4B43', '#B01F1F'],
+  today:     ['#EBA417', '#C98A05'],
+  watch:     ['#1FB85A', '#14924A'],
+} as const;

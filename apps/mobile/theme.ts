@@ -8,10 +8,24 @@ import {
   type as typography,
   fontFamily,
   layout,
+  palette,
+  safetyColors,
+  verdictGradients,
   type ColorScheme,
 } from '@daengdaeng/tokens';
 
-export { space, radius, typography, fontFamily, layout, light, dark };
+export {
+  space,
+  radius,
+  typography,
+  fontFamily,
+  layout,
+  light,
+  dark,
+  palette,
+  safetyColors,
+  verdictGradients,
+};
 
 /** color scheme에 맞는 시맨틱 컬러 셋 반환 */
 export function getColors(scheme: ColorScheme | null | undefined) {
