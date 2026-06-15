@@ -20,7 +20,7 @@
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "chromatic": "chromatic --exit-zero-on-changes",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "clean": "rm -rf dist storybook-static"
   },
   "peerDependencies": {
