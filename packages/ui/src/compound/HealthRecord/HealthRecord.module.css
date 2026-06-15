@@ -1,0 +1,86 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.petHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.petName {
+  font-family: var(--font);
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.groupDate {
+  font-family: var(--font);
+  font-size: var(--fs-sub);
+  font-weight: 800;
+  color: var(--text-2);
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.entryIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  background: var(--brand-soft);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.entryBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.entryTitle {
+  font-family: var(--font);
+  font-size: var(--fs-callout);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.entrySub {
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  color: var(--text-2);
+}

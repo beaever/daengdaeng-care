@@ -47,7 +47,21 @@ export type { BulletsProps, BulletsVariant } from './molecules/Bullets/Bullets';
 // Compound
 export { FoodResult } from './compound/FoodResult/FoodResult';
 export type { FoodData } from './compound/FoodResult/FoodResult';
+export { FoodAnalysisResult } from './compound/FoodAnalysisResult/FoodAnalysisResult';
+export type { ProductData, AnalysisIngredient } from './compound/FoodAnalysisResult/FoodAnalysisResult';
 export { SymptomChecker } from './compound/SymptomChecker/SymptomChecker';
 export type { SymptomQuestion, SymptomOption } from './compound/SymptomChecker/SymptomChecker';
+export { SymptomResult } from './compound/SymptomResult/SymptomResult';
+export type { SymptomResultData } from './compound/SymptomResult/SymptomResult';
+export { HospitalList } from './compound/HospitalList/HospitalList';
+export type { HospitalData } from './compound/HospitalList/HospitalList';
+export { HealthRecord } from './compound/HealthRecord/HealthRecord';
+export type { HealthRecordEntry, PetInfo, RecordType, RecordTab } from './compound/HealthRecord/HealthRecord';
+export { PetProfileCard } from './compound/PetProfileCard/PetProfileCard';
+export type { PetProfileCardProps } from './compound/PetProfileCard/PetProfileCard';
+export { QuickMenu } from './compound/QuickMenu/QuickMenu';
+export type { QuickMenuProps, QuickMenuItem } from './compound/QuickMenu/QuickMenu';
+export { HealthSummaryCard } from './compound/HealthSummaryCard/HealthSummaryCard';
+export type { HealthSummaryCardProps } from './compound/HealthSummaryCard/HealthSummaryCard';
 
 // Styles — import separately via: import '@daengdaeng/ui/styles'

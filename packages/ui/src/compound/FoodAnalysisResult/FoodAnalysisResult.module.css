@@ -1,0 +1,105 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Product header */
+.productHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.productImage,
+.productImagePlaceholder {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-md);
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.productImagePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  font-size: 30px;
+}
+
+.productMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.brand {
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  color: var(--text-2);
+}
+
+.name {
+  font-family: var(--font);
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* Grade card */
+.gradeCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.gradeLabel {
+  font-family: var(--font);
+  font-size: var(--fs-title);
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Sections */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--fs-sub);
+  font-weight: 800;
+  color: var(--text-2);
+}
+
+.ingredients {
+  display: flex;
+  flex-direction: column;
+}
+
+.warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.warningCard {
+  padding: 14px 16px;
+  background: var(--caution-soft);
+  border-left: 3px solid var(--caution);
+  border-radius: var(--r-sm);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text);
+}
