@@ -12,8 +12,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # CHROMATIC_PROJECT_TOKEN 시크릿이 등록되기 전에는 Visual Testing 잡을 건너뛴다.
+  # (시크릿 값은 노출하지 않고 존재 여부만 boolean으로 전달)
+  guard:
+    name: Token guard
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - id: check
+        run: echo "enabled=${{ secrets.CHROMATIC_PROJECT_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+
   chromatic:
     name: Visual Testing
+    needs: guard
+    if: needs.guard.outputs.enabled == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
