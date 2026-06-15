@@ -45,7 +45,7 @@ export function Input({ leftIcon, className, ...rest }: InputProps) {
 }
 
 // ── Textarea ──────────────────────────────────────────────────────
-export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 export function Textarea({ className, rows = 4, ...rest }: TextareaProps) {
   const cls = [styles.textarea, className ?? ''].filter(Boolean).join(' ');

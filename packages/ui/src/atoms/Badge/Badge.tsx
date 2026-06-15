@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SafetyLevel, SeverityLevel, GradeLevel } from '@daengdaeng/tokens';
+import type { SafetyLevel, GradeLevel } from '@daengdaeng/tokens';
 import styles from './Badge.module.css';
 
 // ── SafetyBadge ──────────────────────────────────────────────────
