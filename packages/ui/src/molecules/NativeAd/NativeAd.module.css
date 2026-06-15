@@ -1,0 +1,60 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.adLabel {
+  align-self: flex-start;
+  padding: 2px 7px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  font-family: var(--font);
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-3);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.thumb,
+.thumbPlaceholder {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.thumbPlaceholder { background: var(--surface-2); }
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font);
+  font-size: var(--fs-callout);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.desc {
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  color: var(--text-3);
+}

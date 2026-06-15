@@ -1,0 +1,21 @@
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+}
+
+.icon {
+  flex-shrink: 0;
+  line-height: var(--lh-caption);
+  font-size: var(--fs-caption);
+}
+
+.text {
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-2);
+}

@@ -1,0 +1,33 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  margin-top: 7px;
+  border-radius: var(--r-pill);
+  background: var(--text-3);
+  flex-shrink: 0;
+}
+
+.list--danger .dot { background: var(--danger); }
+.list--safe .dot { background: var(--safe); }
+
+.text {
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text);
+}
