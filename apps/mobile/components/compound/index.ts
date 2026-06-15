@@ -13,3 +13,7 @@ export { SymptomChecker } from './SymptomChecker';
 export type { SymptomCheckerProps } from './SymptomChecker';
 export { SymptomResult } from './SymptomResult';
 export type { SymptomResultProps } from './SymptomResult';
+export { HospitalCard } from './HospitalCard';
+export type { HospitalCardProps } from './HospitalCard';
+export { HospitalList } from './HospitalList';
+export type { HospitalListProps } from './HospitalList';
