@@ -1,6 +1,6 @@
 ---
 name: pr
-description: 현재 브랜치에서 develop을 base로 PR을 자동 생성한다
+description: 현재 브랜치에서 dev를 base로 PR을 자동 생성한다
 ---
 
 # /pr 사용법
@@ -27,8 +27,8 @@ description: 현재 브랜치에서 develop을 base로 PR을 자동 생성한다
 ```
 
 ## Base 브랜치 규칙
-- 기능/수정 브랜치 → `develop`
-- `develop` → `main` (릴리스 시에만)
+- 기능/수정 브랜치 → `dev`
+- `dev` → `main` (릴리스 시에만)
 
 ## 주의
 - PR 생성 전 `pnpm type-check && pnpm lint` 자동 실행

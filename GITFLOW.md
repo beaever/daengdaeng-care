@@ -4,7 +4,7 @@
 
 ```
 main          ← 프로덕션 (App Store 제출 기준)
-  └─ develop  ← 통합 브랜치 (다음 릴리스 대상)
+  └─ dev      ← 통합 브랜치 (다음 릴리스 대상)
        ├─ feature/f001-food-checker
        ├─ feature/f002-ingredient-analyzer
        ├─ fix/storybook-dark-mode-token
@@ -42,8 +42,8 @@ release/v1.0.0
 
 ### 새 기능 시작
 ```bash
-git checkout develop
-git pull origin develop
+git checkout dev
+git pull origin dev
 git checkout -b feature/f001-food-checker
 ```
 
@@ -56,7 +56,7 @@ git commit -m "feat(ui): Button 아톰 컴포넌트 구현"
 ### PR 생성 (자동화)
 ```bash
 # Claude Code skill 사용 — /pr 입력 시 자동으로:
-# 1. develop 브랜치 기준 PR 생성
+# 1. dev 브랜치 기준 PR 생성
 # 2. PR 템플릿 자동 채움
 # 3. Chromatic 링크 포함
 ```
@@ -86,7 +86,7 @@ git commit -m "feat(ui): Button 아톰 컴포넌트 구현"
 
 ```bash
 # 1. release 브랜치 생성
-git checkout develop
+git checkout dev
 git checkout -b release/v1.0.0
 
 # 2. 버전 업데이트, 릴리스 노트 작성
@@ -95,8 +95,8 @@ git checkout main
 git merge release/v1.0.0
 git tag -a v1.0.0 -m "v1.0.0 - 댕댕케어 첫 출시"
 
-# 4. develop 역머지
-git checkout develop
+# 4. dev 역머지
+git checkout dev
 git merge main
 
 # 5. EAS Submit
@@ -112,7 +112,7 @@ git checkout main
 git checkout -b fix/critical-emergency-ad-bug
 # 수정 후
 git checkout main && git merge fix/critical-emergency-ad-bug
-git checkout develop && git merge fix/critical-emergency-ad-bug
+git checkout dev && git merge fix/critical-emergency-ad-bug
 ```
 
 ---

@@ -43,9 +43,9 @@ tokens → atoms → molecules → compound → mobile screens → web
 
 ## GitFlow
 - `main` → 프로덕션
-- `develop` → 통합 브랜치
+- `dev` → 통합 브랜치
 - `feature/*` → 기능 개발
-- PR은 항상 `develop` 으로
+- PR은 항상 `dev` 으로
 
 ## 하네스 파트 가이드
 ```

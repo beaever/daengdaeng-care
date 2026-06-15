@@ -101,7 +101,7 @@ CHROMATIC_PROJECT_TOKEN=your_chromatic_token
 | 환경 | 브랜치 | 빌드 | 광고 |
 |------|--------|------|------|
 | 개발 | `feature/*` | development | 테스트 광고 ID |
-| 스테이징 | `develop` | preview | 테스트 광고 ID |
+| 스테이징 | `dev` | preview | 테스트 광고 ID |
 | 프로덕션 | `main` | production | 실제 AdMob ID |
 
 ---

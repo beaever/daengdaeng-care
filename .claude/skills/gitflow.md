@@ -16,15 +16,15 @@ description: GitFlow 브랜치 작업을 가이드하고 자동으로 브랜치�
 
 ### feature/fix/chore
 ```bash
-git checkout develop
-git pull origin develop
+git checkout dev
+git pull origin dev
 git checkout -b {type}/{name}
 ```
 
 ### release
 ```bash
-git checkout develop
-git pull origin develop
+git checkout dev
+git pull origin dev
 git checkout -b release/{version}
 # → 버전 업데이트 안내 후 main 머지 플로우 가이드
 ```
