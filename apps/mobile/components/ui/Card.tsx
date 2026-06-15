@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, type ViewStyle, type StyleProp } from 'react-native';
-import { colors, radius, space } from '../../theme';
+import { colors, radius } from '../../theme';
 
 export interface CardProps {
   pad?: boolean;

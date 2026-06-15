@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { useRouter, useNavigation } from 'expo-router';
 import { colors, space } from '../../../theme';
 import { SymptomChecker } from '../../../components/compound';

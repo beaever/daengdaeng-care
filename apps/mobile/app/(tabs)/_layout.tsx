@@ -4,9 +4,11 @@ import { Tabs } from 'expo-router';
 import { colors, fontFamily, layout } from '../../theme';
 
 function tabIcon(emoji: string) {
-  return ({ color }: { color: string }) => (
+  const TabIcon = ({ color }: { color: string }) => (
     <Text style={{ fontSize: 20, color }}>{emoji}</Text>
   );
+  TabIcon.displayName = `TabIcon(${emoji})`;
+  return TabIcon;
 }
 
 export default function TabsLayout() {

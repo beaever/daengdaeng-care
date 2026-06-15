@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, radius, space, fontFamily, typography } from '../../theme';
+import { colors, radius, fontFamily, typography } from '../../theme';
 
 export interface NativeAdProps {
   title?: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, space, radius, fontFamily, typography } from '../../theme';
+import { colors, radius, fontFamily, typography } from '../../theme';
 
 export interface RowProps {
   icon?: React.ReactNode;
