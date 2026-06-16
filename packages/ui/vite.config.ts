@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite';
+/// <reference types="vitest/config" />
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
@@ -25,5 +26,13 @@ export default defineConfig({
       },
     },
     sourcemap: true,
+  },
+  // 컴포넌트 렌더 테스트 — jsdom + @testing-library. CSS는 처리 생략(css:false)해 빠르게.
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
+    css: false,
+    include: ['src/**/*.test.{ts,tsx}'],
   },
 });
