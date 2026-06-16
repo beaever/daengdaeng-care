@@ -11,6 +11,7 @@ import {
   palette,
   safetyColors,
   verdictGradients,
+  rnShadow,
   type ColorScheme,
 } from '@daengdaeng/tokens';
 
@@ -25,6 +26,7 @@ export {
   palette,
   safetyColors,
   verdictGradients,
+  rnShadow,
 };
 
 /** color scheme에 맞는 시맨틱 컬러 셋 반환 */
