@@ -149,6 +149,8 @@ export const POPULAR_FOODS = ['포도', '초콜릿', '사과', '닭고기', '당
 
 export function searchFood(query: string): FoodEntry | null {
   const q = query.trim().toLowerCase();
+  // 빈 질의는 매칭하지 않는다('' 부분일치가 모든 항목에 참이 되는 것을 방지).
+  if (!q) return null;
   const direct = FOODS[q] ?? FOODS[Object.keys(FOODS).find((k) => k === q) ?? ''];
   if (direct) return direct;
 
