@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, radius, fontFamily, typography } from '../../theme';
+import { colors, radius, fontFamily, typography, rnShadow } from '../../theme';
 
 // 홈 "바로가기" 2×2 그리드 — 컴파운드(QuickMenu + QuickMenu.Item).
 export interface QuickMenuProps {
@@ -49,12 +49,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
-    // colors.shadowSm 대응
-    shadowColor: '#281914',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    // 그림자는 rnShadow.md 토큰 사용 (웹 --shadow-md 대응)
+    ...rnShadow.md,
   },
   pressed: { backgroundColor: colors.surface2, transform: [{ scale: 0.98 }] },
   iconBox: {

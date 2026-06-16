@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, type ViewStyle, type StyleProp } from 'react-native';
-import { colors, radius } from '../../theme';
+import { colors, radius, rnShadow } from '../../theme';
 
 export interface CardProps {
   pad?: boolean;
@@ -25,12 +25,6 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   pad: { padding: 18 },
-  // colors.shadowSm 대응 — iOS/Android 그림자
-  shadow: {
-    shadowColor: '#281914',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
+  // 그림자는 rnShadow.md 토큰 사용 (웹 --shadow-md 대응)
+  shadow: rnShadow.md,
 });

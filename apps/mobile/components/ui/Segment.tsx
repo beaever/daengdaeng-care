@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, radius, fontFamily, typography } from '../../theme';
+import { colors, radius, fontFamily, typography, rnShadow } from '../../theme';
 
 export interface SegmentOption {
   label: string;
@@ -50,11 +50,7 @@ const styles = StyleSheet.create({
   },
   segActive: {
     backgroundColor: colors.surface,
-    shadowColor: '#281914',
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 1,
+    ...rnShadow.sm,
   },
   label: { fontFamily, fontSize: typography.sub.size, fontWeight: '600' },
   labelActive: { color: colors.text },

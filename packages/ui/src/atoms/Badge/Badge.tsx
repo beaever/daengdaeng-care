@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SafetyLevel, GradeLevel } from '@daengdaeng/tokens';
+import { gradeGradients, type SafetyLevel, type GradeLevel } from '@daengdaeng/tokens';
 import styles from './Badge.module.css';
 
 // ── SafetyBadge ──────────────────────────────────────────────────
@@ -61,9 +61,12 @@ export interface GradeBadgeProps {
   label?: string;
 }
 
+const gradeGradientFor = (grade: GradeLevel) =>
+  `linear-gradient(135deg, ${gradeGradients[grade].join(', ')})`;
+
 export function GradeBadge({ grade, label }: GradeBadgeProps) {
   return (
-    <div className={`${styles.grade} ${styles[`grade--${grade.toLowerCase()}`]}`}>
+    <div className={styles.grade} style={{ background: gradeGradientFor(grade) }}>
       <span className={styles.gradeLetter}>{grade}</span>
       {label && <span className={styles.gradeLabel}>{label}</span>}
     </div>
