@@ -176,3 +176,31 @@ export type SafetyLevel = 'safe' | 'caution' | 'danger';
 export type SeverityLevel = 'emergency' | 'today' | 'watch';
 export type GradeLevel = 'A' | 'B' | 'C' | 'D';
 export type ColorScheme = 'light' | 'dark';
+
+// Verdict 히어로 그라데이션 (start → end). 웹은 CSS gradient, RN은 LinearGradient에서 사용.
+export const verdictGradients = {
+  safe:      ['#1FB85A', '#14924A'],
+  caution:   ['#EBA417', '#C98A05'],
+  danger:    ['#ED5A52', '#C32D2D'],
+  emergency: ['#EF4B43', '#B01F1F'],
+  today:     ['#EBA417', '#C98A05'],
+  watch:     ['#1FB85A', '#14924A'],
+} as const;
+
+// 사료 등급 배지 그라데이션 (start → end). GradeBadge에서 사용.
+export const gradeGradients = {
+  A: ['#1FB85A', '#14924A'],
+  B: ['#4CAF50', '#388E3C'],
+  C: ['#EBA417', '#C98A05'],
+  D: ['#ED5A52', '#C32D2D'],
+} as const;
+
+// RN 전용 그림자 프리셋. 웹 --shadow-* 와 동일 베이스색(rgba(40,33,20) = #281914)을 쓰되,
+// React Native는 색·투명도·반경·오프셋을 분리 지정해야 해 별도 토큰으로 둔다.
+// (sm·md 는 기존 화면 값 그대로 승격 — 시각 변화 없음. lg 는 웹 shadowLg 대응.)
+const shadowColorBase = '#281914';
+export const rnShadow = {
+  sm: { shadowColor: shadowColorBase, shadowOpacity: 0.05, shadowRadius: 2,  shadowOffset: { width: 0, height: 1 }, elevation: 1 },
+  md: { shadowColor: shadowColorBase, shadowOpacity: 0.06, shadowRadius: 6,  shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  lg: { shadowColor: shadowColorBase, shadowOpacity: 0.12, shadowRadius: 24, shadowOffset: { width: 0, height: 8 }, elevation: 8 },
+} as const;

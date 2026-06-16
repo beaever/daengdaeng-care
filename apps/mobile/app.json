@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "댕댕케어",
+    "slug": "daengdaeng-care",
+    "scheme": "daengdaeng",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#FFFDF9"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "care.daengdaeng.app"
+    },
+    "android": {
+      "package": "care.daengdaeng.app"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

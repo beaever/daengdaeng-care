@@ -1,0 +1,18 @@
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text);
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 120ms var(--ease-out), background 120ms var(--ease-out);
+}
+
+.iconBtn:hover:not(:disabled) { background: var(--surface-2); }
+.iconBtn:active { background: var(--surface-2); transform: scale(0.92); }
+.iconBtn:disabled { opacity: 0.45; cursor: not-allowed; }

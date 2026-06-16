@@ -1,0 +1,8 @@
+.divider {
+  height: 1px;
+  margin: 0;
+  border: none;
+  background: var(--border);
+}
+
+.divider--inset { margin-left: 18px; }

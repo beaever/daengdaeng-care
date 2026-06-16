@@ -1,0 +1,26 @@
+.group {
+  display: flex;
+  gap: 8px;
+}
+
+.pill {
+  flex: 1;
+  min-height: 48px;
+  padding: 0 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: var(--fs-sub);
+  font-weight: 600;
+  color: var(--text-2);
+  transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out),
+              color 160ms var(--ease-out);
+}
+
+.pill--active {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand-text);
+}
