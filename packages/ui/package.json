@@ -20,7 +20,8 @@
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "chromatic": "chromatic --exit-zero-on-changes",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "clean": "rm -rf dist storybook-static"
   },
   "peerDependencies": {
@@ -38,6 +39,9 @@
     "@storybook/react": "^8.4.7",
     "@storybook/react-vite": "^8.4.7",
     "@storybook/test": "^8.4.7",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
@@ -48,6 +52,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "storybook": "^8.4.7",
+    "jsdom": "^25.0.1",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.61.0",
     "vite": "^6.0.7",

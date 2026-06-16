@@ -1,18 +1,32 @@
 import type { Metadata, Viewport } from 'next';
 import { light } from '@daengdaeng/tokens';
 import { buildTokensCss } from '../lib/tokens-css';
+import { site, siteUrl } from '../lib/content';
 import './globals.css';
 
+// 메타/SEO 단일 출처는 lib/content 의 site·siteUrl. og:image·favicon 은
+// app/opengraph-image.tsx, app/icon.tsx 파일 컨벤션으로 Next 가 자동 주입한다.
 export const metadata: Metadata = {
-  title: '댕댕케어 — 우리 아이 건강, 이 앱 하나로 안심',
-  description:
-    '음식 판별·사료 분석·증상 체크·병원 찾기·건강 기록. 반려견의 매일 궁금증을 3초 만에 해결하는 건강 관리 앱.',
+  metadataBase: new URL(siteUrl),
+  title: site.title,
+  description: site.description,
+  applicationName: site.name,
+  keywords: ['반려견', '강아지 건강', '음식 판별', '사료 분석', '증상 체크', '동물병원', '건강 기록'],
+  alternates: { canonical: '/' },
   openGraph: {
-    title: '댕댕케어 — 우리 아이 건강, 이 앱 하나로 안심',
-    description: '반려견의 매일 궁금증을 3초 만에. 음식·증상·병원·기록을 한 앱에서.',
+    title: site.title,
+    description: site.ogDescription,
+    url: '/',
+    siteName: site.name,
     type: 'website',
     locale: 'ko_KR',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: site.title,
+    description: site.ogDescription,
+  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

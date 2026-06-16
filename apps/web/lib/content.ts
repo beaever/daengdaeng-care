@@ -1,6 +1,18 @@
 // 댕댕케어 랜딩 콘텐츠 — store.jsx 의 5개 기능 카피를 그대로 따름.
 // 각 기능의 배경 토큰(bg)은 CSS 변수명만 지정 (RULES 2).
 
+/** 사이트 기준 URL — 배포 도메인 확정 시 NEXT_PUBLIC_SITE_URL 로 덮어쓴다. */
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://daengdaeng.care';
+
+/** 메타데이터 공통 카피 */
+export const site = {
+  name: '댕댕케어',
+  title: '댕댕케어 — 우리 아이 건강, 이 앱 하나로 안심',
+  description:
+    '음식 판별·사료 분석·증상 체크·병원 찾기·건강 기록. 반려견의 매일 궁금증을 3초 만에 해결하는 건강 관리 앱.',
+  ogDescription: '반려견의 매일 궁금증을 3초 만에. 음식·증상·병원·기록을 한 앱에서.',
+} as const;
+
 export interface Feature {
   emoji: string;
   title: string;
