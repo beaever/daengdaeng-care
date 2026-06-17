@@ -3,12 +3,20 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:web": "turbo run build --filter=@daengdaeng/web",
     "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@daengdaeng/web",
+    "dev:mobile": "pnpm --filter @daengdaeng/mobile start",
+    "ios": "pnpm --filter @daengdaeng/mobile ios",
+    "android": "pnpm --filter @daengdaeng/mobile android",
+    "start": "turbo run start --filter=@daengdaeng/web",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "test": "turbo run test",
-    "storybook": "turbo run storybook",
-    "chromatic": "turbo run chromatic",
+    "check": "turbo run type-check lint test build",
+    "storybook": "turbo run storybook --filter=@daengdaeng/ui",
+    "storybook:build": "turbo run storybook:build --filter=@daengdaeng/ui",
+    "chromatic": "turbo run chromatic --filter=@daengdaeng/ui",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
