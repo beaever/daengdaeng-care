@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { Tabs } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fontFamily, layout } from '../../theme';
 
 function tabIcon(emoji: string) {
@@ -12,6 +13,9 @@ function tabIcon(emoji: string) {
 }
 
 export default function TabsLayout() {
+  // 디자인: 탭바 높이 58px + 하단 safe-area inset (홈 인디케이터/제스처 바 영역).
+  // height 에 inset 을 더하지 않으면 inset 이 58 안으로 먹혀 콘텐츠가 쪼그라든다.
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -21,7 +25,9 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
-          height: layout.tabbarHeight,
+          height: layout.tabbarHeight + insets.bottom,
+          paddingTop: 7, // reference app.css .app-tabbar padding-top
+          paddingBottom: insets.bottom,
         },
         tabBarLabelStyle: { fontFamily, fontSize: 11, fontWeight: '700' },
       }}
