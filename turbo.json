@@ -1,13 +1,20 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalDependencies": ["tsconfig.base.json"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["src/**", "!src/**/*.stories.*", "tsconfig.json", "vite.config.ts"],
-      "outputs": ["dist/**"]
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.stories.*", "!**/*.test.*"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "dependsOn": ["build"],
       "cache": false,
       "persistent": true
     },
@@ -18,12 +25,15 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
+      "dependsOn": ["^build"]
     },
     "storybook": {
       "cache": false,
       "persistent": true
+    },
+    "storybook:build": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
     },
     "chromatic": {
       "dependsOn": ["build"],
