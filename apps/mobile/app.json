@@ -4,6 +4,9 @@
     "slug": "daengdaeng-care",
     "scheme": "daengdaeng",
     "version": "0.1.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
