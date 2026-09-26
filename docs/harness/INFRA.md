@@ -14,7 +14,7 @@ Infra는 **CI/CD 파이프라인, 배포 환경, 비용 관리**를 소유한다
 | EAS Build | iOS 앱 빌드 | 무료 (15빌드/월) |
 | Vercel | Next.js 랜딩페이지 | 무료 |
 | Apple Developer | App Store 배포 | $99/년 |
-| AdMob | 광고 수익화 | 무료 (수익 발생) |
+| AdMob | 광고 수익화 (v1.0 미적용, MAU 이후) | 무료 (수익 발생) |
 
 ---
 
