@@ -11,7 +11,7 @@ v1.0은 **서버리스** 아키텍처다. Backend는 외부 API 연동, 로컬 D
 음식 판별    → packages/constants/foods.ts (번들 내 JSON, API 불필요)
 사료 분석    → Open Pet Food Facts API (클라이언트에서 직접 호출)
 병원 찾기    → Kakao Local API (클라이언트에서 직접 호출)
-건강 기록    → expo-sqlite + Drizzle ORM (기기 로컬)
+건강 기록    → expo-sqlite (기기 로컬, ORM 없음 · PRAGMA user_version 마이그레이션)
 ```
 
 **서버, 데이터베이스 서버, 인증 서버 없음** — 운영 비용 $0 목표
@@ -41,7 +41,7 @@ Authorization: KakaoAK {REST_API_KEY}
 
 ---
 
-## 로컬 DB 스키마 (expo-sqlite + Drizzle)
+## 로컬 DB 스키마 (expo-sqlite)
 
 ```sql
 -- 반려견 프로필
@@ -71,6 +71,8 @@ CREATE TABLE records (
 ---
 
 ## 캐싱 전략
+
+> v1.0은 캐시 없이 로딩·에러·오프라인 상태만 처리한다. 아래는 호출량이 늘어날 때 적용한다.
 
 | 데이터 | 캐시 방법 | TTL |
 |--------|-----------|-----|

@@ -14,9 +14,9 @@ Frontend는 **컴포넌트 라이브러리 + 모바일 앱 + 랜딩페이지** �
 | 문서화/시각 테스트 | Storybook 8 + Chromatic |
 | 모바일 앱 | Expo (Managed Workflow) + React Native + TypeScript |
 | 네비게이션 | Expo Router |
-| 로컬 DB | expo-sqlite + Drizzle ORM |
+| 로컬 DB | expo-sqlite (ORM 없음) |
 | 랜딩페이지 | Next.js |
-| 빌드 (모바일) | EAS Build (AdMob 네이티브 모듈 필수) |
+| 빌드 (모바일) | EAS Build (iOS 전용) |
 
 ---
 
@@ -28,7 +28,7 @@ daengdaeng-care/
 │   ├── mobile/     ← Expo RN 앱
 │   └── web/        ← Next.js 랜딩
 ├── packages/
-│   ├── ui/         ← 컴포넌트 라이브러리 (여기서 먼저 만들고 앱에서 가져다 씀)
+│   ├── ui/         ← 웹 컴포넌트 (동결 — 앱 컴포넌트는 apps/mobile/components)
 │   ├── tokens/     ← 디자인 토큰 TS 정의
 │   └── constants/  ← 음식 DB, 증상 트리, 공통 타입
 ```
@@ -38,11 +38,10 @@ daengdaeng-care/
 ## 컴포넌트 개발 순서 (반드시 이 순서)
 
 ```
-1. packages/tokens  → 토큰 정의
-2. packages/ui/atoms → Button, Badge, Input, Chip, Avatar ...
-3. packages/ui/molecules → Card, Row, Verdict, AdBanner ...
-4. packages/ui/compound → FoodResult, SymptomChecker ...
-5. apps/mobile → 화면 조립 (compound 가져다 사용)
+1. packages/tokens  → 토큰 정의 (apps/mobile/theme.ts 가 가져다 씀)
+2. apps/mobile/components/ui → Button, Badge, Input, Chip ...
+3. apps/mobile/components/compound → FoodResult, SymptomChecker ...
+4. apps/mobile/app → 화면 조립 (compound 가져다 사용)
 ```
 
 ---
