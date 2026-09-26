@@ -92,8 +92,9 @@
 
 ## Phase 3 — App Store 제출
 
-- [ ] **T3.1 계정·앱 레코드** · 사람 (`release-engineer` 가 안내)
-  - Apple Developer Program 가입, App Store Connect에서 번들 ID `care.daengdaeng.app` 으로 앱 생성
+- [ ] **T3.1 앱 레코드·인증서** · 사람 (`release-engineer` 가 안내)
+  - ✅ Apple Developer Program 가입 완료
+  - App Store Connect에서 번들 ID `care.daengdaeng.app` 으로 앱 생성
   - `eas.json` 의 `submit.production.ios.ascAppId` 입력, `eas credentials` 로 인증서·프로비저닝 생성
 - [ ] **T3.2 개인정보처리방침·지원 페이지** · `mobile-engineer` (apps/web)
   - `apps/web` 에 `/privacy`, `/support` 추가 후 Vercel 배포. 앱 설정 화면에도 링크
@@ -125,5 +126,5 @@ T0.1 ─┬─ T0.2 ─ T0.3 ─ T0.4
       └─ T1.1 ─ T1.2
          T1.3, T1.4 (병렬 가능) ─ T1.5 ─ T1.6
                                           └─ T2.1 ─ T2.2 ─ T2.3 ─ T3.x
-T3.1(계정)은 사람이 할 일이므로 지금 바로 시작 (Apple 승인에 시간이 걸릴 수 있음)
+T3.1(앱 레코드·ascAppId)은 사람이 할 일이고 선행 조건이 없으므로 아무 때나 먼저 해둘 수 있음
 ```
