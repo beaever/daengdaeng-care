@@ -106,6 +106,15 @@ CHROMATIC_PROJECT_TOKEN=your_chromatic_token
 
 ---
 
+## 알려진 제약
+
+### expo-doctor React 중복 경고 (T0.1, 2026-09-27)
+- `apps/mobile` 은 React 19 (Expo SDK 57), `apps/web`·`packages/ui` 는 React 18 을 쓴다.
+- `node-linker=hoisted` 단일 node_modules 에서 두 버전이 공존하므로 `expo-doctor` 의 "no duplicate dependencies" 체크(21개 중 1개)는 항상 실패한다. **이 1건은 허용한다.**
+- 루트 `package.json` 의 `react: 18.3.1` 고정 → web/ui 는 루트 React 18 하나만 사용
+- `apps/mobile/metro.config.js` 의 `extraNodeModules` → 모바일 번들은 React 19 하나만 사용 (`expo export` 번들 검증 완료)
+- 해소 조건: web/ui 를 React 19 (Next 15) 로 올리면 루트 고정과 이 예외를 함께 제거한다.
+
 ## PR 체크리스트 (Infra)
 
 - [ ] CI 워크플로우가 통과됨
