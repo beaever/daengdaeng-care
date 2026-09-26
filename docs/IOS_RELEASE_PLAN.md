@@ -94,8 +94,9 @@
 
 - [ ] **T3.1 앱 레코드·인증서** · 사람 (`release-engineer` 가 안내)
   - ✅ Apple Developer Program 가입 완료
-  - App Store Connect에서 번들 ID `care.daengdaeng.app` 으로 앱 생성
-  - `eas.json` 의 `submit.production.ios.ascAppId` 입력, `eas credentials` 로 인증서·프로비저닝 생성
+  - ✅ App Store Connect 앱 생성 (번들 ID `care.daengdaeng.app`)
+  - ✅ `eas.json` 에 `ascAppId` 입력
+  - `eas credentials` 로 배포 인증서·프로비저닝 생성
 - [ ] **T3.2 개인정보처리방침·지원 페이지** · `mobile-engineer` (apps/web)
   - `apps/web` 에 `/privacy`, `/support` 추가 후 Vercel 배포. 앱 설정 화면에도 링크
   - 내용: 데이터는 기기에만 저장, 위치는 병원 검색 요청 시 카카오에만 전송, 광고·추적 없음
