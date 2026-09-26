@@ -20,9 +20,19 @@
     "android": {
       "package": "care.daengdaeng.app"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "8147dac2-63d4-48ef-bea9-74e86ee679a1"
+      }
     }
   }
 }
