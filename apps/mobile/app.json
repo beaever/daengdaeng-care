@@ -9,10 +9,6 @@
     },
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "splash": {
-      "backgroundColor": "#FFFDF9"
-    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "care.daengdaeng.app"
@@ -21,7 +17,14 @@
       "package": "care.daengdaeng.app"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFDF9"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
