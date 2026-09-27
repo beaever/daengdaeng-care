@@ -35,7 +35,7 @@
 
 ## Phase 0 — 기반 정비
 
-- [ ] **T0.1 Expo SDK 업그레이드** · `release-engineer`
+- [x] **T0.1 Expo SDK 업그레이드** · `release-engineer`
   - 배경: Apple은 2026-04-28 이후 업로드되는 앱에 iOS 26 SDK(Xcode 26) 빌드를 요구한다. SDK 52 / RN 0.76이 EAS의 Xcode 26 이미지에서 빌드되는지 **먼저 확인**하고, 안 되면 Xcode 26을 지원하는 최신 SDK로 올린다.
   - 완료 조건: `npx expo-doctor` 통과 (React 중복 경고 1건은 허용 — INFRA.md "알려진 제약"), 시뮬레이터에서 5개 탭 정상 동작. (EAS production 빌드 검증은 기능 구현 후 T2.3으로 이동 — 2026-09-27 결정)
 - [ ] **T0.2 광고 코드 제거** · `mobile-engineer`
