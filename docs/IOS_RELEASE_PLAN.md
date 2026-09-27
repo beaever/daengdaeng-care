@@ -37,7 +37,7 @@
 
 - [ ] **T0.1 Expo SDK 업그레이드** · `release-engineer`
   - 배경: Apple은 2026-04-28 이후 업로드되는 앱에 iOS 26 SDK(Xcode 26) 빌드를 요구한다. SDK 52 / RN 0.76이 EAS의 Xcode 26 이미지에서 빌드되는지 **먼저 확인**하고, 안 되면 Xcode 26을 지원하는 최신 SDK로 올린다.
-  - 완료 조건: `npx expo-doctor` 통과, 시뮬레이터에서 5개 탭 정상 동작, `eas build -p ios --profile preview` 성공
+  - 완료 조건: `npx expo-doctor` 통과 (React 중복 경고 1건은 허용 — INFRA.md "알려진 제약"), 시뮬레이터에서 5개 탭 정상 동작. (EAS production 빌드 검증은 기능 구현 후 T2.3으로 이동 — 2026-09-27 결정)
 - [ ] **T0.2 광고 코드 제거** · `mobile-engineer`
   - `food/result`, `symptom/result`, `record/index`, `hospital/index` 의 AdBanner/NativeAd 제거
   - `symptom/interstitial.tsx` 삭제: `questions → result` 로 바로 이동
@@ -63,8 +63,9 @@
   - 완료 조건: 재시작 후 기록 유지, 날짜순 정렬
 - [ ] **T1.3 병원 찾기 (F004)** · `data-engineer` → `mobile-engineer`
   - `expo-location` (사용 중 권한) + Kakao Local 키워드 검색. 키는 `EXPO_PUBLIC_KAKAO_KEY` (EAS 환경변수)
+  - 지도: `react-native-maps` (iOS 기본 Apple 지도, 키·비용 없음)에 현재 위치와 병원 마커 표시. 마커를 누르면 해당 병원 카드로 이동
   - 권한 거부 시: 지역명 입력으로 대체. 전화(`tel:`)와 길찾기(카카오맵/Apple 지도 링크)
-  - 완료 조건: 실기기에서 주변 병원이 거리순으로 표시, 권한 거부·오프라인·API 실패 각각 안내
+  - 완료 조건: 지도와 목록에 주변 병원이 거리순으로 표시, 권한 거부·오프라인·API 실패 각각 안내
   - 리스크: REST 키가 앱 번들에 포함된다. 카카오 콘솔에서 사용량 알림을 설정해 둔다.
 - [ ] **T1.4 사료 분석 (F002)** · `data-engineer` → `mobile-engineer`
   - `expo-camera` 바코드 스캔 + Open Pet Food Facts 조회, 조회 실패 시 "등록되지 않은 제품" 안내와 수동 검색
@@ -87,7 +88,8 @@
 - [ ] **T2.2 접근성 기본** · `mobile-engineer`
   - 터치 타깃 44pt, 아이콘 버튼에 `accessibilityLabel`, 큰 글씨(Dynamic Type 최대)에서 레이아웃 확인
 - [ ] **T2.3 실기기 QA** · `qa-engineer`
-  - QA.md 체크리스트를 iPhone SE(375pt)와 Pro Max에서 수행, TestFlight 내부 테스터 배포
+  - QA.md 체크리스트를 iPhone SE(375pt)와 Pro Max에서 수행
+  - EAS production 빌드 (첫 EAS 빌드, Xcode 26 클라우드 빌드 검증 겸함) → TestFlight 내부 테스터 배포
   - 완료 조건: 치명 버그 0건, 결과는 PR 또는 이슈로 기록
 
 ## Phase 3 — App Store 제출

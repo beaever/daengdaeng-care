@@ -1,11 +1,11 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, type ColorValue } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fontFamily, layout } from '../../theme';
 
 function tabIcon(emoji: string) {
-  const TabIcon = ({ color }: { color: string }) => (
+  const TabIcon = ({ color }: { color: ColorValue }) => (
     <Text style={{ fontSize: 20, color }}>{emoji}</Text>
   );
   TabIcon.displayName = `TabIcon(${emoji})`;
