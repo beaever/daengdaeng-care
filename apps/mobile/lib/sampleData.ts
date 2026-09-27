@@ -180,7 +180,7 @@ export const symptomCats: SymptomCat[] = [
 ];
 
 /**
- * 증상 질문 보기. `verdict`가 있으면 결과로 분기(emergency는 직행, 그 외는 전면광고 경유),
+ * 증상 질문 보기. `verdict`가 있으면 결과로 분기,
  * `next`가 있으면 해당 인덱스의 다음 질문으로 이동.
  */
 export interface SymptomOption {

@@ -4,7 +4,7 @@ import { colors, radius, space, fontFamily, typography, palette } from '../../th
 import { Segment } from '../ui';
 
 // SCR-012 · 병원 목록 보조 컴포넌트 모음.
-// Root는 단순 세로 스택(간격 12). 실제 리스트 조립(NativeAd 3번째 삽입)은 화면에서 한다.
+// Root는 단순 세로 스택(간격 12). 실제 리스트 조립은 화면에서 한다.
 export interface HospitalListProps {
   children: React.ReactNode;
 }

@@ -6,7 +6,6 @@ import type { SymptomResultData } from '../../lib/sampleData';
 
 // SCR-011 · 증상 결과 — 판정 + 행동 지침 + (관찰 항목) + (병원 버튼) + 면책 고지.
 // RULES(4): 수의사 면책 고지(Disclaimer)는 레벨과 무관하게 항상 렌더한다 — 삭제 금지.
-// 광고는 화면(result.tsx)에서 비응급일 때만 붙인다(컴파운드는 광고를 모름).
 export interface SymptomResultProps {
   result: SymptomResultData;
   onFindHospital?: () => void;

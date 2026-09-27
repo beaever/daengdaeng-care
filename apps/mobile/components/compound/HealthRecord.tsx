@@ -5,7 +5,7 @@ import { Avatar, Card, Segment } from '../ui';
 import type { Pet, HealthRecordItem, RecordType } from '../../lib/sampleData';
 
 // SCR-014 · 건강 기록 — 펫 헤더 + 카테고리 탭 + 타임라인.
-// 화면(record/index.tsx)은 이 컴파운드를 조립만 한다. FAB·AdBanner는 화면 chrome.
+// 화면(record/index.tsx)은 이 컴파운드를 조립만 한다. FAB는 화면 chrome.
 // 기록 종류별 아이콘·라벨 분기는 컴파운드 내부(RECORD_META)에 둔다(RULES 3).
 
 /** 기록 종류 메타 — 아이콘·라벨 단일 출처 */

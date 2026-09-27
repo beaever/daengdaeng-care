@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
-import { colors, space, radius, layout, fontFamily } from '../../../theme';
-import { AdBanner } from '../../../components/ui';
+import { colors, space, radius, fontFamily } from '../../../theme';
 import { HealthRecord } from '../../../components/compound';
 import type { RecordTab } from '../../../components/compound';
 import { pet, records } from '../../../lib/sampleData';
 
-// SCR-014 · 건강 기록 (기록 탭) — HealthRecord 컴파운드 + 우하단 FAB + 하단 AdBanner.
-// 건강 기록은 응급(emergency) 화면이 아니므로 광고 허용(RULES 1). 화면은 조립만 한다(RULES 3).
+// SCR-014 · 건강 기록 (기록 탭) — HealthRecord 컴파운드 + 우하단 FAB. 화면은 조립만 한다(RULES 3).
 export default function RecordScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -31,26 +29,16 @@ export default function RecordScreen() {
       />
 
       <ScrollView
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: layout.adBannerHeight + insets.bottom + space[16] },
-        ]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + space[16] }]}
         showsVerticalScrollIndicator={false}
       >
         <HealthRecord pet={pet} records={records} tab={tab} onTab={setTab} />
       </ScrollView>
 
-      {/* 우하단 FAB — AdBanner 위에 띄움 */}
-      <Pressable
-        onPress={goAdd}
-        style={[styles.fab, { bottom: layout.adBannerHeight + insets.bottom + space[4] }]}
-      >
+      {/* 우하단 FAB */}
+      <Pressable onPress={goAdd} style={[styles.fab, { bottom: insets.bottom + space[4] }]}>
         <Text style={styles.fabIcon}>＋</Text>
       </Pressable>
-
-      <View style={{ paddingBottom: insets.bottom }}>
-        <AdBanner title="우리 아이 건강검진 패키지" description="AD · 댕댕동물병원" />
-      </View>
     </View>
   );
 }
