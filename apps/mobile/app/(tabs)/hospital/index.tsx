@@ -3,11 +3,10 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, space } from '../../../theme';
-import { NativeAd } from '../../../components/ui';
 import { HospitalCard, HospitalList } from '../../../components/compound';
 import { hospitals } from '../../../lib/sampleData';
 
-// SCR-012 · 병원 목록 (병원 탭) — 툴바 + 지도 + 카드 리스트(3번째에 NativeAd).
+// SCR-012 · 병원 목록 (병원 탭) — 툴바 + 지도 + 카드 리스트.
 export default function HospitalListScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -30,14 +29,12 @@ export default function HospitalListScreen() {
         <HospitalList>
           <HospitalList.Map />
           <HospitalList.ResultCount count={hospitals.length} />
-          {hospitals.map((h, i) => (
-            <React.Fragment key={h.id}>
-              {i === 2 && <NativeAd />}
-              <HospitalCard
-                hospital={h}
-                onPress={() => router.push({ pathname: '/hospital/detail', params: { id: String(h.id) } })}
-              />
-            </React.Fragment>
+          {hospitals.map((h) => (
+            <HospitalCard
+              key={h.id}
+              hospital={h}
+              onPress={() => router.push({ pathname: '/hospital/detail', params: { id: String(h.id) } })}
+            />
           ))}
         </HospitalList>
       </ScrollView>

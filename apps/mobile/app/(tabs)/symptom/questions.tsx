@@ -26,12 +26,7 @@ export default function SymptomQuestionsScreen() {
 
   const onSelect = (opt: SymptomOption) => {
     if (opt.verdict) {
-      // emergency는 전면광고 없이 결과 직행, 그 외는 전면광고 경유.
-      if (opt.verdict === 'emergency') {
-        router.push({ pathname: '/symptom/result', params: { verdict: opt.verdict } });
-      } else {
-        router.push({ pathname: '/symptom/interstitial', params: { verdict: opt.verdict } });
-      }
+      router.push({ pathname: '/symptom/result', params: { verdict: opt.verdict } });
     } else if (typeof opt.next === 'number') {
       setIdx(opt.next);
     }
