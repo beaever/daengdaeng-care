@@ -39,7 +39,7 @@ export const SYMPTOM_CATEGORIES: Omit<SymptomCategory, 'questions'>[] = [
 
 // Emergency categories bypass the decision tree → direct hospital redirect
 export const EMERGENCY_SYMPTOMS = [
-  { id: 'emergency', emoji: '🚨', label: '긴급 증상', sub: '의식 저하, 경련, 호흡 정지' },
+  { id: 'emergency', emoji: '🚨', label: '응급 증상', sub: '발작 · 의식 없음 · 호흡 곤란' },
 ];
 
 export const VOMITING_QUESTIONS: SymptomQuestion[] = [
