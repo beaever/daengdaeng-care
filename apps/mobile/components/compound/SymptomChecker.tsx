@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors, fontFamily, typography, space } from '../../theme';
 import { ProgressBar, Option } from '../ui';
-import type { SymptomOption } from '../../lib/sampleData';
+import type { SymptomOption } from '@daengdaeng/constants';
 
 // SCR-010 · 단계별 증상 질문 — 진행바 + 질문 + 라디오 보기.
 // 보기별 분기(verdict/next)는 화면이 onSelect로 처리, 컴파운드는 표시만 담당.

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import { useRouter, useNavigation } from 'expo-router';
+import { useRouter, useNavigation, useLocalSearchParams } from 'expo-router';
 import { colors, space } from '../../../theme';
 import { SymptomChecker } from '../../../components/compound';
-import { symptomQuestions, type SymptomOption } from '../../../lib/sampleData';
+import { SYMPTOM_QUESTIONS, type SymptomOption } from '@daengdaeng/constants';
 
 // SCR-010 · 증상 질문 (증상 탭) — SymptomChecker 조립. 보기 선택으로 분기.
 export default function SymptomQuestionsScreen() {
   const router = useRouter();
   const navigation = useNavigation();
+  const params = useLocalSearchParams<{ cat?: string }>();
   const [idx, setIdx] = useState(0);
-  const total = symptomQuestions.length;
-  const question = symptomQuestions[idx]!;
+  const questions = params.cat != null ? SYMPTOM_QUESTIONS[params.cat] : undefined;
 
   // 뒤로가기: 첫 질문이 아니면 이전 질문으로, 첫 질문이면 카테고리로.
   useEffect(() => {
@@ -23,6 +23,18 @@ export default function SymptomQuestionsScreen() {
     });
     return unsub;
   }, [navigation, idx]);
+
+  // 카테고리가 없거나 질문 트리가 없으면 증상 탭으로 안전하게 복귀.
+  useEffect(() => {
+    if (questions == null) {
+      router.replace('/symptom');
+    }
+  }, [questions, router]);
+
+  if (questions == null) return null;
+
+  const total = questions.length;
+  const question = questions[idx]!;
 
   const onSelect = (opt: SymptomOption) => {
     if (opt.verdict) {

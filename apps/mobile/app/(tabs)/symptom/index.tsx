@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, space, radius, fontFamily, typography, safetyColors } from '../../../theme';
-import { symptomCats } from '../../../lib/sampleData';
+import { SYMPTOM_CATEGORIES } from '@daengdaeng/constants';
 
 // SCR-009 · 증상 카테고리 (증상 탭) — 2열 그리드 + 응급 증상 배너.
 export default function SymptomCategoryScreen() {
@@ -22,10 +22,10 @@ export default function SymptomCategoryScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.grid}>
-          {symptomCats.map((c) => (
+          {SYMPTOM_CATEGORIES.map((c) => (
             <Pressable
               key={c.id}
-              onPress={() => router.push('/symptom/questions')}
+              onPress={() => router.push({ pathname: '/symptom/questions', params: { cat: c.id } })}
               style={({ pressed }) => [styles.cat, pressed && styles.catPressed]}
             >
               <Text style={styles.catEmoji}>{c.emoji}</Text>

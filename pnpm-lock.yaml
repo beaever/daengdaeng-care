@@ -23,6 +23,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@daengdaeng/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@daengdaeng/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
