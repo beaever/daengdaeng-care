@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { FOODS, POPULAR_FOODS, searchFood } from './foods';
+import { FOODS, POPULAR_FOODS, searchFood, searchFoods } from './foods';
 
 const SAFETY_LEVELS = ['safe', 'caution', 'danger'] as const;
 const entries = Object.entries(FOODS);
@@ -58,5 +58,26 @@ describe('searchFood()', () => {
   it('빈 질의·공백 질의는 null을 반환한다 (전체 매칭 방지)', () => {
     expect(searchFood('')).toBeNull();
     expect(searchFood('   ')).toBeNull();
+  });
+});
+
+describe('searchFoods()', () => {
+  it('영문 alias로 다건 검색해 항목을 찾는다', () => {
+    const results = searchFoods('grape');
+    expect(results.map((f) => f.name)).toContain('포도');
+  });
+
+  it('대소문자를 구분하지 않는다', () => {
+    const results = searchFoods('GRAPE');
+    expect(results.map((f) => f.name)).toContain('포도');
+  });
+
+  it('빈 질의는 빈 배열을 반환한다', () => {
+    expect(searchFoods('')).toEqual([]);
+  });
+
+  it('별칭 부분일치로도 찾을 수 있다', () => {
+    const results = searchFoods('caffe');
+    expect(results.map((f) => f.name)).toContain('커피');
   });
 });
