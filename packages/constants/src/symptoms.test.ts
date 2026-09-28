@@ -4,6 +4,7 @@ import {
   EMERGENCY_SYMPTOMS,
   VOMITING_QUESTIONS,
   SYMPTOM_RESULTS,
+  SYMPTOM_QUESTIONS,
 } from './symptoms';
 
 const SEVERITY_LEVELS = ['emergency', 'today', 'watch'] as const;
@@ -84,5 +85,60 @@ describe('SYMPTOM_RESULTS', () => {
     expect(SYMPTOM_RESULTS.emergency.hospital).toBe(true);
     expect(SYMPTOM_RESULTS.today.hospital).toBe(true);
     expect(SYMPTOM_RESULTS.watch.hospital).toBe(false);
+  });
+});
+
+describe('SYMPTOM_QUESTIONS 카테고리별 결정 트리', () => {
+  it('키 집합이 SYMPTOM_CATEGORIES id 집합과 같다', () => {
+    const keys = Object.keys(SYMPTOM_QUESTIONS).sort();
+    const ids = SYMPTOM_CATEGORIES.map((c) => c.id).sort();
+    expect(keys).toEqual(ids);
+  });
+
+  it('digest는 VOMITING_QUESTIONS를 그대로 쓴다', () => {
+    expect(SYMPTOM_QUESTIONS.digest).toBe(VOMITING_QUESTIONS);
+  });
+
+  describe.each(Object.entries(SYMPTOM_QUESTIONS))('"%s" 트리', (id, tree) => {
+    it('모든 선택지는 next 또는 verdict 중 정확히 하나만 가진다', () => {
+      expect(tree.length).toBeGreaterThan(0);
+      tree.forEach((question, qi) => {
+        expect(question.options.length, `${id} 질문 ${qi} 선택지 없음`).toBeGreaterThan(0);
+        question.options.forEach((opt) => {
+          expect(
+            (opt.next !== undefined) !== (opt.verdict !== undefined),
+            `${id} 질문 ${qi} "${opt.label}"의 분기 정의 오류`,
+          ).toBe(true);
+          if (opt.verdict !== undefined) expect(SEVERITY_LEVELS).toContain(opt.verdict);
+        });
+      });
+    });
+
+    it('next는 배열 범위 안의 정수다', () => {
+      tree.forEach((question) => {
+        question.options.forEach((opt) => {
+          if (opt.next === undefined) return;
+          expect(Number.isInteger(opt.next)).toBe(true);
+          expect(opt.next).toBeGreaterThanOrEqual(0);
+          expect(opt.next).toBeLessThan(tree.length);
+        });
+      });
+    });
+
+    it('0번에서 출발한 모든 경로가 순환 없이 verdict에 도달한다', () => {
+      const walk = (qi: number, path: number[]) => {
+        expect(path, `${id} 순환: ${[...path, qi].join('→')}`).not.toContain(qi);
+        for (const opt of tree[qi].options) {
+          if (opt.next !== undefined) walk(opt.next, [...path, qi]);
+          else expect(opt.verdict).toBeDefined();
+        }
+      };
+      walk(0, []);
+    });
+
+    it('emergency verdict가 최소 1개 있다', () => {
+      const hasEmergency = tree.some((q) => q.options.some((o) => o.verdict === 'emergency'));
+      expect(hasEmergency).toBe(true);
+    });
   });
 });
