@@ -147,17 +147,16 @@ export const FOODS: Record<string, FoodEntry> = {
 
 export const POPULAR_FOODS = ['포도', '초콜릿', '사과', '닭고기', '당근', '수박'];
 
+/** 이름·별칭 부분일치로 다건 검색한다. 빈 질의는 빈 배열. */
+export function searchFoods(query: string): FoodEntry[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return Object.values(FOODS).filter(
+    (f) => f.name.toLowerCase().includes(q) || f.aliases?.some((a) => a.toLowerCase().includes(q))
+  );
+}
+
 export function searchFood(query: string): FoodEntry | null {
   const q = query.trim().toLowerCase();
-  // 빈 질의는 매칭하지 않는다('' 부분일치가 모든 항목에 참이 되는 것을 방지).
-  if (!q) return null;
-  const direct = FOODS[q] ?? FOODS[Object.keys(FOODS).find((k) => k === q) ?? ''];
-  if (direct) return direct;
-
-  return (
-    Object.values(FOODS).find((f) =>
-      f.name.toLowerCase().includes(q) ||
-      f.aliases?.some((a) => a.toLowerCase().includes(q))
-    ) ?? null
-  );
+  return FOODS[q] ?? searchFoods(query)[0] ?? null;
 }

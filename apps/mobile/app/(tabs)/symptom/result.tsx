@@ -5,7 +5,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import type { SeverityLevel } from '@daengdaeng/tokens';
 import { colors, space } from '../../../theme';
 import { SymptomResult } from '../../../components/compound';
-import { symptomResults } from '../../../lib/sampleData';
+import { SYMPTOM_RESULTS } from '@daengdaeng/constants';
 
 const LEVELS: SeverityLevel[] = ['emergency', 'today', 'watch'];
 
@@ -18,7 +18,7 @@ export default function SymptomResultScreen() {
   const verdict: SeverityLevel = LEVELS.includes(params.verdict as SeverityLevel)
     ? (params.verdict as SeverityLevel)
     : 'watch';
-  const result = symptomResults[verdict];
+  const result = SYMPTOM_RESULTS[verdict];
 
   return (
     <View style={styles.root}>

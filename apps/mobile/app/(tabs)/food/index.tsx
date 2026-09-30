@@ -4,20 +4,22 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, space, fontFamily, typography } from '../../../theme';
 import { Input, SectionHeading, Chip, EmptyState } from '../../../components/ui';
-import { foods, popularFoods, recentFoods } from '../../../lib/sampleData';
+import { POPULAR_FOODS, searchFoods } from '@daengdaeng/constants';
+
+const MAX_RECENT = 5;
 
 // SCR-005 · 음식 검색 (음식 탭) — 검색어 유무에 따라 분기.
 export default function FoodSearchScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
-  const [recent, setRecent] = useState<string[]>(recentFoods);
+  const [recent, setRecent] = useState<string[]>([]);
 
-  const names = Object.keys(foods);
-  const matches = query ? names.filter((n) => n.includes(query)) : [];
+  const matches = searchFoods(query);
 
   const go = (name: string) => {
     setQuery('');
+    setRecent((prev) => [name, ...prev.filter((n) => n !== name)].slice(0, MAX_RECENT));
     router.push({ pathname: '/food/result', params: { name } });
   };
 
@@ -44,14 +46,14 @@ export default function FoodSearchScreen() {
         {query ? (
           matches.length > 0 ? (
             <View style={styles.matchList}>
-              {matches.map((n) => (
+              {matches.map((f) => (
                 <Pressable
-                  key={n}
-                  onPress={() => go(n)}
+                  key={f.name}
+                  onPress={() => go(f.name)}
                   style={({ pressed }) => [styles.matchRow, pressed && styles.matchRowPressed]}
                 >
                   <Text style={styles.matchIcon}>🔍</Text>
-                  <Text style={styles.matchName}>{n}</Text>
+                  <Text style={styles.matchName}>{f.name}</Text>
                 </Pressable>
               ))}
             </View>
@@ -63,7 +65,7 @@ export default function FoodSearchScreen() {
             <View>
               <SectionHeading>많이 찾는 음식</SectionHeading>
               <View style={styles.chips}>
-                {popularFoods.map((n) => (
+                {POPULAR_FOODS.map((n) => (
                   <Chip key={n} variant="brand" onPress={() => go(n)}>
                     {n}
                   </Chip>
@@ -71,25 +73,27 @@ export default function FoodSearchScreen() {
               </View>
             </View>
 
-            <View>
-              <SectionHeading>최근 검색</SectionHeading>
+            {recent.length > 0 && (
               <View>
-                {recent.map((n) => (
-                  <View key={n} style={styles.recentRow}>
-                    <Pressable onPress={() => go(n)} style={styles.recentName} hitSlop={8}>
-                      <Text style={styles.recentNameText}>{n}</Text>
-                    </Pressable>
-                    <Pressable
-                      accessibilityLabel={`${n} 검색 기록 삭제`}
-                      onPress={() => setRecent((prev) => prev.filter((x) => x !== n))}
-                      hitSlop={8}
-                    >
-                      <Text style={styles.recentRemove}>✕</Text>
-                    </Pressable>
-                  </View>
-                ))}
+                <SectionHeading>최근 검색</SectionHeading>
+                <View>
+                  {recent.map((n) => (
+                    <View key={n} style={styles.recentRow}>
+                      <Pressable onPress={() => go(n)} style={styles.recentName} hitSlop={8}>
+                        <Text style={styles.recentNameText}>{n}</Text>
+                      </Pressable>
+                      <Pressable
+                        accessibilityLabel={`${n} 검색 기록 삭제`}
+                        onPress={() => setRecent((prev) => prev.filter((x) => x !== n))}
+                        hitSlop={8}
+                      >
+                        <Text style={styles.recentRemove}>✕</Text>
+                      </Pressable>
+                    </View>
+                  ))}
+                </View>
               </View>
-            </View>
+            )}
           </View>
         )}
       </ScrollView>

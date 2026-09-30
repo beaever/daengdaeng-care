@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { fontFamily, typography, space, colors } from '../../theme';
 import { Verdict, Bullets, Button, Note, SectionHeading } from '../ui';
-import type { SymptomResultData } from '../../lib/sampleData';
+import type { SymptomResult as SymptomResultData } from '@daengdaeng/constants';
 
 // SCR-011 · 증상 결과 — 판정 + 행동 지침 + (관찰 항목) + (병원 버튼) + 면책 고지.
 // RULES(4): 수의사 면책 고지(Disclaimer)는 레벨과 무관하게 항상 렌더한다 — 삭제 금지.
