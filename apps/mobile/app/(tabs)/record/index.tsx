@@ -5,15 +5,19 @@ import { Stack, useRouter } from 'expo-router';
 import { colors, space, radius, fontFamily } from '../../../theme';
 import { HealthRecord } from '../../../components/compound';
 import type { RecordTab } from '../../../components/compound';
-import { pet, records } from '../../../lib/sampleData';
+import { usePet } from '../../../lib/pets';
+import { records } from '../../../lib/sampleData';
 
 // SCR-014 · 건강 기록 (기록 탭) — HealthRecord 컴파운드 + 우하단 FAB. 화면은 조립만 한다(RULES 3).
 export default function RecordScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [tab, setTab] = useState<RecordTab>('all');
+  const { pet } = usePet();
 
   const goAdd = () => router.push('/record/add');
+
+  if (!pet) return null; // 로딩 중이거나(undefined) 프로필 없음(null) — 라우팅으로 대부분 방지됨
 
   return (
     <View style={styles.root}>

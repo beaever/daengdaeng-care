@@ -5,12 +5,16 @@ import { useRouter } from 'expo-router';
 import { colors, space, fontFamily, typography } from '../../theme';
 import { SectionHeading, IconButton } from '../../components/ui';
 import { PetProfileCard, QuickMenu, HealthSummaryCard } from '../../components/compound';
-import { pet } from '../../lib/sampleData';
+import { usePet } from '../../lib/pets';
+import { pet as samplePet } from '../../lib/sampleData';
 
 // SCR-004 · 홈 (탭1) — 허브. 컴파운드 조립으로 구성.
 export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { pet } = usePet();
+
+  if (!pet) return null; // 로딩 중이거나(undefined) 프로필 없음(null) — 라우팅으로 대부분 방지됨
 
   return (
     <View style={styles.root}>
@@ -27,7 +31,11 @@ export default function HomeScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + space[8] }]}
         showsVerticalScrollIndicator={false}
       >
-        <PetProfileCard pet={pet} onPress={() => router.push('/settings')} />
+        <PetProfileCard
+          pet={pet}
+          nextVaccineDays={samplePet.nextVaccineDays}
+          onPress={() => router.push('/settings')}
+        />
 
         <View>
           <SectionHeading>바로가기</SectionHeading>
@@ -41,7 +49,7 @@ export default function HomeScreen() {
 
         <View>
           <SectionHeading>건강 요약</SectionHeading>
-          <HealthSummaryCard pet={pet} />
+          <HealthSummaryCard pet={samplePet} />
         </View>
       </ScrollView>
     </View>
