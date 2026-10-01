@@ -2,11 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useSQLiteContext } from 'expo-sqlite';
 import { palette, fontFamily, typography } from '../theme';
+import { getPet } from '../lib/pets';
 
-// SCR-001 · 스플래시 — 1.7초 후 온보딩으로 자동 전환.
+// SCR-001 · 스플래시 — 1.7초 후 가입 여부에 따라 홈/온보딩으로 자동 전환.
 export default function SplashScreen() {
   const router = useRouter();
+  const db = useSQLiteContext();
   const scale = useRef(new Animated.Value(0.6)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -17,9 +20,11 @@ export default function SplashScreen() {
       Animated.timing(opacity, { toValue: 1, duration: 320, useNativeDriver: true }),
     ]).start();
 
-    const t = setTimeout(() => router.replace('/onboarding'), 1700);
+    const t = setTimeout(() => {
+      getPet(db).then((pet) => router.replace(pet ? '/home' : '/onboarding'));
+    }, 1700);
     return () => clearTimeout(t);
-  }, [router, scale, opacity]);
+  }, [router, db, scale, opacity]);
 
   return (
     <LinearGradient

@@ -52,7 +52,7 @@ CREATE TABLE pets (
   dob      TEXT,           -- ISO date string
   sex      TEXT,           -- '남아' | '여아'
   neutered INTEGER,        -- 0|1
-  photo    TEXT            -- file URI
+  photo    TEXT            -- document 디렉터리 기준 파일명 (절대 URI 아님 — iOS 컨테이너 UUID 변경 대응)
 );
 
 -- 건강 기록

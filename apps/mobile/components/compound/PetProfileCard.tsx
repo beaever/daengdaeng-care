@@ -2,15 +2,17 @@ import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { colors, radius, fontFamily, typography } from '../../theme';
 import { Avatar } from '../ui';
-import type { Pet } from '../../lib/sampleData';
+import { formatAge, photoUri, type Pet } from '../../lib/pets';
 
 // 홈 상단 반려견 요약 카드 — 컴파운드 조립(Avatar · Info · NextVaccine).
 export interface PetProfileCardProps {
   pet: Pet;
+  /** 다음 접종까지 남은 일수 — 없으면 NextVaccine 행을 생략한다. */
+  nextVaccineDays?: number;
   onPress?: () => void;
 }
 
-function PetProfileCardRoot({ pet, onPress }: PetProfileCardProps) {
+function PetProfileCardRoot({ pet, nextVaccineDays, onPress }: PetProfileCardProps) {
   return (
     <Pressable
       onPress={onPress}
@@ -19,20 +21,28 @@ function PetProfileCardRoot({ pet, onPress }: PetProfileCardProps) {
     >
       <PetProfileCard.Avatar pet={pet} />
       <PetProfileCard.Info pet={pet} />
-      <PetProfileCard.NextVaccine days={pet.nextVaccineDays} />
+      {nextVaccineDays != null && <PetProfileCard.NextVaccine days={nextVaccineDays} />}
     </Pressable>
   );
 }
 
 function PetAvatar({ pet }: { pet: Pet }) {
-  return <Avatar size="md" emoji="🐶" />;
+  return <Avatar size="md" src={photoUri(pet.photo)} />;
+}
+
+/** 중성화 여부 배지 — null/미시술은 메타 라인에서 생략한다. */
+function neuteredLabel(neutered: Pet['neutered']): string {
+  return neutered === 1 ? '중성화 완료' : '';
 }
 
 function PetInfo({ pet }: { pet: Pet }) {
+  const meta = [pet.breed, formatAge(pet.dob), pet.sex, neuteredLabel(pet.neutered)]
+    .filter(Boolean)
+    .join(' · ');
   return (
     <View style={styles.info}>
       <Text style={styles.name}>{pet.name}</Text>
-      <Text style={styles.meta}>{`${pet.breed} · ${pet.age}`}</Text>
+      {meta !== '' && <Text style={styles.meta}>{meta}</Text>}
     </View>
   );
 }

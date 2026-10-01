@@ -18,6 +18,11 @@ preset.transform[babelJestKey] = [
   { babelrc: false, configFile: false, presets: ['module:@react-native/babel-preset'] },
 ];
 
+// 3) EXPO_OS 인라인 유실 보정 (위 1번 교체의 부작용)
+//    자세한 설명은 jest.setupEnv.js 참고. 다른 setupFiles(특히 jest-expo 자체 setup.js)보다
+//    먼저 실행되어야 하므로 배열 맨 앞에 넣는다.
+preset.setupFiles = [require.resolve('./jest.setupEnv.js'), ...(preset.setupFiles ?? [])];
+
 preset.moduleNameMapper = {
   ...preset.moduleNameMapper,
   '^@daengdaeng/constants$': '<rootDir>/../../packages/constants/dist/index.js',

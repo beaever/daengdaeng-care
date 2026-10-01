@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { fontFamily, typography, space, colors } from '../../theme';
 import { Avatar, Card, Segment } from '../ui';
-import type { Pet, HealthRecordItem, RecordType } from '../../lib/sampleData';
+import { photoUri, type Pet } from '../../lib/pets';
+import type { HealthRecordItem, RecordType } from '../../lib/sampleData';
 
 // SCR-014 · 건강 기록 — 펫 헤더 + 카테고리 탭 + 타임라인.
 // 화면(record/index.tsx)은 이 컴파운드를 조립만 한다. FAB는 화면 chrome.
@@ -19,7 +20,7 @@ export const RECORD_META: Record<RecordType, { emoji: string; label: string }> =
 export type RecordTab = 'all' | RecordType;
 
 export interface HealthRecordProps {
-  pet: Pet;
+  pet: Pick<Pet, 'name' | 'photo'>;
   records: HealthRecordItem[];
   tab: RecordTab;
   onTab: (tab: RecordTab) => void;
@@ -36,10 +37,10 @@ function HealthRecordRoot({ pet, records, tab, onTab }: HealthRecordProps) {
   );
 }
 
-function PetHeader({ pet }: { pet: Pet }) {
+function PetHeader({ pet }: { pet: Pick<Pet, 'name' | 'photo'> }) {
   return (
     <View style={styles.petHeader}>
-      <Avatar size="sm" emoji="🐶" />
+      <Avatar size="sm" src={photoUri(pet.photo)} />
       <Text style={styles.petName}>{pet.name}</Text>
     </View>
   );

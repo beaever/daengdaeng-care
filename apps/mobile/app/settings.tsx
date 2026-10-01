@@ -1,19 +1,35 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import { colors, space, fontFamily, typography } from '../theme';
 import { Card, Row, Divider, SectionHeading } from '../components/ui';
-import { pet } from '../lib/sampleData';
+import { usePet, formatAge } from '../lib/pets';
 
 // SCR-016 · 설정 — 프로필 · 앱 설정 · 약관. (헤더/뒤로는 루트 Stack 제공)
 export default function SettingsScreen() {
+  const router = useRouter();
+  const { pet } = usePet();
+  const goProfile = () => router.push('/profile');
+
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
-      <View>
-        <SectionHeading>반려견 프로필</SectionHeading>
-        <Card style={styles.card}>
-          <Row icon="🐶" title={pet.name} sub={`${pet.breed} · ${pet.age}`} chevron={false} />
-        </Card>
-      </View>
+      {pet !== undefined && (
+        <View>
+          <SectionHeading>반려견 프로필</SectionHeading>
+          <Card style={styles.card}>
+            {pet ? (
+              <Row
+                icon="🐶"
+                title={pet.name}
+                sub={[pet.breed, formatAge(pet.dob)].filter(Boolean).join(' · ') || undefined}
+                onPress={goProfile}
+              />
+            ) : (
+              <Row icon="🐶" title="프로필 등록" onPress={goProfile} />
+            )}
+          </Card>
+        </View>
+      )}
 
       <View>
         <SectionHeading>앱 설정</SectionHeading>
