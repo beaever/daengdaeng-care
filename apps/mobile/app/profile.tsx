@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, Pressable, ScrollView, Alert, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, ScrollView, Alert, Keyboard, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { BREEDS, POPULAR_BREEDS, searchBreeds } from '@daengdaeng/constants';
 import { colors, radius, space, fontFamily, typography } from '../theme';
-import { Field, Input, PillGroup, Button } from '../components/ui';
+import { Field, Input, PillGroup, Button, Chip } from '../components/ui';
 import { usePet, savePet, savePetPhoto, photoUri } from '../lib/pets';
 
 const SEX = [
@@ -77,6 +78,8 @@ export default function ProfileScreen() {
   const editing = pet != null;
   const avatarUri = pickedPhoto ?? photoUri(pet?.photo ?? null);
   const canSave = name.trim().length > 0 && !saving;
+  const breedMatches = searchBreeds(breed).slice(0, 6);
+  const breedSelected = BREEDS.some((b) => b.name === breed.trim());
 
   const pickPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -152,6 +155,34 @@ export default function ProfileScreen() {
           </Field>
           <Field label="품종">
             <Input leftIcon="🔍" placeholder="검색하거나 입력" value={breed} onChangeText={setBreed} />
+            {breed.trim().length === 0 ? (
+              <View style={styles.breedChips}>
+                {POPULAR_BREEDS.map((name) => (
+                  <Chip key={name} variant="brand" onPress={() => setBreed(name)}>
+                    {name}
+                  </Chip>
+                ))}
+              </View>
+            ) : breedSelected ? null : breedMatches.length > 0 ? (
+              <View style={styles.matchList}>
+                {breedMatches.map((b) => (
+                  <Pressable
+                    key={b.name}
+                    accessibilityLabel={`${b.name} 선택`}
+                    onPress={() => {
+                      setBreed(b.name);
+                      Keyboard.dismiss();
+                    }}
+                    style={({ pressed }) => [styles.matchRow, pressed && styles.matchRowPressed]}
+                  >
+                    <Text style={styles.matchIcon}>🔍</Text>
+                    <Text style={styles.matchName}>{b.name}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            ) : (
+              <Text style={styles.breedHint}>목록에 없으면 그대로 입력해도 돼요</Text>
+            )}
           </Field>
           <Field label="생년월일">
             <Pressable style={styles.select} onPress={() => setShowDatePicker((v) => !v)}>
@@ -226,4 +257,19 @@ const styles = StyleSheet.create({
   selectValue: { fontFamily, fontSize: typography.callout.size, color: colors.text },
   selectPlaceholder: { fontFamily, fontSize: typography.callout.size, color: colors.text3 },
   selectChevron: { fontFamily, fontSize: 18, color: colors.text3 },
+  breedChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: space[2] },
+  breedHint: { fontFamily, fontSize: typography.caption.size, color: colors.text3, marginTop: 4 },
+  matchList: { marginTop: 4 },
+  matchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    minHeight: 44,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
+  },
+  matchRowPressed: { opacity: 0.55 },
+  matchIcon: { fontSize: 16 },
+  matchName: { fontFamily, fontSize: typography.callout.size, fontWeight: '600', color: colors.text },
 });
