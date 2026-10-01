@@ -43,7 +43,7 @@
   - `symptom/interstitial.tsx` 삭제: `questions → result` 로 바로 이동
   - `components/ui/AdBanner.tsx`, `NativeAd.tsx` 삭제 (필요하면 git 이력에서 복원)
   - 완료 조건: `grep -rn "AdBanner\|NativeAd\|interstitial" apps/mobile/app apps/mobile/components` 결과 0건
-- [ ] **T0.3 데이터 단일 출처화** · `mobile-engineer`
+- [x] **T0.3 데이터 단일 출처화** · `mobile-engineer`
   - `apps/mobile` 에 `@daengdaeng/constants` 의존성 추가
   - 음식 검색은 `searchFood`, 증상은 `SYMPTOM_CATEGORIES` 등으로 교체
   - 완료 조건: `sampleData` 에 음식·증상 데이터가 남지 않음, 영문 별칭 검색("grape")이 앱에서 동작
@@ -61,12 +61,11 @@
 - [ ] **T1.2 건강 기록 CRUD (F005)** · `mobile-engineer` (T1.1 이후)
   - 기록 추가·목록·삭제를 DB와 연결, 빈 상태 표시
   - 완료 조건: 재시작 후 기록 유지, 날짜순 정렬
-- [ ] **T1.3 병원 찾기 (F004)** · `data-engineer` → `mobile-engineer`
-  - `expo-location` (사용 중 권한) + Kakao Local 키워드 검색. 키는 `EXPO_PUBLIC_KAKAO_KEY` (EAS 환경변수)
-  - 지도: `react-native-maps` (iOS 기본 Apple 지도, 키·비용 없음)에 현재 위치와 병원 마커 표시. 마커를 누르면 해당 병원 카드로 이동
-  - 권한 거부 시: 지역명 입력으로 대체. 전화(`tel:`)와 길찾기(카카오맵/Apple 지도 링크)
-  - 완료 조건: 지도와 목록에 주변 병원이 거리순으로 표시, 권한 거부·오프라인·API 실패 각각 안내
-  - 리스크: REST 키가 앱 번들에 포함된다. 카카오 콘솔에서 사용량 알림을 설정해 둔다.
+- [ ] **T1.3 병원 찾기 UI (F004)** · `data-engineer` → `mobile-engineer`
+  - `expo-location` (사용 중 권한) + 지도: `react-native-maps` (iOS 기본 Apple 지도, 키·비용 없음)에 현재 위치와 병원 마커 표시. 마커를 누르면 해당 병원 카드로 이동
+  - 병원 데이터는 `lib/hospitals.ts` 의 `searchHospitals({ lat, lng })` 인터페이스 뒤에 둔다. Kakao 키 연동 전까지는 샘플 데이터를 현재 위치 기준 거리순으로 반환 (T1.7에서 교체)
+  - 권한 거부 시: 지역명 입력으로 대체. 전화(`tel:`)와 길찾기(Apple 지도 링크)
+  - 완료 조건: 시뮬레이터에서 지도·마커·목록이 거리순으로 표시, 권한 거부 안내
 - [ ] **T1.4 사료 분석 (F002)** · `data-engineer` → `mobile-engineer`
   - `expo-camera` 바코드 스캔 + Open Pet Food Facts 조회, 조회 실패 시 "등록되지 않은 제품" 안내와 수동 검색
   - **결정 게이트:** 착수 전 국내 주요 사료 바코드 20개의 OPFF 등록률을 확인한다. 등록률이 낮으면 F002를 v1.1로 미루고 사료 탭을 숨긴다. 샘플 데이터 화면을 그대로 내보내면 심사 4.2(최소 기능) 거절 위험이 있다.
@@ -74,8 +73,14 @@
 - [ ] **T1.5 전역 에러·오프라인 처리** · `mobile-engineer`
   - 네트워크가 필요한 화면(병원, 사료)의 로딩·에러·오프라인 상태
   - 완료 조건: 비행기 모드에서 모든 탭이 멈추지 않고 안내 문구 표시
-- [ ] **T1.6 `sampleData.ts` 삭제** · `mobile-engineer`
-  - 완료 조건: 파일 삭제, `grep -rn sampleData apps/mobile` 결과 0건
+- [ ] **T1.6 `sampleData.ts` 정리** · `mobile-engineer`
+  - 병원 샘플(T1.7에서 제거)을 제외한 샘플 데이터 삭제
+  - 완료 조건: `sampleData` 에 병원 외 데이터 0건
+- [ ] **T1.7 Kakao Local 연동 (F004)** · `data-engineer` — **Phase 1 마지막 (사용자 결정 2026-10-01)**
+  - `searchHospitals` 구현을 Kakao Local 키워드 검색(`EXPO_PUBLIC_KAKAO_KEY`, EAS 환경변수)으로 교체, 병원 샘플 데이터와 `sampleData.ts` 삭제
+  - 오프라인·API 실패 안내
+  - 리스크: REST 키가 앱 번들에 포함된다. 카카오 콘솔에서 사용량 알림을 설정해 둔다.
+  - 완료 조건: 실기기에서 실제 주변 병원이 거리순 표시, `grep -rn sampleData apps/mobile` 결과 0건
 
 ## Phase 2 — iOS 품질
 
@@ -94,11 +99,11 @@
 
 ## Phase 3 — App Store 제출
 
-- [ ] **T3.1 앱 레코드·인증서** · 사람 (`release-engineer` 가 안내)
+- [x] **T3.1 앱 레코드·인증서** · 사람 (`release-engineer` 가 안내)
   - ✅ Apple Developer Program 가입 완료
   - ✅ App Store Connect 앱 생성 (번들 ID `care.daengdaeng.app`)
   - ✅ `eas.json` 에 `ascAppId` 입력
-  - `eas credentials` 로 배포 인증서·프로비저닝 생성
+  - ✅ `eas credentials` 로 배포 인증서·프로비저닝 생성 (기존 배포 인증서 재사용)
 - [ ] **T3.2 개인정보처리방침·지원 페이지** · `mobile-engineer` (apps/web)
   - `apps/web` 에 `/privacy`, `/support` 추가 후 Vercel 배포. 앱 설정 화면에도 링크
   - 내용: 데이터는 기기에만 저장, 위치는 병원 검색 요청 시 카카오에만 전송, 광고·추적 없음
@@ -127,7 +132,7 @@
 ```
 T0.1 ─┬─ T0.2 ─ T0.3 ─ T0.4
       └─ T1.1 ─ T1.2
-         T1.3, T1.4 (병렬 가능) ─ T1.5 ─ T1.6
+         T1.3, T1.4 (병렬 가능) ─ T1.5 ─ T1.6 ─ T1.7(Kakao 연동)
                                           └─ T2.1 ─ T2.2 ─ T2.3 ─ T3.x
 T3.1(앱 레코드·ascAppId)은 사람이 할 일이고 선행 조건이 없으므로 아무 때나 먼저 해둘 수 있음
 ```
