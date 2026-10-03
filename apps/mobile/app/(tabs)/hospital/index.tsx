@@ -25,6 +25,8 @@ export default function HospitalListScreen() {
   // 병원 탭에 들어올 때만 위치 권한을 요청한다. 거부/실패하면 지역 검색 안내로 대체한다.
   useEffect(() => {
     let mounted = true;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
     (async () => {
       try {
         const { status: perm } = await Location.requestForegroundPermissionsAsync();
@@ -32,7 +34,25 @@ export default function HospitalListScreen() {
           if (mounted) setStatus('fallback');
           return;
         }
-        const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+
+        // GPS 가 느리면 "위치 확인 중…" 이 무한 대기할 수 있다(expo-location 57 에는 timeout 옵션이
+        // 없음). 캐시된 마지막 위치가 있으면 바로 쓰고, 없으면 10초 타임아웃과 경쟁시켜
+        // 타임아웃/에러면 지역 검색(LocationFallback)으로 넘어간다.
+        let pos = await Location.getLastKnownPositionAsync();
+        if (pos == null) {
+          const posPromise = Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+          const timeout = new Promise<null>((resolve) => {
+            timeoutId = setTimeout(() => resolve(null), 10_000);
+          });
+          pos = await Promise.race([posPromise, timeout]);
+          if (timeoutId != null) clearTimeout(timeoutId);
+          posPromise.catch(() => {}); // 타임아웃으로 진 뒤 늦게 reject 돼도 unhandled rejection 방지
+        }
+        if (pos == null) {
+          if (mounted) setStatus('fallback');
+          return;
+        }
+
         const here: LatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         const list = await searchHospitals(here);
         if (!mounted) return;
@@ -44,8 +64,10 @@ export default function HospitalListScreen() {
         if (mounted) setStatus('fallback');
       }
     })();
+
     return () => {
       mounted = false;
+      if (timeoutId != null) clearTimeout(timeoutId);
     };
   }, []);
 
@@ -117,13 +139,17 @@ export default function HospitalListScreen() {
             </View>
           </View>
 
+          {/* 목록/지도 공통 영역 — 샘플 데이터 고지는 뷰 전환과 무관하게 항상 보여야 한다. */}
+          <View style={styles.noticeWrap}>
+            <HospitalList.SampleNotice />
+          </View>
+
           {view === 'list' ? (
             <ScrollView
               contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + space[8] }]}
               showsVerticalScrollIndicator={false}
             >
               <HospitalList>
-                <HospitalList.SampleNotice />
                 <HospitalList.ResultCount count={hospitals.length} />
                 {hospitals.map((h) => (
                   <HospitalCard key={h.id} hospital={h} onPress={() => goToDetail(h)} />
@@ -164,6 +190,7 @@ const styles = StyleSheet.create({
     gap: space[3],
   },
   toggle: { width: 150 },
+  noticeWrap: { paddingHorizontal: space[5], paddingBottom: space[3] },
   content: { paddingHorizontal: space[5], paddingTop: space[1] },
   mapArea: { flex: 1 },
   selectedCardWrap: {

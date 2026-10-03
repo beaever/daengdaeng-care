@@ -30,8 +30,10 @@ export function distanceMeters(a: LatLng, b: LatLng): number {
  * 거리(m)를 사용자에게 보여줄 문자열로 포맷한다.
  * 1000m 미만은 10m 단위로 반올림한 "350m", 그 이상은 소수 1자리 "1.2km".
  * 반올림 결과가 1000m 가 되는 경계(995m 등)는 "1.0km" 로 표기한다.
+ * m 이 NaN/Infinity 등 유한수가 아니면 빈 문자열을 반환한다 (호출부는 빈 값이면 거리 표시를 숨긴다).
  */
 export function formatDistance(m: number): string {
+  if (!Number.isFinite(m)) return '';
   const roundedTens = Math.round(m / 10) * 10;
   if (roundedTens < 1000) return `${roundedTens}m`;
   return `${(m / 1000).toFixed(1)}km`;

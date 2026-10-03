@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, ScrollView, Linking, Alert, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { colors, space, fontFamily, typography } from '../../../theme';
-import { Button } from '../../../components/ui';
+import { Button, EmptyState } from '../../../components/ui';
 import { HospitalList } from '../../../components/compound';
 import { formatDistance } from '../../../lib/hospitals';
 
@@ -22,6 +22,7 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
 
 export default function HospitalDetailScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const params = useLocalSearchParams<{
     id: string;
     name: string;
@@ -42,6 +43,9 @@ export default function HospitalDetailScreen() {
     distance: Number(params.distance),
   };
 
+  const hasValidCoords = Number.isFinite(hospital.lat) && Number.isFinite(hospital.lng);
+  const distanceLabel = formatDistance(hospital.distance);
+
   async function handleCall() {
     const url = `tel:${hospital.phone}`;
     const canOpen = await Linking.canOpenURL(url);
@@ -55,6 +59,24 @@ export default function HospitalDetailScreen() {
   function handleDirections() {
     const url = `https://maps.apple.com/?daddr=${hospital.lat},${hospital.lng}&q=${encodeURIComponent(hospital.name)}`;
     Linking.openURL(url);
+  }
+
+  // 위치 좌표가 없으면(딥링크로 일부 params 누락 등) 지도·길찾기를 그리지 않는다 — 크래시 방지.
+  if (!hasValidCoords) {
+    return (
+      <View style={[styles.root, styles.center]}>
+        <EmptyState
+          icon="⚠️"
+          title="병원 위치 정보를 찾을 수 없어요"
+          description="목록으로 돌아가 다시 선택해 주세요."
+          action={
+            <Button variant="secondary" onPress={() => router.back()}>
+              뒤로 가기
+            </Button>
+          }
+        />
+      </View>
+    );
   }
 
   return (
@@ -78,7 +100,7 @@ export default function HospitalDetailScreen() {
         <View style={styles.info}>
           <InfoRow icon="📍" label="주소" value={hospital.address} />
           <InfoRow icon="📞" label="전화" value={hospital.phone} />
-          <InfoRow icon="📏" label="거리" value={formatDistance(hospital.distance)} />
+          {distanceLabel !== '' && <InfoRow icon="📏" label="거리" value={distanceLabel} />}
         </View>
 
         <View style={styles.cta}>
@@ -100,6 +122,7 @@ export default function HospitalDetailScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
+  center: { justifyContent: 'center' },
   content: { padding: space[5], gap: space[4] },
   head: { gap: space[2] },
   name: { fontFamily, fontSize: typography.h1.size, fontWeight: '800', color: colors.text },
