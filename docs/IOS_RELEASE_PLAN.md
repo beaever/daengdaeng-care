@@ -47,14 +47,14 @@
   - `apps/mobile` 에 `@daengdaeng/constants` 의존성 추가
   - 음식 검색은 `searchFood`, 증상은 `SYMPTOM_CATEGORIES` 등으로 교체
   - 완료 조건: `sampleData` 에 음식·증상 데이터가 남지 않음, 영문 별칭 검색("grape")이 앱에서 동작
-- [ ] **T0.4 모바일 테스트 러너 + CI** · `qa-engineer`
+- [x] **T0.4 모바일 테스트 러너 + CI** · `qa-engineer`
   - `jest-expo` + `@testing-library/react-native` 도입, CI의 `turbo test` 에 모바일 포함
   - 첫 테스트: 증상 결과 화면에 면책 고지가 항상 보임 (규칙 4)
   - 완료 조건: CI에서 모바일 테스트 실행·통과
 
 ## Phase 1 — 기능 실데이터화 (F001~F006)
 
-- [ ] **T1.1 로컬 DB + 반려견 프로필 (F006)** · `data-engineer`
+- [x] **T1.1 로컬 DB + 반려견 프로필 (F006)** · `data-engineer`
   - `expo-sqlite` 로 `pets`, `records` 테이블 구성 (스키마는 BACKEND.md), `PRAGMA user_version` 으로 마이그레이션
   - 온보딩과 프로필 편집 저장, 반려견 사진은 `expo-image-picker`
   - 완료 조건: 앱을 재시작해도 프로필 유지, 첫 실행이면 온보딩으로 이동
