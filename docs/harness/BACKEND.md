@@ -55,7 +55,7 @@ CREATE TABLE pets (
   photo    TEXT            -- document 디렉터리 기준 파일명 (절대 URI 아님 — iOS 컨테이너 UUID 변경 대응)
 );
 
--- 건강 기록
+-- 건강 기록 (v2: next_date 컬럼 추가)
 CREATE TABLE records (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   pet_id     INTEGER REFERENCES pets(id),
@@ -64,9 +64,20 @@ CREATE TABLE records (
   title      TEXT NOT NULL,
   sub        TEXT,
   notes      TEXT,
+  next_date  TEXT,           -- YYYY-MM-DD, type='vaccine'에서만 사용 (v2, PRAGMA user_version 2)
   created_at TEXT DEFAULT (datetime('now'))
 );
 ```
+
+### type별 컬럼 매핑
+
+기록 입력 폼은 하나의 `records` 테이블을 공유하며, `type` 에 따라 같은 컬럼을 다른 의미로 쓴다.
+
+| type      | title           | sub       | next_date                              | notes |
+|-----------|-----------------|-----------|-----------------------------------------|-------|
+| `vaccine` | 백신 종류       | (미사용)  | 다음 접종 예정일. 기본값 = 접종일(date) + 1년, 사용자가 수정 가능 (백신별 주기표 없음) | 메모 |
+| `weight`  | kg 숫자 문자열 (예: `"3.2"`) | (미사용) | (미사용) | 메모 |
+| `vet`     | 병원 이름       | 방문 사유 | (미사용) | 메모 |
 
 ---
 

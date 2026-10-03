@@ -9,6 +9,7 @@ import { BREEDS, POPULAR_BREEDS, searchBreeds } from '@daengdaeng/constants';
 import { colors, radius, space, fontFamily, typography } from '../theme';
 import { Field, Input, PillGroup, Button, Chip } from '../components/ui';
 import { usePet, savePet, savePetPhoto, photoUri } from '../lib/pets';
+import { toLocalDateString, parseLocalDate } from '../lib/recordSummary';
 
 const SEX = [
   { label: '남아', value: '남아' },
@@ -29,19 +30,6 @@ function neuteredValue(label: string): 0 | 1 | null {
   if (label === '했어요') return 1;
   if (label === '안 했어요') return 0;
   return null;
-}
-
-/** toISOString은 UTC 변환으로 날짜가 하루 밀릴 수 있어 로컬 기준으로 직접 포맷한다. */
-function toLocalDateString(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
-function parseLocalDate(s: string): Date {
-  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
-  if (!match) return new Date();
-  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
 }
 
 // SCR-003 · 프로필 등록/수정. pet 이 없으면 등록 모드(최초 1회, 완료 시 홈으로),
