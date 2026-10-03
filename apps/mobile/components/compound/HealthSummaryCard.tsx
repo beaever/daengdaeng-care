@@ -2,21 +2,24 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors, fontFamily, typography } from '../../theme';
 import { Card, Divider } from '../ui';
-import type { Pet } from '../../lib/sampleData';
 
-// 홈 "건강 요약" 카드 — 컴파운드(체중 · 최근 방문 · 다음 접종 행).
+const EMPTY = '기록 없음';
+
+// 홈 "건강 요약" 카드 — 컴파운드(체중 · 최근 방문 · 다음 접종 행). 값이 없으면 "기록 없음".
 export interface HealthSummaryCardProps {
-  pet: Pet;
+  weight?: string;
+  lastVisit?: string;
+  nextVaccine?: string;
 }
 
-function HealthSummaryCardRoot({ pet }: HealthSummaryCardProps) {
+function HealthSummaryCardRoot({ weight, lastVisit, nextVaccine }: HealthSummaryCardProps) {
   return (
     <Card style={styles.card}>
-      <HealthSummaryCard.WeightRow value={pet.weight} />
+      <HealthSummaryCard.WeightRow value={weight ?? EMPTY} />
       <Divider inset />
-      <HealthSummaryCard.LastVisitRow value={pet.lastVisit} />
+      <HealthSummaryCard.LastVisitRow value={lastVisit ?? EMPTY} />
       <Divider inset />
-      <HealthSummaryCard.NextVaccineRow value={`D-${pet.nextVaccineDays}`} />
+      <HealthSummaryCard.NextVaccineRow value={nextVaccine ?? EMPTY} />
     </Card>
   );
 }

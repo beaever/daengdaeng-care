@@ -3,6 +3,7 @@ import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { colors, radius, fontFamily, typography } from '../../theme';
 import { Avatar } from '../ui';
 import { formatAge, photoUri, type Pet } from '../../lib/pets';
+import { formatDday } from '../../lib/recordSummary';
 
 // 홈 상단 반려견 요약 카드 — 컴파운드 조립(Avatar · Info · NextVaccine).
 export interface PetProfileCardProps {
@@ -52,7 +53,7 @@ function NextVaccine({ days }: { days: number }) {
     <View style={styles.vaccine}>
       <Text style={styles.vaccineLabel}>다음 접종</Text>
       <View style={styles.vaccineChip}>
-        <Text style={styles.vaccineChipText}>{`D-${days}`}</Text>
+        <Text style={styles.vaccineChipText}>{formatDday(days)}</Text>
       </View>
     </View>
   );
