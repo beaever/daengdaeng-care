@@ -34,6 +34,14 @@
           "cameraPermission": false,
           "microphonePermission": false
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "근처 동물병원을 거리순으로 보여주기 위해 현재 위치를 사용해요.",
+          "locationAlwaysAndWhenInUsePermission": false,
+          "locationAlwaysPermission": false
+        }
       ]
     ],
     "experiments": {
