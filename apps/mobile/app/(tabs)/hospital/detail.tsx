@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Linking, Alert, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { colors, space, fontFamily, typography } from '../../../theme';
-import { Button, StatusBadge } from '../../../components/ui';
+import { Button, EmptyState } from '../../../components/ui';
 import { HospitalList } from '../../../components/compound';
-import { hospitals } from '../../../lib/sampleData';
+import { formatDistance } from '../../../lib/hospitals';
 
-// SCR-013 · 병원 상세 (병원 탭) — 지도 + 이름/상태 + 정보 행 + 전화·길찾기 CTA.
+// SCR-013 · 병원 상세 (병원 탭) — 지도 + 이름 + 정보 행 + 전화·길찾기 CTA.
 function InfoRow({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <View style={styles.row}>
@@ -22,9 +22,62 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
 
 export default function HospitalDetailScreen() {
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ id?: string }>();
-  const hospital =
-    hospitals.find((h) => String(h.id) === params.id) ?? hospitals[1]!;
+  const router = useRouter();
+  const params = useLocalSearchParams<{
+    id: string;
+    name: string;
+    address: string;
+    phone: string;
+    lat: string;
+    lng: string;
+    distance: string;
+  }>();
+
+  const hospital = {
+    id: params.id,
+    name: params.name,
+    address: params.address,
+    phone: params.phone,
+    lat: Number(params.lat),
+    lng: Number(params.lng),
+    distance: Number(params.distance),
+  };
+
+  const hasValidCoords = Number.isFinite(hospital.lat) && Number.isFinite(hospital.lng);
+  const distanceLabel = formatDistance(hospital.distance);
+
+  async function handleCall() {
+    const url = `tel:${hospital.phone}`;
+    const canOpen = await Linking.canOpenURL(url);
+    if (!canOpen) {
+      Alert.alert('전화를 걸 수 없어요', '이 기기(시뮬레이터)에서는 전화 기능을 사용할 수 없어요.');
+      return;
+    }
+    Linking.openURL(url);
+  }
+
+  function handleDirections() {
+    const url = `https://maps.apple.com/?daddr=${hospital.lat},${hospital.lng}&q=${encodeURIComponent(hospital.name)}`;
+    Linking.openURL(url);
+  }
+
+  // 위치 좌표가 없으면(딥링크로 일부 params 누락 등) 지도·길찾기를 그리지 않는다 — 크래시 방지.
+  if (!hasValidCoords) {
+    return (
+      <View style={[styles.root, styles.center]}>
+        <EmptyState
+          icon="⚠️"
+          title="병원 위치 정보를 찾을 수 없어요"
+          description="목록으로 돌아가 다시 선택해 주세요."
+          action={
+            <Button variant="secondary" onPress={() => router.back()}>
+              뒤로 가기
+            </Button>
+          }
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root}>
@@ -32,25 +85,34 @@ export default function HospitalDetailScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + space[8] }]}
         showsVerticalScrollIndicator={false}
       >
-        <HospitalList.Map height={170} />
+        <HospitalList.Map
+          center={{ lat: hospital.lat, lng: hospital.lng }}
+          hospitals={[hospital]}
+          selectedId={hospital.id}
+          height={170}
+          interactive={false}
+        />
 
         <View style={styles.head}>
           <Text style={styles.name}>{hospital.name}</Text>
-          <StatusBadge isOpen={hospital.open} is24h={hospital.is24h} />
         </View>
 
         <View style={styles.info}>
-          <InfoRow icon="📍" label="주소" value={hospital.addr} />
-          <InfoRow icon="🕘" label="진료 시간" value={hospital.hours} />
+          <InfoRow icon="📍" label="주소" value={hospital.address} />
           <InfoRow icon="📞" label="전화" value={hospital.phone} />
+          {distanceLabel !== '' && <InfoRow icon="📏" label="거리" value={distanceLabel} />}
         </View>
 
         <View style={styles.cta}>
           <View style={styles.ctaItem}>
-            <Button variant="secondary" block>📞 전화</Button>
+            <Button variant="secondary" block onPress={handleCall}>
+              📞 전화
+            </Button>
           </View>
           <View style={styles.ctaItem}>
-            <Button block>🧭 길찾기</Button>
+            <Button block onPress={handleDirections}>
+              🧭 길찾기
+            </Button>
           </View>
         </View>
       </ScrollView>
@@ -60,6 +122,7 @@ export default function HospitalDetailScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
+  center: { justifyContent: 'center' },
   content: { padding: space[5], gap: space[4] },
   head: { gap: space[2] },
   name: { fontFamily, fontSize: typography.h1.size, fontWeight: '800', color: colors.text },

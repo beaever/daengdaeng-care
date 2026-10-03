@@ -47,24 +47,22 @@ export const product: Product = {
 };
 
 // ── 근처 동물병원 (SCR-012·013) ──────────────────────────────────────
-export interface Hospital {
-  id: number;
+// 가상의 데모 데이터 — 실명·실번호·실주소가 아니다. T1.7에서 Kakao Local 검색 결과로 교체되며
+// 이 샘플은 삭제된다 (IOS_RELEASE_PLAN.md T1.7).
+// Kakao Local 응답 필드(id, place_name, road_address_name, phone, y, x)에 맞춘 형태.
+// distance 는 searchHospitals 가 현재 위치 기준으로 계산해 붙인다 (hospitals.ts 의 Hospital 참고).
+export interface SampleHospital {
+  id: string;
   name: string;
-  /** 현재 위치 기준 거리 */
-  dist: string;
-  /** 현재 진료 중 여부 */
-  open: boolean;
-  /** 24시간 운영 여부 */
-  is24h: boolean;
-  /** 진료 시간 표기 */
-  hours: string;
+  address: string;
   phone: string;
-  addr: string;
+  lat: number;
+  lng: number;
 }
 
-export const hospitals: Hospital[] = [
-  { id: 1, name: '행복동물병원', dist: '0.3km', open: true, is24h: false, hours: '09:00 – 21:00', phone: '02-123-4567', addr: '서울 강남구 역삼로 12' },
-  { id: 2, name: '강남응급동물의료센터', dist: '1.1km', open: true, is24h: true, hours: '24시간 연중무휴', phone: '02-999-0000', addr: '서울 강남구 역삼동 123-45' },
-  { id: 3, name: '미소동물병원', dist: '1.4km', open: false, is24h: false, hours: '09:00 – 19:00', phone: '02-456-7890', addr: '서울 강남구 테헤란로 88' },
-  { id: 4, name: '튼튼동물메디컬', dist: '2.0km', open: true, is24h: false, hours: '10:00 – 20:00', phone: '02-321-9876', addr: '서울 서초구 서초대로 30' },
+export const hospitals: SampleHospital[] = [
+  { id: '1', name: '샘플 동물병원 A', address: '서울 강남구 강남대로', phone: '02-0000-0001', lat: 37.4986, lng: 127.0281 },
+  { id: '2', name: '샘플 동물병원 B', address: '서울 강남구 테헤란로', phone: '02-0000-0002', lat: 37.5012, lng: 127.0396 },
+  { id: '3', name: '샘플 동물병원 C', address: '서울 강남구 역삼로', phone: '02-0000-0003', lat: 37.4953, lng: 127.0312 },
+  { id: '4', name: '샘플 동물병원 D', address: '서울 서초구 서초대로', phone: '02-0000-0004', lat: 37.4937, lng: 127.0147 },
 ];

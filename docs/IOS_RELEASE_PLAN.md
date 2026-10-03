@@ -58,7 +58,7 @@
   - `expo-sqlite` 로 `pets`, `records` 테이블 구성 (스키마는 BACKEND.md), `PRAGMA user_version` 으로 마이그레이션
   - 온보딩과 프로필 편집 저장, 반려견 사진은 `expo-image-picker`
   - 완료 조건: 앱을 재시작해도 프로필 유지, 첫 실행이면 온보딩으로 이동
-- [ ] **T1.2 건강 기록 CRUD (F005)** · `mobile-engineer` (T1.1 이후)
+- [x] **T1.2 건강 기록 CRUD (F005)** · `mobile-engineer` (T1.1 이후)
   - 기록 추가·목록·삭제를 DB와 연결, 빈 상태 표시
   - 완료 조건: 재시작 후 기록 유지, 날짜순 정렬
 - [ ] **T1.3 병원 찾기 UI (F004)** · `data-engineer` → `mobile-engineer`
