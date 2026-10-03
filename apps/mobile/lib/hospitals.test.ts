@@ -33,6 +33,15 @@ describe('formatDistance', () => {
   });
 });
 
+describe('formatDistance 잘못된 입력', () => {
+  it('거리 값이 NaN 이면 "NaN" 문자열을 그대로 보여주지 않아야 한다 (상세 화면 params 누락 시 재현됨)', () => {
+    // detail.tsx 가 useLocalSearchParams 의 distance 파라미터를 Number()로 변환하는데,
+    // 딥링크 등으로 해당 파라미터가 없으면 Number(undefined) === NaN 이 되어
+    // formatDistance(NaN) 결과가 "NaNkm" 으로 사용자에게 그대로 노출된다.
+    expect(formatDistance(NaN)).not.toMatch(/NaN/);
+  });
+});
+
 describe('searchHospitals', () => {
   it('거리순으로 정렬된 목록을 반환한다', async () => {
     const center = { lat: 37.4979, lng: 127.0276 }; // 강남역
