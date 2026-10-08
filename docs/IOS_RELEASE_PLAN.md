@@ -61,7 +61,7 @@
 - [x] **T1.2 건강 기록 CRUD (F005)** · `mobile-engineer` (T1.1 이후)
   - 기록 추가·목록·삭제를 DB와 연결, 빈 상태 표시
   - 완료 조건: 재시작 후 기록 유지, 날짜순 정렬
-- [ ] **T1.3 병원 찾기 UI (F004)** · `data-engineer` → `mobile-engineer`
+- [x] **T1.3 병원 찾기 UI (F004)** · `data-engineer` → `mobile-engineer`
   - `expo-location` (사용 중 권한) + 지도: `react-native-maps` (iOS 기본 Apple 지도, 키·비용 없음)에 현재 위치와 병원 마커 표시. 마커를 누르면 해당 병원 카드로 이동
   - 병원 데이터는 `lib/hospitals.ts` 의 `searchHospitals({ lat, lng })` 인터페이스 뒤에 둔다. Kakao 키 연동 전까지는 샘플 데이터를 현재 위치 기준 거리순으로 반환 (T1.7에서 교체)
   - 권한 거부 시: 지역명 입력으로 대체. 전화(`tel:`)와 길찾기(Apple 지도 링크)
@@ -70,8 +70,9 @@
   - `expo-camera` 바코드 스캔 + Open Pet Food Facts 조회, 조회 실패 시 "등록되지 않은 제품" 안내와 수동 검색
   - **결정 게이트:** 착수 전 국내 주요 사료 바코드 20개의 OPFF 등록률을 확인한다. 등록률이 낮으면 F002를 v1.1로 미루고 사료 탭을 숨긴다. 샘플 데이터 화면을 그대로 내보내면 심사 4.2(최소 기능) 거절 위험이 있다.
   - 완료 조건: 실기기 스캔 → 성분 표시, 미등록·권한 거부 처리
+  - **게이트 결과 (2026-10-08): v1.1로 연기.** OPFF 전체 15,485개 중 한국 판매 등록 5개(제품명·성분 모두 비어 있음), 국내 유통 브랜드(ANF·내추럴발란스·나우·지위픽) 0건. 사료 스캔·분석 화면과 홈 바로가기를 삭제했다. 코드는 git 이력(T1.4 PR 이전)에 남아 있다.
 - [ ] **T1.5 전역 에러·오프라인 처리** · `mobile-engineer`
-  - 네트워크가 필요한 화면(병원, 사료)의 로딩·에러·오프라인 상태
+  - 네트워크가 필요한 화면(병원)의 로딩·에러·오프라인 상태
   - 완료 조건: 비행기 모드에서 모든 탭이 멈추지 않고 안내 문구 표시
 - [ ] **T1.6 `sampleData.ts` 정리** · `mobile-engineer`
   - 병원 샘플(T1.7에서 제거)을 제외한 샘플 데이터 삭제
@@ -86,10 +87,10 @@
 
 - [ ] **T2.1 앱 설정 정리** · `release-engineer`
   - `app.json`: `icon` (1024px), 스플래시 이미지, `userInterfaceStyle: "light"`, `ios.config.usesNonExemptEncryption: false`
-  - `infoPlist` 권한 문구(한국어): 카메라, 위치(사용 중), 사진 보관함
+  - `infoPlist` 권한 문구(한국어): 위치(사용 중), 사진 보관함 (카메라는 F002 연기로 불필요)
   - 사용하는 SDK의 `privacyManifests` (Required Reason API) 확인
   - `_layout.tsx` 의 StatusBar를 라이트 고정 테마와 맞춤
-  - 완료 조건: `eas build` 결과물의 Info.plist에 권한 문구 3종 포함
+  - 완료 조건: `eas build` 결과물의 Info.plist에 권한 문구 2종 포함
 - [ ] **T2.2 접근성 기본** · `mobile-engineer`
   - 터치 타깃 44pt, 아이콘 버튼에 `accessibilityLabel`, 큰 글씨(Dynamic Type 최대)에서 레이아웃 확인
 - [ ] **T2.3 실기기 QA** · `qa-engineer`

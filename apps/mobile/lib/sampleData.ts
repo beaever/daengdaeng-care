@@ -1,50 +1,5 @@
 // 댕댕케어 — 데모 샘플 데이터 (Korean).
-// 실제 데이터 연동 전까지 화면 조립에 사용. 기능 PR이 진행되며 항목이 추가됨.
-
-import type { SafetyLevel, GradeLevel } from '@daengdaeng/tokens';
-
-// ── 사료 성분 분석 (SCR-007·008) ─────────────────────────────────────
-export interface Ingredient {
-  rank: number;
-  name: string;
-  status: SafetyLevel;
-}
-
-export interface ProductWarning {
-  name: string;
-  status: SafetyLevel;
-  note: string;
-}
-
-export interface Product {
-  name: string;
-  brand: string;
-  grade: GradeLevel;
-  gradeLabel: string;
-  ingredients: Ingredient[];
-  warnings: ProductWarning[];
-}
-
-export const product: Product = {
-  name: '로얄캐닌 미니 어덜트',
-  brand: 'Royal Canin',
-  grade: 'B',
-  gradeLabel: '괜찮은 사료예요',
-  ingredients: [
-    { rank: 1, name: '닭고기', status: 'safe' },
-    { rank: 2, name: '쌀', status: 'safe' },
-    { rank: 3, name: '옥수수 글루텐', status: 'caution' },
-    { rank: 4, name: '동물성 지방', status: 'safe' },
-    { rank: 5, name: '밀', status: 'caution' },
-  ],
-  warnings: [
-    {
-      name: '옥수수 글루텐',
-      status: 'caution',
-      note: '알레르기를 유발할 수 있어요. 피부 트러블이 잦다면 주의하세요.',
-    },
-  ],
-};
+// 병원 샘플만 남아 있다. T1.7(Kakao Local 연동)에서 이 파일째 삭제된다.
 
 // ── 근처 동물병원 (SCR-012·013) ──────────────────────────────────────
 // 가상의 데모 데이터 — 실명·실번호·실주소가 아니다. T1.7에서 Kakao Local 검색 결과로 교체되며

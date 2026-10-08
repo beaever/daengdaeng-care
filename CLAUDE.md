@@ -1,7 +1,7 @@
 # 댕댕케어 — Claude Code 가이드
 
 ## 프로젝트 개요
-반려견 건강 관리 앱 (iOS). 음식 판별·사료 분석·증상 체크·병원 찾기·건강 기록 5가지 기능.
+반려견 건강 관리 앱 (iOS). v1.0 기능: 음식 판별·증상 체크·병원 찾기·건강 기록 (사료 분석은 v1.1).
 **v1.0 = iOS 전용 · 광고 없음.** 진행 계획: `docs/IOS_RELEASE_PLAN.md`
 React Native + Expo + TypeScript + pnpm + Turborepo 모노레포.
 
