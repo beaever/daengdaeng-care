@@ -43,9 +43,9 @@ export default function HomeScreen() {
           <SectionHeading>바로가기</SectionHeading>
           <QuickMenu>
             <QuickMenu.Item icon="🦴" label="음식 판별" sub="먹어도 될까?" onPress={() => router.push('/food')} />
-            <QuickMenu.Item icon="📊" label="사료 분석" sub="성분 위험도" onPress={() => router.push('/food/scan')} />
             <QuickMenu.Item icon="🩺" label="증상 체크" sub="병원 가야 하나?" onPress={() => router.push('/symptom')} />
             <QuickMenu.Item icon="🏥" label="병원 찾기" sub="근처 동물병원" onPress={() => router.push('/hospital')} />
+            <QuickMenu.Item icon="📋" label="건강 기록" sub="체중·접종·병원" onPress={() => router.push('/record')} />
           </QuickMenu>
         </View>
 

@@ -9,7 +9,7 @@ v1.0은 **서버리스** 아키텍처다. Backend는 외부 API 연동, 로컬 D
 
 ```
 음식 판별    → packages/constants/foods.ts (번들 내 JSON, API 불필요)
-사료 분석    → Open Pet Food Facts API (클라이언트에서 직접 호출)
+사료 분석    → v1.1 (OPFF 국내 등록률 ≈0%, IOS_RELEASE_PLAN T1.4)
 병원 찾기    → Kakao Local API (클라이언트에서 직접 호출)
 건강 기록    → expo-sqlite (기기 로컬, ORM 없음 · PRAGMA user_version 마이그레이션)
 ```

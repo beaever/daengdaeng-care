@@ -7,8 +7,6 @@ export { HealthSummaryCard } from './HealthSummaryCard';
 export type { HealthSummaryCardProps } from './HealthSummaryCard';
 export { FoodResult } from './FoodResult';
 export type { FoodResultProps } from './FoodResult';
-export { FoodAnalysisResult } from './FoodAnalysisResult';
-export type { FoodAnalysisResultProps } from './FoodAnalysisResult';
 export { SymptomChecker } from './SymptomChecker';
 export type { SymptomCheckerProps } from './SymptomChecker';
 export { SymptomResult } from './SymptomResult';
