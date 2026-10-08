@@ -71,7 +71,7 @@
   - **결정 게이트:** 착수 전 국내 주요 사료 바코드 20개의 OPFF 등록률을 확인한다. 등록률이 낮으면 F002를 v1.1로 미루고 사료 탭을 숨긴다. 샘플 데이터 화면을 그대로 내보내면 심사 4.2(최소 기능) 거절 위험이 있다.
   - 완료 조건: 실기기 스캔 → 성분 표시, 미등록·권한 거부 처리
   - **게이트 결과 (2026-10-08): v1.1로 연기.** OPFF 전체 15,485개 중 한국 판매 등록 5개(제품명·성분 모두 비어 있음), 국내 유통 브랜드(ANF·내추럴발란스·나우·지위픽) 0건. 사료 스캔·분석 화면과 홈 바로가기를 삭제했다. 코드는 git 이력(T1.4 PR 이전)에 남아 있다.
-- [ ] **T1.5 전역 에러·오프라인 처리** · `mobile-engineer`
+- [x] **T1.5 전역 에러·오프라인 처리** · `mobile-engineer`
   - 네트워크가 필요한 화면(병원)의 로딩·에러·오프라인 상태
   - 완료 조건: 비행기 모드에서 모든 탭이 멈추지 않고 안내 문구 표시
 - [x] **T1.6 `sampleData.ts` 정리** · `mobile-engineer`
@@ -91,6 +91,7 @@
   - 사용하는 SDK의 `privacyManifests` (Required Reason API) 확인
   - `_layout.tsx` 의 StatusBar를 라이트 고정 테마와 맞춤
   - 완료 조건: `eas build` 결과물의 Info.plist에 권한 문구 2종 포함
+  - **결과 (2026-10-08):** 임시 아이콘(브랜드 그라데이션 + 흰 발바닥, 알파 없음)과 스플래시(브랜드 500 단색) 적용, version 1.0.0. expo-location 의 영어 기본 `NSMotionUsageDescription` 을 `motionUsagePermission: false` 로 제거했다. 앱 manifest(UserDefaults·FileTimestamp·SystemBootTime)는 prebuild 가 생성하고, expo-file-system·react-native-maps 는 자체 manifest 가 있다. 누락은 TestFlight 업로드 시 ITMS-91053 메일로 확인한다. 동작하지 않던 홈 알림 아이콘과 설정 "앱 설정"(알림·단위) 섹션을 삭제했다. 정식 아이콘이 생기면 `assets/icon.png` 만 교체하면 된다.
 - [ ] **T2.2 접근성 기본** · `mobile-engineer`
   - 터치 타깃 44pt, 아이콘 버튼에 `accessibilityLabel`, 큰 글씨(Dynamic Type 최대)에서 레이아웃 확인
 - [ ] **T2.3 실기기 QA** · `qa-engineer`

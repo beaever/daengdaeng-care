@@ -30,7 +30,6 @@ export default function HomeScreen() {
           <Text style={styles.hi}>{`${pet.name} 보호자님`}</Text>
         </View>
         <IconButton icon="⚙️" accessibilityLabel="설정" onPress={() => router.push('/settings')} />
-        <IconButton icon="🔔" accessibilityLabel="알림" onPress={() => {}} />
       </View>
 
       <ScrollView

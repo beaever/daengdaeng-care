@@ -3,15 +3,18 @@
     "name": "댕댕케어",
     "slug": "daengdaeng-care",
     "scheme": "daengdaeng",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "orientation": "portrait",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "care.daengdaeng.app"
+      "bundleIdentifier": "care.daengdaeng.app",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "care.daengdaeng.app"
@@ -22,7 +25,10 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#FFFDF9"
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#F59E0B"
         }
       ],
       "expo-sqlite",
@@ -40,7 +46,8 @@
         {
           "locationWhenInUsePermission": "근처 동물병원을 거리순으로 보여주기 위해 현재 위치를 사용해요.",
           "locationAlwaysAndWhenInUsePermission": false,
-          "locationAlwaysPermission": false
+          "locationAlwaysPermission": false,
+          "motionUsagePermission": false
         }
       ]
     ],
@@ -54,6 +61,7 @@
       "eas": {
         "projectId": "8147dac2-63d4-48ef-bea9-74e86ee679a1"
       }
-    }
+    },
+    "icon": "./assets/icon.png"
   }
 }

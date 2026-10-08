@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import Constants from 'expo-constants';
 import { colors, space, fontFamily, typography } from '../theme';
 import { Card, Row, Divider, SectionHeading } from '../components/ui';
 import { usePet, formatAge } from '../lib/pets';
 
-// SCR-016 · 설정 — 프로필 · 앱 설정 · 약관. (헤더/뒤로는 루트 Stack 제공)
+// SCR-016 · 설정 — 프로필 · 약관. (알림·단위 설정은 v1.0 미지원이라 뺐다) (헤더/뒤로는 루트 Stack 제공)
 export default function SettingsScreen() {
   const router = useRouter();
   const { pet } = usePet();
@@ -32,19 +33,6 @@ export default function SettingsScreen() {
       )}
 
       <View>
-        <SectionHeading>앱 설정</SectionHeading>
-        <Card style={styles.card}>
-          <Row icon="🔔" title="알림" />
-          <Divider inset />
-          <Row
-            icon="⚖️"
-            title="단위"
-            trailing={<Text style={styles.trailing}>kg ›</Text>}
-          />
-        </Card>
-      </View>
-
-      <View>
         <SectionHeading>약관</SectionHeading>
         <Card style={styles.card}>
           <Row icon="ℹ️" title="개인정보 처리방침" />
@@ -53,7 +41,7 @@ export default function SettingsScreen() {
         </Card>
       </View>
 
-      <Text style={styles.version}>댕댕케어 v1.0.0</Text>
+      <Text style={styles.version}>{`댕댕케어 v${Constants.expoConfig?.version ?? ''}`}</Text>
     </ScrollView>
   );
 }
@@ -62,6 +50,5 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   content: { paddingHorizontal: space[5], paddingVertical: space[6], gap: space[6] },
   card: { overflow: 'hidden' },
-  trailing: { fontFamily, fontSize: typography.sub.size, color: colors.text2 },
   version: { fontFamily, fontSize: typography.caption.size, color: colors.text3, textAlign: 'center' },
 });
