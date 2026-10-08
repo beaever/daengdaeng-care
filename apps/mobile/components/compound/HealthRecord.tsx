@@ -145,6 +145,7 @@ function Entry({
   return (
     <Pressable
       onLongPress={() => onDelete(rec.id)}
+      accessibilityRole="button"
       accessibilityLabel={`${m.label} 기록 ${title}`}
       accessibilityHint="길게 눌러 삭제"
     >

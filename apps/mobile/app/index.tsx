@@ -3,7 +3,7 @@ import { Animated, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { palette, fontFamily, typography } from '../theme';
+import { palette, fontFamily, typography, fontScale } from '../theme';
 import { getPet } from '../lib/pets';
 
 // SCR-001 · 스플래시 — 1.7초 후 가입 여부에 따라 홈/온보딩으로 자동 전환.
@@ -34,9 +34,16 @@ export default function SplashScreen() {
       style={styles.root}
     >
       <Animated.View style={[styles.mark, { opacity, transform: [{ scale }] }]}>
-        <Text style={styles.markEmoji}>🐶</Text>
+        <Text style={styles.markEmoji} maxFontSizeMultiplier={fontScale.icon}>
+          🐶
+        </Text>
       </Animated.View>
-      <Animated.Text style={[styles.word, { opacity }]}>댕댕케어</Animated.Text>
+      <Animated.Text
+        style={[styles.word, { opacity }]}
+        maxFontSizeMultiplier={fontScale.heading}
+      >
+        댕댕케어
+      </Animated.Text>
       <Animated.Text style={[styles.tag, { opacity }]}>
         강아지와 함께하는 매일, 더 안심하게
       </Animated.Text>

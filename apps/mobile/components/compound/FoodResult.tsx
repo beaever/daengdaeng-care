@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, space, fontFamily, typography } from '../../theme';
+import { colors, space, fontFamily, typography, fontScale } from '../../theme';
 import { Verdict, SectionHeading, Bullets, Chip } from '../ui';
 import type { FoodEntry } from '@daengdaeng/constants';
 
@@ -30,7 +30,11 @@ function FoodResultRoot({ food }: FoodResultProps) {
 }
 
 function FoodHeader({ name }: { name: string }) {
-  return <Text style={styles.name}>{name}</Text>;
+  return (
+    <Text style={styles.name} maxFontSizeMultiplier={fontScale.heading}>
+      {name}
+    </Text>
+  );
 }
 
 function FoodDescription({

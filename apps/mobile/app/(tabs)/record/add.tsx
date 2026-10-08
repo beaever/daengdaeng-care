@@ -222,6 +222,7 @@ function DateField({
       <Pressable
         style={styles.select}
         onPress={() => setShow((v) => !v)}
+        accessibilityRole="button"
         accessibilityLabel={`${label} 선택`}
       >
         <Text style={styles.selectValue}>{toLocalDateString(value).replace(/-/g, '.')}</Text>
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 52,
+    minHeight: 52, // Dynamic Type 확대 시 날짜 텍스트 잘림 방지 (고정 height 금지)
     paddingHorizontal: 16,
     backgroundColor: colors.surface2,
     borderRadius: radius.sm,

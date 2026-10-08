@@ -2,11 +2,13 @@ import React from 'react';
 import { Text, type ColorValue } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, fontFamily, layout } from '../../theme';
+import { colors, fontFamily, layout, fontScale } from '../../theme';
 
 function tabIcon(emoji: string) {
   const TabIcon = ({ color }: { color: ColorValue }) => (
-    <Text style={{ fontSize: 20, color }}>{emoji}</Text>
+    <Text style={{ fontSize: 20, color }} maxFontSizeMultiplier={fontScale.icon}>
+      {emoji}
+    </Text>
   );
   TabIcon.displayName = `TabIcon(${emoji})`;
   return TabIcon;

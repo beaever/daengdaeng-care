@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { SafetyLevel, SeverityLevel } from '@daengdaeng/tokens';
-import { radius, fontFamily, typography, verdictGradients, palette } from '../../theme';
+import { radius, fontFamily, typography, verdictGradients, palette, fontScale } from '../../theme';
 
 type VerdictLevel = SafetyLevel | SeverityLevel;
 
@@ -33,7 +33,9 @@ export function Verdict({ level, label, sub }: VerdictProps) {
       style={styles.card}
     >
       <Text style={styles.icon}>{m.icon}</Text>
-      <Text style={styles.label}>{label ?? m.label}</Text>
+      <Text style={styles.label} maxFontSizeMultiplier={fontScale.heading}>
+        {label ?? m.label}
+      </Text>
       {sub != null && <Text style={styles.sub}>{sub}</Text>}
     </LinearGradient>
   );

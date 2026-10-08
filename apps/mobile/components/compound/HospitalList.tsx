@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Linking, StyleSheet } from 'react-native';
 import MapView, { Marker, type Region } from 'react-native-maps';
-import { colors, radius, space, fontFamily, typography, palette } from '../../theme';
+import { colors, radius, space, fontFamily, typography, palette, fontScale } from '../../theme';
 import { Segment, Note, Button, Input } from '../ui';
 import type { Hospital, LatLng } from '../../lib/hospitals';
 
@@ -112,7 +112,9 @@ function LocationFallback({
   return (
     <View style={styles.fallback}>
       <Text style={styles.fallbackIcon}>📍</Text>
-      <Text style={styles.fallbackTitle}>위치 권한이 꺼져 있어요</Text>
+      <Text style={styles.fallbackTitle} maxFontSizeMultiplier={fontScale.heading}>
+        위치 권한이 꺼져 있어요
+      </Text>
       <Text style={styles.fallbackDesc}>
         설정에서 위치 권한을 허용하거나, 지역을 검색해서 주변 병원을 찾아보세요.
       </Text>

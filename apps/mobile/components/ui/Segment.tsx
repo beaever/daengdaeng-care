@@ -22,6 +22,9 @@ export function Segment({ options, value, onChange }: SegmentProps) {
           <Pressable
             key={o.value}
             onPress={() => onChange(o.value)}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: active }}
+            hitSlop={{ top: 4, bottom: 4 }} // 높이 36 + 4·4 = 44pt 터치 영역 (RULES 최소 터치 타깃, Chip.tsx 참고)
             style={[styles.seg, active && styles.segActive]}
           >
             <Text style={[styles.label, active ? styles.labelActive : styles.labelInactive]}>

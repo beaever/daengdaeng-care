@@ -26,7 +26,12 @@ export function Chip({ variant = 'default', onPress, onRemove, children }: ChipP
     >
       <Text style={[styles.label, labelVariant[variant]]}>{children}</Text>
       {onRemove && (
-        <Pressable accessibilityLabel="제거" onPress={onRemove} hitSlop={8}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="제거"
+          onPress={onRemove}
+          hitSlop={16} // 작은 아이콘(✕) 실효 터치 영역 44pt 확보 (RULES 최소 터치 타깃)
+        >
           <Text style={[styles.remove, labelVariant[variant]]}>✕</Text>
         </Pressable>
       )}

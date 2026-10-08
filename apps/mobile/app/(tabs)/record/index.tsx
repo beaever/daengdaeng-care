@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-nati
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { colors, space, radius, fontFamily } from '../../../theme';
+import { colors, space, radius, fontFamily, fontScale } from '../../../theme';
 import { HealthRecord } from '../../../components/compound';
 import type { RecordTab } from '../../../components/compound';
 import { usePet } from '../../../lib/pets';
@@ -41,8 +41,16 @@ export default function RecordScreen() {
       <Stack.Screen
         options={{
           headerRight: () => (
-            <Pressable onPress={goAdd} hitSlop={10} style={styles.headerAdd}>
-              <Text style={styles.headerAddIcon}>＋</Text>
+            <Pressable
+              onPress={goAdd}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel="기록 추가"
+              style={styles.headerAdd}
+            >
+              <Text style={styles.headerAddIcon} maxFontSizeMultiplier={fontScale.icon}>
+                ＋
+              </Text>
             </Pressable>
           ),
         }}
@@ -63,8 +71,15 @@ export default function RecordScreen() {
       </ScrollView>
 
       {/* 우하단 FAB */}
-      <Pressable onPress={goAdd} style={[styles.fab, { bottom: insets.bottom + space[4] }]}>
-        <Text style={styles.fabIcon}>＋</Text>
+      <Pressable
+        onPress={goAdd}
+        accessibilityRole="button"
+        accessibilityLabel="기록 추가"
+        style={[styles.fab, { bottom: insets.bottom + space[4] }]}
+      >
+        <Text style={styles.fabIcon} maxFontSizeMultiplier={fontScale.icon}>
+          ＋
+        </Text>
       </Pressable>
     </View>
   );

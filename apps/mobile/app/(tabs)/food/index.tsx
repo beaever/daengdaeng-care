@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { colors, space, fontFamily, typography } from '../../../theme';
+import { colors, space, fontFamily, typography, fontScale } from '../../../theme';
 import { Input, SectionHeading, Chip, EmptyState } from '../../../components/ui';
 import { POPULAR_FOODS, searchFoods } from '@daengdaeng/constants';
 
@@ -26,7 +26,9 @@ export default function FoodSearchScreen() {
   return (
     <View style={styles.root}>
       <View style={[styles.header, { paddingTop: insets.top + space[2] }]}>
-        <Text style={styles.title}>음식 판별</Text>
+        <Text style={styles.title} maxFontSizeMultiplier={fontScale.heading}>
+          음식 판별
+        </Text>
         <Text style={styles.sub}>먹어도 되는지 검색해보세요</Text>
       </View>
 
@@ -50,6 +52,7 @@ export default function FoodSearchScreen() {
                 <Pressable
                   key={f.name}
                   onPress={() => go(f.name)}
+                  accessibilityRole="button"
                   style={({ pressed }) => [styles.matchRow, pressed && styles.matchRowPressed]}
                 >
                   <Text style={styles.matchIcon}>🔍</Text>
@@ -79,13 +82,19 @@ export default function FoodSearchScreen() {
                 <View>
                   {recent.map((n) => (
                     <View key={n} style={styles.recentRow}>
-                      <Pressable onPress={() => go(n)} style={styles.recentName} hitSlop={8}>
+                      <Pressable
+                        onPress={() => go(n)}
+                        accessibilityRole="button"
+                        style={styles.recentName}
+                        hitSlop={10}
+                      >
                         <Text style={styles.recentNameText}>{n}</Text>
                       </Pressable>
                       <Pressable
+                        accessibilityRole="button"
                         accessibilityLabel={`${n} 검색 기록 삭제`}
                         onPress={() => setRecent((prev) => prev.filter((x) => x !== n))}
-                        hitSlop={8}
+                        hitSlop={14}
                       >
                         <Text style={styles.recentRemove}>✕</Text>
                       </Pressable>

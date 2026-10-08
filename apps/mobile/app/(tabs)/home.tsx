@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { colors, space, fontFamily, typography } from '../../theme';
+import { colors, space, fontFamily, typography, fontScale } from '../../theme';
 import { SectionHeading, IconButton } from '../../components/ui';
 import { PetProfileCard, QuickMenu, HealthSummaryCard } from '../../components/compound';
 import { usePet } from '../../lib/pets';
@@ -27,7 +27,7 @@ export default function HomeScreen() {
       <View style={[styles.header, { paddingTop: insets.top + space[2] }]}>
         <View style={styles.greetBox}>
           <Text style={styles.greet}>안녕하세요 👋</Text>
-          <Text style={styles.hi}>{`${pet.name} 보호자님`}</Text>
+          <Text style={styles.hi} maxFontSizeMultiplier={fontScale.heading}>{`${pet.name} 보호자님`}</Text>
         </View>
         <IconButton icon="⚙️" accessibilityLabel="설정" onPress={() => router.push('/settings')} />
       </View>
