@@ -5,9 +5,11 @@ import { useRouter } from 'expo-router';
 import * as Location from 'expo-location';
 import { colors, space, fontFamily, typography } from '../../../theme';
 import { HospitalCard, HospitalList } from '../../../components/compound';
+import { Button, EmptyState } from '../../../components/ui';
 import { searchHospitals, geocodeRegion, type Hospital, type LatLng } from '../../../lib/hospitals';
 
-type Status = 'loading' | 'ready' | 'fallback';
+// fallback: 위치를 못 받음 → 지역 검색 / error: 병원 검색 실패(오프라인·API 오류) → 다시 시도
+type Status = 'loading' | 'ready' | 'fallback' | 'error';
 
 // SCR-012 · 병원 목록 (병원 탭) — 토글(목록/지도) + 거리순 카드 또는 지도+선택 카드.
 export default function HospitalListScreen() {
@@ -21,6 +23,20 @@ export default function HospitalListScreen() {
   const [regionText, setRegionText] = useState('');
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+
+  // 병원 검색 실패를 위치 실패(fallback)와 구분해 'error' 로 보낸다. center 는 다시 시도용으로 먼저 저장한다.
+  async function loadHospitals(c: LatLng) {
+    setCenter(c);
+    setStatus('loading');
+    try {
+      const list = await searchHospitals(c);
+      setHospitals(list);
+      setSelectedId(list[0]?.id);
+      setStatus('ready');
+    } catch {
+      setStatus('error');
+    }
+  }
 
   // 병원 탭에 들어올 때만 위치 권한을 요청한다. 거부/실패하면 지역 검색 안내로 대체한다.
   useEffect(() => {
@@ -53,13 +69,7 @@ export default function HospitalListScreen() {
           return;
         }
 
-        const here: LatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        const list = await searchHospitals(here);
-        if (!mounted) return;
-        setCenter(here);
-        setHospitals(list);
-        setSelectedId(list[0]?.id);
-        setStatus('ready');
+        if (mounted) await loadHospitals({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       } catch {
         if (mounted) setStatus('fallback');
       }
@@ -76,18 +86,14 @@ export default function HospitalListScreen() {
     if (query.length === 0) return;
     setSearching(true);
     setSearchError(null);
+    // geocodeAsync 는 오프라인이면 실패해 null 이 된다 — 연결 확인도 함께 안내한다.
     const found = await geocodeRegion(query);
+    setSearching(false);
     if (!found) {
-      setSearching(false);
-      setSearchError('지역을 찾지 못했어요.');
+      setSearchError('지역을 찾지 못했어요. 인터넷 연결도 확인해 주세요.');
       return;
     }
-    const list = await searchHospitals(found);
-    setSearching(false);
-    setCenter(found);
-    setHospitals(list);
-    setSelectedId(list[0]?.id);
-    setStatus('ready');
+    await loadHospitals(found);
   }
 
   function goToDetail(h: Hospital) {
@@ -131,6 +137,19 @@ export default function HospitalListScreen() {
         </ScrollView>
       )}
 
+      {status === 'error' && (
+        <EmptyState
+          icon="📡"
+          title="병원 정보를 불러오지 못했어요"
+          description="인터넷 연결을 확인한 뒤 다시 시도해 주세요."
+          action={
+            <Button size="sm" onPress={() => center != null && loadHospitals(center)}>
+              다시 시도
+            </Button>
+          }
+        />
+      )}
+
       {status === 'ready' && center != null && (
         <View style={styles.flexFull}>
           <View style={styles.toolbar}>
@@ -151,6 +170,9 @@ export default function HospitalListScreen() {
             >
               <HospitalList>
                 <HospitalList.ResultCount count={hospitals.length} />
+                {hospitals.length === 0 && (
+                  <EmptyState icon="🏥" title="근처에 동물병원이 없어요" description="이 주변에서는 동물병원을 찾지 못했어요." />
+                )}
                 {hospitals.map((h) => (
                   <HospitalCard key={h.id} hospital={h} onPress={() => goToDetail(h)} />
                 ))}
