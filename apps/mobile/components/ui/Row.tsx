@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, radius, fontFamily, typography } from '../../theme';
+import { colors, radius, fontFamily, typography, fontScale } from '../../theme';
 
 export interface RowProps {
   icon?: React.ReactNode;
@@ -16,11 +16,14 @@ export function Row({ icon, title, sub, chevron = true, trailing, onPress }: Row
     <Pressable
       onPress={onPress}
       disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
       style={({ pressed }) => [styles.row, pressed && onPress && styles.pressed]}
     >
       {icon != null && (
         <View style={styles.iconBox}>
-          <Text style={styles.iconText}>{icon}</Text>
+          <Text style={styles.iconText} maxFontSizeMultiplier={fontScale.icon}>
+            {icon}
+          </Text>
         </View>
       )}
       <View style={styles.body}>

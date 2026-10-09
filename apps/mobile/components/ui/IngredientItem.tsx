@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import type { SafetyLevel } from '@daengdaeng/tokens';
-import { colors, radius, fontFamily, typography, safetyColors } from '../../theme';
+import { colors, radius, fontFamily, typography, safetyColors, fontScale } from '../../theme';
 
 const STATUS_LABEL: Record<SafetyLevel, string> = {
   safe: '좋아요',
@@ -19,7 +19,9 @@ export function IngredientItem({ rank, name, status }: IngredientItemProps) {
   return (
     <View style={styles.item}>
       <View style={styles.rank}>
-        <Text style={styles.rankText}>{rank}</Text>
+        <Text style={styles.rankText} maxFontSizeMultiplier={fontScale.icon}>
+          {rank}
+        </Text>
       </View>
       <Text style={styles.name}>{name}</Text>
       <View style={[styles.tag, { backgroundColor: safetyColors[status].soft }]}>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { colors, palette, safetyColors, radius, space, fontFamily, typography } from '../theme';
+import { colors, palette, safetyColors, radius, space, fontFamily, typography, fontScale } from '../theme';
 import { Button } from '../components/ui';
 
 // SCR-002 · 온보딩 (3슬라이드, 최초 1회).
@@ -48,6 +48,8 @@ export default function OnboardingScreen() {
     <View style={[styles.root, { paddingTop: insets.top + space[2], paddingBottom: insets.bottom + space[6] }]}>
       <Pressable
         onPress={goProfile}
+        accessibilityRole="button"
+        hitSlop={{ top: 6, bottom: 6 }} // paddingVertical 8×2 + 텍스트 높이 ≈ 33pt + 6·6 = 44pt (RULES 최소 터치 타깃)
         style={[styles.skip, { opacity: last ? 0 : 1 }]}
         disabled={last}
       >
@@ -56,12 +58,16 @@ export default function OnboardingScreen() {
 
       <View style={styles.art}>
         <View style={[styles.illu, { backgroundColor: slide.bg }]}>
-          <Text style={styles.illuEmoji}>{slide.emoji}</Text>
+          <Text style={styles.illuEmoji} maxFontSizeMultiplier={fontScale.icon}>
+            {slide.emoji}
+          </Text>
         </View>
       </View>
 
       <View style={styles.body}>
-        <Text style={styles.title}>{slide.title}</Text>
+        <Text style={styles.title} maxFontSizeMultiplier={fontScale.heading}>
+          {slide.title}
+        </Text>
         <Text style={styles.sub}>{slide.sub}</Text>
       </View>
 

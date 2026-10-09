@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, fontFamily, typography, space } from '../../theme';
+import { colors, fontFamily, typography, space, fontScale } from '../../theme';
 import { ProgressBar, Option } from '../ui';
 import type { SymptomOption } from '@daengdaeng/constants';
 
@@ -42,7 +42,11 @@ function Progress({ current, total }: { current: number; total: number }) {
 }
 
 function Question({ text }: { text: string }) {
-  return <Text style={styles.question}>{text}</Text>;
+  return (
+    <Text style={styles.question} maxFontSizeMultiplier={fontScale.heading}>
+      {text}
+    </Text>
+  );
 }
 
 function Options({ children }: { children: React.ReactNode }) {

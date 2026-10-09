@@ -6,7 +6,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { BREEDS, POPULAR_BREEDS, searchBreeds } from '@daengdaeng/constants';
-import { colors, radius, space, fontFamily, typography } from '../theme';
+import { colors, radius, space, fontFamily, typography, fontScale } from '../theme';
 import { Field, Input, PillGroup, Button, Chip } from '../components/ui';
 import { usePet, savePet, savePetPhoto, photoUri } from '../lib/pets';
 import { toLocalDateString, parseLocalDate } from '../lib/recordSummary';
@@ -124,15 +124,28 @@ export default function ProfileScreen() {
         ]}
         keyboardShouldPersistTaps="handled"
       >
-        {!editing && <Text style={styles.heading}>우리 아이를{'\n'}알려주세요</Text>}
+        {!editing && (
+          <Text style={styles.heading} maxFontSizeMultiplier={fontScale.heading}>
+            우리 아이를{'\n'}알려주세요
+          </Text>
+        )}
 
-        <Pressable style={styles.avatar} onPress={pickPhoto}>
+        <Pressable
+          style={styles.avatar}
+          onPress={pickPhoto}
+          accessibilityRole="button"
+          accessibilityLabel="반려동물 사진 변경"
+        >
           {avatarUri ? (
             <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
           ) : (
             <>
-              <Text style={styles.avatarIcon}>📷</Text>
-              <Text style={styles.avatarText}>사진 추가</Text>
+              <Text style={styles.avatarIcon} maxFontSizeMultiplier={fontScale.icon}>
+                📷
+              </Text>
+              <Text style={styles.avatarText} maxFontSizeMultiplier={fontScale.icon}>
+                사진 추가
+              </Text>
             </>
           )}
         </Pressable>
@@ -156,6 +169,7 @@ export default function ProfileScreen() {
                 {breedMatches.map((b) => (
                   <Pressable
                     key={b.name}
+                    accessibilityRole="button"
                     accessibilityLabel={`${b.name} 선택`}
                     onPress={() => {
                       setBreed(b.name);
@@ -173,7 +187,12 @@ export default function ProfileScreen() {
             )}
           </Field>
           <Field label="생년월일">
-            <Pressable style={styles.select} onPress={() => setShowDatePicker((v) => !v)}>
+            <Pressable
+              style={styles.select}
+              onPress={() => setShowDatePicker((v) => !v)}
+              accessibilityRole="button"
+              accessibilityLabel="생년월일 선택"
+            >
               <Text style={dob ? styles.selectValue : styles.selectPlaceholder}>{dob ?? '날짜 선택'}</Text>
               <Text style={styles.selectChevron}>⌄</Text>
             </Pressable>
@@ -237,7 +256,7 @@ const styles = StyleSheet.create({
   select: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 52,
+    minHeight: 52, // Dynamic Type 확대 시 날짜 텍스트 잘림 방지 (고정 height 금지)
     paddingHorizontal: 16,
     backgroundColor: colors.surface2,
     borderRadius: radius.sm,

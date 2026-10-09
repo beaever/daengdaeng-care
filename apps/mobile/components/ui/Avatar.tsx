@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
-import { colors, radius } from '../../theme';
+import { colors, radius, fontScale } from '../../theme';
 
 export type AvatarSize = 'sm' | 'md' | 'lg';
 
@@ -24,7 +24,9 @@ export function Avatar({ src, emoji = '🐶', size = 'md' }: AvatarProps) {
   }
   return (
     <View style={[styles.base, box]}>
-      <Text style={{ fontSize: s.emoji }}>{emoji}</Text>
+      <Text style={{ fontSize: s.emoji }} maxFontSizeMultiplier={fontScale.icon}>
+        {emoji}
+      </Text>
     </View>
   );
 }

@@ -85,7 +85,7 @@
 
 ## Phase 2 — iOS 품질
 
-- [ ] **T2.1 앱 설정 정리** · `release-engineer`
+- [x] **T2.1 앱 설정 정리** · `release-engineer`
   - `app.json`: `icon` (1024px), 스플래시 이미지, `userInterfaceStyle: "light"`, `ios.config.usesNonExemptEncryption: false`
   - `infoPlist` 권한 문구(한국어): 위치(사용 중), 사진 보관함 (카메라는 F002 연기로 불필요)
   - 사용하는 SDK의 `privacyManifests` (Required Reason API) 확인

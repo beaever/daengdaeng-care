@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { SafetyLevel, GradeLevel } from '@daengdaeng/tokens';
-import { colors, radius, fontFamily, typography, safetyColors, palette } from '../../theme';
+import { colors, radius, fontFamily, typography, safetyColors, palette, fontScale } from '../../theme';
 
 // ── SafetyBadge ────────────────────────────────────────────────────
 const SAFETY: Record<SafetyLevel, { icon: string; label: string }> = {
@@ -74,7 +74,9 @@ export function GradeBadge({ grade, label }: GradeBadgeProps) {
         end={{ x: 1, y: 1 }}
         style={styles.gradeBox}
       >
-        <Text style={styles.gradeLetter}>{grade}</Text>
+        <Text style={styles.gradeLetter} maxFontSizeMultiplier={fontScale.heading}>
+          {grade}
+        </Text>
       </LinearGradient>
       {label != null && <Text style={styles.gradeLabel}>{label}</Text>}
     </View>

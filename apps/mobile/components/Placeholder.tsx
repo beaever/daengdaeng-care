@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, space, radius, fontFamily, typography } from '../theme';
+import { colors, space, radius, fontFamily, typography, fontScale } from '../theme';
 
 export interface PlaceholderProps {
   emoji: string;
@@ -20,7 +20,9 @@ export function Placeholder({ emoji, title, description, screens }: PlaceholderP
       contentContainerStyle={[styles.content, { paddingTop: insets.top + space[6] }]}
     >
       <Text style={styles.emoji}>{emoji}</Text>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title} maxFontSizeMultiplier={fontScale.heading}>
+        {title}
+      </Text>
       <Text style={styles.description}>{description}</Text>
 
       {screens && screens.length > 0 && (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, radius, fontFamily, typography, rnShadow } from '../../theme';
+import { colors, radius, fontFamily, typography, rnShadow, fontScale } from '../../theme';
 
 // 홈 "바로가기" 2×2 그리드 — 컴파운드(QuickMenu + QuickMenu.Item).
 export interface QuickMenuProps {
@@ -23,10 +23,13 @@ function QuickMenuItem({ icon, label, sub, onPress }: QuickMenuItemProps) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
       style={({ pressed }) => [styles.item, pressed && styles.pressed]}
     >
       <View style={styles.iconBox}>
-        <Text style={styles.icon}>{icon}</Text>
+        <Text style={styles.icon} maxFontSizeMultiplier={fontScale.icon}>
+          {icon}
+        </Text>
       </View>
       <View style={styles.textBox}>
         <Text style={styles.label}>{label}</Text>

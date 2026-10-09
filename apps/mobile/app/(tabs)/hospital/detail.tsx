@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, Linking, Alert, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { colors, space, fontFamily, typography } from '../../../theme';
+import { colors, space, fontFamily, typography, fontScale } from '../../../theme';
 import { Button, EmptyState } from '../../../components/ui';
 import { HospitalList } from '../../../components/compound';
 import { formatDistance } from '../../../lib/hospitals';
@@ -11,7 +11,9 @@ import { formatDistance } from '../../../lib/hospitals';
 function InfoRow({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <View style={styles.row}>
-      <Text style={styles.rowIcon}>{icon}</Text>
+      <Text style={styles.rowIcon} maxFontSizeMultiplier={fontScale.icon}>
+        {icon}
+      </Text>
       <View style={styles.rowBody}>
         <Text style={styles.rowLabel}>{label}</Text>
         <Text style={styles.rowValue}>{value}</Text>
@@ -94,7 +96,9 @@ export default function HospitalDetailScreen() {
         />
 
         <View style={styles.head}>
-          <Text style={styles.name}>{hospital.name}</Text>
+          <Text style={styles.name} maxFontSizeMultiplier={fontScale.heading}>
+            {hospital.name}
+          </Text>
         </View>
 
         <View style={styles.info}>

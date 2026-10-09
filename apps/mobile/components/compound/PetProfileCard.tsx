@@ -18,6 +18,7 @@ function PetProfileCardRoot({ pet, nextVaccineDays, onPress }: PetProfileCardPro
     <Pressable
       onPress={onPress}
       disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
       style={({ pressed }) => [styles.card, pressed && onPress && styles.pressed]}
     >
       <PetProfileCard.Avatar pet={pet} />
