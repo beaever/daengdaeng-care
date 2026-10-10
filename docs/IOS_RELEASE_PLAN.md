@@ -92,7 +92,7 @@
   - `_layout.tsx` 의 StatusBar를 라이트 고정 테마와 맞춤
   - 완료 조건: `eas build` 결과물의 Info.plist에 권한 문구 2종 포함
   - **결과 (2026-10-08):** 임시 아이콘(브랜드 그라데이션 + 흰 발바닥, 알파 없음)과 스플래시(브랜드 500 단색) 적용, version 1.0.0. expo-location 의 영어 기본 `NSMotionUsageDescription` 을 `motionUsagePermission: false` 로 제거했다. 앱 manifest(UserDefaults·FileTimestamp·SystemBootTime)는 prebuild 가 생성하고, expo-file-system·react-native-maps 는 자체 manifest 가 있다. 누락은 TestFlight 업로드 시 ITMS-91053 메일로 확인한다. 동작하지 않던 홈 알림 아이콘과 설정 "앱 설정"(알림·단위) 섹션을 삭제했다. 정식 아이콘이 생기면 `assets/icon.png` 만 교체하면 된다.
-- [ ] **T2.2 접근성 기본** · `mobile-engineer`
+- [x] **T2.2 접근성 기본** · `mobile-engineer`
   - 터치 타깃 44pt, 아이콘 버튼에 `accessibilityLabel`, 큰 글씨(Dynamic Type 최대)에서 레이아웃 확인
 - [ ] **T2.3 실기기 QA** · `qa-engineer`
   - QA.md 체크리스트를 iPhone SE(375pt)와 Pro Max에서 수행
