@@ -16,7 +16,8 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
     "test": "jest",
-    "clean": "rm -rf .expo node_modules"
+    "clean": "rm -rf .expo node_modules",
+    "eas-build-post-install": "pnpm --filter @daengdaeng/tokens --filter @daengdaeng/constants build"
   },
   "dependencies": {
     "@daengdaeng/constants": "workspace:*",
