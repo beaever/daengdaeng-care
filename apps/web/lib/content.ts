@@ -9,7 +9,7 @@ export const site = {
   name: '댕댕케어',
   title: '댕댕케어 — 우리 아이 건강, 이 앱 하나로 안심',
   description:
-    '음식 판별·사료 분석·증상 체크·병원 찾기·건강 기록. 반려견의 매일 궁금증을 3초 만에 해결하는 건강 관리 앱.',
+    '음식 판별·증상 체크·병원 찾기·건강 기록. 반려견의 매일 궁금증을 3초 만에 해결하는 건강 관리 앱.',
   ogDescription: '반려견의 매일 궁금증을 3초 만에. 음식·증상·병원·기록을 한 앱에서.',
 } as const;
 
@@ -29,12 +29,6 @@ export const features: Feature[] = [
     tint: 'var(--brand-soft)',
   },
   {
-    emoji: '📋',
-    title: '사료 성분, 믿고 골라요',
-    desc: '성분표를 분석해 등급으로 보여드려요. 알레르기 유발 성분도 미리 짚어드립니다.',
-    tint: 'var(--surface-2)',
-  },
-  {
     emoji: '🩺',
     title: '병원 가야 할까? 증상 넣으면 알려줘요',
     desc: '몇 가지 질문에 답하면 지금 필요한 행동까지 안내해요. 응급 상황은 바로 병원으로.',
@@ -42,8 +36,8 @@ export const features: Feature[] = [
   },
   {
     emoji: '🏥',
-    title: '급할 때, 가까운 24시 병원을 한눈에',
-    desc: '진료중 여부·거리·전화까지. 가장 가까운 동물병원을 빠르게 찾아드려요.',
+    title: '급할 때, 가까운 동물병원을 한눈에',
+    desc: '거리·주소·전화·길찾기까지. 가장 가까운 동물병원을 빠르게 찾아드려요.',
     tint: 'var(--safe-soft)',
   },
   {
@@ -54,9 +48,9 @@ export const features: Feature[] = [
   },
 ];
 
-/** 신뢰 지표 (데모 수치) */
+/** 핵심 지표 */
 export const stats: { value: string; label: string }[] = [
   { value: '3초', label: '음식 안전도 확인' },
-  { value: '5가지', label: '핵심 건강 기능' },
-  { value: '24시', label: '응급 병원 탐색' },
+  { value: '4가지', label: '핵심 건강 기능' },
+  { value: '광고 0', label: '응급 상황도 방해 없이' },
 ];

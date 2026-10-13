@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: site.title,
   description: site.description,
   applicationName: site.name,
-  keywords: ['반려견', '강아지 건강', '음식 판별', '사료 분석', '증상 체크', '동물병원', '건강 기록'],
+  keywords: ['반려견', '강아지 건강', '음식 판별', '증상 체크', '동물병원', '건강 기록'],
   alternates: { canonical: '/' },
   openGraph: {
     title: site.title,
