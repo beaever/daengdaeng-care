@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Linking, StyleSheet } from 'react-native';
 import MapView, { Marker, type Region } from 'react-native-maps';
 import { colors, radius, space, fontFamily, typography, palette, fontScale } from '../../theme';
-import { Segment, Note, Button, Input } from '../ui';
+import { Segment, Button, Input } from '../ui';
 import type { Hospital, LatLng } from '../../lib/hospitals';
 
 // SCR-012 · 병원 목록 보조 컴포넌트 모음.
@@ -82,13 +82,6 @@ function Map({
   );
 }
 
-// 샘플 데이터 고지 — 실제 병원 데이터(T1.7, Kakao Local)로 교체되기 전까지 항상 표시한다.
-// TestFlight 테스터가 샘플 병원을 실제 병원으로 오해하지 않도록 __DEV__ 로 숨기지 않는다.
-// T1.7: Kakao 연동 후 삭제
-function SampleNotice() {
-  return <Note icon="ℹ️">샘플 데이터예요. 실제 병원이 아니에요.</Note>;
-}
-
 function ResultCount({ count }: { count: number }) {
   return <Text style={styles.count}>주변 동물병원 {count}곳</Text>;
 }
@@ -144,7 +137,6 @@ function LocationFallback({
 export const HospitalList = Object.assign(HospitalListRoot, {
   ViewToggle,
   Map,
-  SampleNotice,
   ResultCount,
   LocationFallback,
 });

@@ -43,13 +43,52 @@ describe('formatDistance 잘못된 입력', () => {
 });
 
 describe('searchHospitals', () => {
-  it('거리순으로 정렬된 목록을 반환한다', async () => {
-    const center = { lat: 37.4979, lng: 127.0276 }; // 강남역
+  const center = { lat: 37.4979, lng: 127.0276 }; // 강남역
+  const place = (id: string, y: number, x: number, extra: object = {}) => ({
+    id,
+    place_name: `병원 ${id}`,
+    road_address_name: `도로명 ${id}`,
+    address_name: `지번 ${id}`,
+    phone: '02-123-4567',
+    x: String(x),
+    y: String(y),
+    ...extra,
+  });
+  const mockFetch = (body: unknown, ok = true, status = 200) =>
+    (globalThis.fetch = jest.fn().mockResolvedValue({ ok, status, json: async () => body }) as jest.Mock);
+
+  beforeEach(() => {
+    process.env.EXPO_PUBLIC_KAKAO_KEY = 'test-key';
+  });
+  afterEach(() => {
+    delete process.env.EXPO_PUBLIC_KAKAO_KEY;
+  });
+
+  it('Kakao 응답을 Hospital 로 바꿔 거리순으로 반환한다', async () => {
+    const fetchMock = mockFetch({
+      documents: [place('far', 37.51, 127.04), place('near', 37.498, 127.028, { road_address_name: '' })],
+    });
+
     const result = await searchHospitals(center);
 
-    expect(result.length).toBeGreaterThan(0);
-    for (let i = 1; i < result.length; i++) {
-      expect(result[i].distance).toBeGreaterThanOrEqual(result[i - 1].distance);
-    }
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toContain('x=127.0276');
+    expect(url).toContain('y=37.4979');
+    expect(init.headers.Authorization).toBe('KakaoAK test-key');
+    expect(result.map((h) => h.id)).toEqual(['near', 'far']);
+    expect(result[0].address).toBe('지번 near'); // 도로명 없으면 지번
+    expect(result[0].lat).toBe(37.498);
+  });
+
+  it('HTTP 오류면 throw 한다 (화면이 에러 상태로 전환)', async () => {
+    mockFetch({}, false, 401);
+    await expect(searchHospitals(center)).rejects.toThrow('401');
+  });
+
+  it('키가 없으면 요청하지 않고 throw 한다', async () => {
+    delete process.env.EXPO_PUBLIC_KAKAO_KEY;
+    const fetchMock = mockFetch({ documents: [] });
+    await expect(searchHospitals(center)).rejects.toThrow();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
