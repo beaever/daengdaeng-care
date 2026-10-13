@@ -40,7 +40,7 @@ export default function OgImage() {
           <span>이 앱 하나로 안심</span>
         </div>
         <div style={{ marginTop: 28, fontSize: 34, color: light.text2 }}>
-          음식 판별 · 사료 분석 · 증상 체크 · 병원 찾기 · 건강 기록
+          음식 판별 · 증상 체크 · 병원 찾기 · 건강 기록
         </div>
       </div>
     ),
