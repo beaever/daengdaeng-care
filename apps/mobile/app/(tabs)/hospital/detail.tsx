@@ -39,7 +39,7 @@ export default function HospitalDetailScreen() {
     id: params.id,
     name: params.name,
     address: params.address,
-    phone: params.phone,
+    phone: params.phone ?? '', // 빈 문자열 params 는 누락될 수 있다
     lat: Number(params.lat),
     lng: Number(params.lng),
     distance: Number(params.distance),
@@ -103,16 +103,18 @@ export default function HospitalDetailScreen() {
 
         <View style={styles.info}>
           <InfoRow icon="📍" label="주소" value={hospital.address} />
-          <InfoRow icon="📞" label="전화" value={hospital.phone} />
+          {hospital.phone !== '' && <InfoRow icon="📞" label="전화" value={hospital.phone} />}
           {distanceLabel !== '' && <InfoRow icon="📏" label="거리" value={distanceLabel} />}
         </View>
 
         <View style={styles.cta}>
-          <View style={styles.ctaItem}>
-            <Button variant="secondary" block onPress={handleCall}>
-              📞 전화
-            </Button>
-          </View>
+          {hospital.phone !== '' && (
+            <View style={styles.ctaItem}>
+              <Button variant="secondary" block onPress={handleCall}>
+                📞 전화
+              </Button>
+            </View>
+          )}
           <View style={styles.ctaItem}>
             <Button block onPress={handleDirections}>
               🧭 길찾기

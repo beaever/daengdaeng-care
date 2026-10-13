@@ -158,11 +158,6 @@ export default function HospitalListScreen() {
             </View>
           </View>
 
-          {/* 목록/지도 공통 영역 — 샘플 데이터 고지는 뷰 전환과 무관하게 항상 보여야 한다. */}
-          <View style={styles.noticeWrap}>
-            <HospitalList.SampleNotice />
-          </View>
-
           {view === 'list' ? (
             <ScrollView
               contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + space[8] }]}
@@ -212,7 +207,6 @@ const styles = StyleSheet.create({
     gap: space[3],
   },
   toggle: { width: 150 },
-  noticeWrap: { paddingHorizontal: space[5], paddingBottom: space[3] },
   content: { paddingHorizontal: space[5], paddingTop: space[1] },
   mapArea: { flex: 1 },
   selectedCardWrap: {

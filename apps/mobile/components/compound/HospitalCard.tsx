@@ -40,6 +40,7 @@ function Address({ value }: { value: string }) {
 }
 
 function Phone({ value }: { value: string }) {
+  if (!value) return null; // 카카오에 전화번호가 없는 병원도 있다
   return <Text style={styles.phone}>📞 {value}</Text>;
 }
 
