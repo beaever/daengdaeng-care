@@ -1,11 +1,37 @@
 import { Logo, PawMark } from '../components/Logo';
-import { features, stats } from '../lib/content';
+import { JsonLd } from '../components/JsonLd';
+import { contactEmail, features, site, siteUrl, stats } from '../lib/content';
 
 // 댕댕케어 랜딩 페이지 — 헤더 · 히어로 · 통계 · 기능 · CTA · 푸터.
 // 마케팅 페이지라 응급 화면 광고 규칙(RULES 1)은 해당 없음. 토큰 변수만 사용(RULES 2).
 export default function Home() {
   return (
     <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'MobileApplication',
+              name: site.name,
+              url: siteUrl,
+              description: site.description,
+              operatingSystem: 'iOS',
+              applicationCategory: 'LifestyleApplication',
+              inLanguage: 'ko',
+              offers: { '@type': 'Offer', price: 0, priceCurrency: 'KRW' },
+              featureList: features.map((f) => f.title),
+            },
+            {
+              '@type': 'Organization',
+              name: site.name,
+              url: siteUrl,
+              logo: `${siteUrl}/icon`,
+              email: contactEmail,
+            },
+          ],
+        }}
+      />
       <header className="header">
         <div className="wrap header__inner">
           <Logo />

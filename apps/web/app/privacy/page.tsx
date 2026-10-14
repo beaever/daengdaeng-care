@@ -2,9 +2,16 @@ import type { Metadata } from 'next';
 import { DocPage } from '../../components/DocPage';
 import { contactEmail } from '../../lib/content';
 
+const title = '개인정보처리방침 — 댕댕케어';
+const description =
+  '댕댕케어는 회원가입 없이 기기에만 데이터를 저장하며, 병원 찾기 때만 위치를 카카오에 전송합니다. 광고·추적 없음.';
+
+// openGraph 는 레이아웃 값을 통째로 덮어쓰므로 제목·설명도 함께 지정한다.
 export const metadata: Metadata = {
-  title: '개인정보처리방침 — 댕댕케어',
+  title,
+  description,
   alternates: { canonical: '/privacy' },
+  openGraph: { title, description, url: '/privacy', siteName: '댕댕케어', locale: 'ko_KR', type: 'website', images: '/opengraph-image' },
 };
 
 // App Store 5.1.1 필수 URL. 앱 동작(apps/mobile)이 바뀌면 이 문서도 함께 고친다:
