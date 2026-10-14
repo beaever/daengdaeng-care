@@ -113,8 +113,8 @@ export default function Home() {
             <nav className="footer__links">
               <a href="#features">기능</a>
               <a href="#download">다운로드</a>
-              <a href="#">개인정보처리방침</a>
-              <a href="#">이용약관</a>
+              <a href="/support">고객 지원</a>
+              <a href="/privacy">개인정보처리방침</a>
             </nav>
             <span className="footer__copy">© 2026 댕댕케어</span>
           </div>

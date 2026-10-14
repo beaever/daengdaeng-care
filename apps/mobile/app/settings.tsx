@@ -1,12 +1,15 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 import { colors, space, fontFamily, typography } from '../theme';
 import { Card, Row, Divider, SectionHeading } from '../components/ui';
 import { usePet, formatAge } from '../lib/pets';
 
-// SCR-016 · 설정 — 프로필 · 약관. (알림·단위 설정은 v1.0 미지원이라 뺐다) (헤더/뒤로는 루트 Stack 제공)
+// SCR-016 · 설정 — 프로필 · 지원·개인정보처리방침(apps/web, App Store 5.1.1). (알림·단위 설정은 v1.0 미지원이라 뺐다) (헤더/뒤로는 루트 Stack 제공)
+// 도메인 구매 시 apps/web lib/content.ts 의 siteUrl 과 함께 바꾼다.
+const SITE_URL = 'https://daengdaeng-care.vercel.app';
+
 export default function SettingsScreen() {
   const router = useRouter();
   const { pet } = usePet();
@@ -33,11 +36,11 @@ export default function SettingsScreen() {
       )}
 
       <View>
-        <SectionHeading>약관</SectionHeading>
+        <SectionHeading>정보</SectionHeading>
         <Card style={styles.card}>
-          <Row icon="ℹ️" title="개인정보 처리방침" />
+          <Row icon="💬" title="고객 지원" onPress={() => Linking.openURL(`${SITE_URL}/support`)} />
           <Divider inset />
-          <Row icon="📄" title="이용약관" />
+          <Row icon="ℹ️" title="개인정보 처리방침" onPress={() => Linking.openURL(`${SITE_URL}/privacy`)} />
         </Card>
       </View>
 
