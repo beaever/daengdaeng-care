@@ -2,7 +2,7 @@
 // 각 기능의 배경 토큰(bg)은 CSS 변수명만 지정 (RULES 2).
 
 /** 사이트 기준 URL — 도메인 구매 시 NEXT_PUBLIC_SITE_URL 로 덮어쓴다 (앱 settings.tsx 의 SITE_URL 도 함께). */
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://daengdaeng-care.vercel.app';
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://daengdaeng-care.pages.dev';
 
 /** 고객 지원·개인정보 보호책임자 연락처 */
 export const contactEmail = 'thebeaever@gmail.com';
