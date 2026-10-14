@@ -385,3 +385,44 @@ a {
   color: var(--text3);
   line-height: 1.5;
 }
+
+/* 문서형 페이지 (/privacy, /support) */
+.doc {
+  max-width: 720px;
+  padding-block: var(--space-10);
+  line-height: 1.7;
+  color: var(--text);
+}
+.doc h1 {
+  font-size: var(--font-h1-size);
+  font-weight: 800;
+  margin-bottom: var(--space-2);
+}
+.doc h2 {
+  font-size: var(--font-h2-size);
+  font-weight: 700;
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-2);
+}
+.doc h3 {
+  font-size: var(--font-title-size);
+  font-weight: 700;
+  margin-top: var(--space-5);
+}
+.doc p,
+.doc ul {
+  margin-top: var(--space-2);
+  color: var(--text2);
+}
+.doc ul {
+  padding-left: var(--space-5);
+  list-style: disc;
+}
+.doc a {
+  color: var(--brand-text);
+  text-decoration: underline;
+}
+.doc__updated {
+  font-size: var(--font-caption-size);
+  color: var(--text3);
+}

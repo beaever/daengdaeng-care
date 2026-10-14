@@ -5,7 +5,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["app/**", "components/**", "lib/**", "public/**", "next.config.mjs", "tsconfig.json"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "out/**"]
     }
   }
 }

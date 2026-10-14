@@ -1,8 +1,11 @@
 // 댕댕케어 랜딩 콘텐츠 — store.jsx 의 5개 기능 카피를 그대로 따름.
 // 각 기능의 배경 토큰(bg)은 CSS 변수명만 지정 (RULES 2).
 
-/** 사이트 기준 URL — 배포 도메인 확정 시 NEXT_PUBLIC_SITE_URL 로 덮어쓴다. */
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://daengdaeng.care';
+/** 사이트 기준 URL — 도메인 구매 시 NEXT_PUBLIC_SITE_URL 로 덮어쓴다 (앱 settings.tsx 의 SITE_URL 도 함께). */
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://daengdaeng-care.pages.dev';
+
+/** 고객 지원·개인정보 보호책임자 연락처 */
+export const contactEmail = 'thebeaever@gmail.com';
 
 /** 메타데이터 공통 카피 */
 export const site = {
@@ -45,6 +48,30 @@ export const features: Feature[] = [
     title: '접종·체중·병원 기록 한 곳에 차곡차곡',
     desc: '우리 아이 건강 다이어리. 다음 예방접종일도 잊지 않게 챙겨드려요.',
     tint: 'var(--surface-2)',
+  },
+];
+
+/** 고객 지원 FAQ — /support 본문과 FAQPage 구조화 데이터의 단일 출처 */
+export const faqs: { q: string; a: string }[] = [
+  {
+    q: '증상 체크 결과를 믿어도 되나요?',
+    a: '증상 체크와 음식 판별은 참고용 정보이며 수의사의 진단을 대신하지 않습니다. 이상 증상이 있거나 응급 상황으로 의심되면 바로 동물병원에 방문하세요.',
+  },
+  {
+    q: '위치 권한을 허용하지 않으면 병원을 찾을 수 없나요?',
+    a: '지역명(예: 강남역)을 입력하면 그 주변 동물병원을 찾을 수 있어요.',
+  },
+  {
+    q: '병원 정보가 실제와 달라요.',
+    a: '병원 정보는 카카오 장소 검색 결과입니다. 방문 전에 전화로 진료 여부를 확인해 주세요.',
+  },
+  {
+    q: '기록을 다른 기기로 옮기거나 백업할 수 있나요?',
+    a: '지금은 모든 기록이 기기 안에만 저장되며, 백업·이전 기능은 없습니다. 앱을 삭제하면 기록도 함께 삭제되니 주의해 주세요.',
+  },
+  {
+    q: '댕댕케어는 무료인가요? 광고가 있나요?',
+    a: '무료이며 광고가 없습니다. 회원가입 없이 바로 사용할 수 있어요.',
   },
 ];
 

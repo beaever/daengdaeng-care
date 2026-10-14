@@ -1,0 +1,81 @@
+import type { Metadata } from 'next';
+import { DocPage } from '../../components/DocPage';
+import { contactEmail } from '../../lib/content';
+
+const title = '개인정보처리방침 — 댕댕케어';
+const description =
+  '댕댕케어는 회원가입 없이 기기에만 데이터를 저장하며, 병원 찾기 때만 위치를 카카오에 전송합니다. 광고·추적 없음.';
+
+// openGraph 는 레이아웃 값을 통째로 덮어쓰므로 제목·설명도 함께 지정한다.
+export const metadata: Metadata = {
+  title,
+  description,
+  alternates: { canonical: '/privacy' },
+  openGraph: { title, description, url: '/privacy', siteName: '댕댕케어', locale: 'ko_KR', type: 'website', images: '/opengraph-image' },
+};
+
+// App Store 5.1.1 필수 URL. 앱 동작(apps/mobile)이 바뀌면 이 문서도 함께 고친다:
+// 로컬 SQLite 저장, 병원 검색 시 좌표 → Kakao Local, 지역명 검색 → Apple 지오코딩, 광고·추적 없음.
+export default function PrivacyPage() {
+  return (
+    <DocPage title="개인정보처리방침" updated="2026년 10월 14일">
+      <p>
+        댕댕케어(이하 &quot;앱&quot;)는 회원가입 없이 사용하는 반려견 건강 관리 앱입니다. 앱은 이용자의 개인정보를
+        자체 서버에 수집하거나 보관하지 않습니다.
+      </p>
+
+      <h2>1. 기기에만 저장하는 정보</h2>
+      <p>아래 정보는 이용자가 직접 입력하며, 이용자의 기기 안에만 저장되고 외부로 전송되지 않습니다.</p>
+      <ul>
+        <li>반려견 프로필: 이름, 견종, 생년월일, 성별, 중성화 여부, 프로필 사진</li>
+        <li>건강 기록: 체중, 예방접종, 병원 방문 기록과 메모</li>
+      </ul>
+
+      <h2>2. 외부로 전송되는 정보</h2>
+      <p>&quot;병원 찾기&quot; 기능을 사용할 때만 아래 정보가 전송됩니다. 앱은 이 정보를 따로 저장하지 않습니다.</p>
+      <ul>
+        <li>
+          <strong>현재 위치(위도·경도)</strong> → 주식회사 카카오(Kakao Local API): 주변 동물병원 검색 목적.
+          위치 권한을 허용한 경우에만, 병원 찾기 화면을 열거나 다시 검색할 때 전송됩니다.
+        </li>
+        <li>
+          <strong>직접 입력한 지역명</strong> → Apple(iOS 위치 서비스): 위치 권한을 허용하지 않은 경우 지역명을
+          좌표로 바꾸는 목적.
+        </li>
+      </ul>
+      <p>
+        전송된 정보의 처리는 각 사업자의 개인정보처리방침을 따릅니다. 이 외에 개인정보를 제3자에게 제공하거나
+        처리를 위탁하지 않습니다.
+      </p>
+
+      <h2>3. 권한 사용</h2>
+      <ul>
+        <li>위치(앱 사용 중): 주변 동물병원 검색. 허용하지 않아도 지역명으로 검색할 수 있습니다.</li>
+        <li>사진 보관함: 반려견 프로필 사진 선택. 선택한 사진은 기기 안에만 저장됩니다.</li>
+      </ul>
+      <p>권한은 iPhone 설정 → 댕댕케어에서 언제든 변경할 수 있습니다.</p>
+
+      <h2>4. 광고·추적</h2>
+      <p>앱에는 광고, 분석 도구, 이용자 추적 기능이 없습니다.</p>
+
+      <h2>5. 보관 및 삭제</h2>
+      <p>
+        기기에 저장된 정보는 이용자가 앱에서 기록을 삭제하거나 앱을 삭제하면 함께 삭제됩니다. 서버에 보관하는
+        정보가 없으므로 별도 삭제 요청 절차는 없습니다.
+      </p>
+
+      <h2>6. 만 14세 미만 아동</h2>
+      <p>앱은 아동의 개인정보를 수집하지 않습니다.</p>
+
+      <h2>7. 개인정보 보호책임자 및 문의</h2>
+      <p>
+        개인정보 관련 문의는 아래로 연락해 주세요.
+        <br />
+        이메일: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+      </p>
+
+      <h2>8. 방침 변경</h2>
+      <p>이 방침이 바뀌면 이 페이지에 시행일과 함께 게시합니다.</p>
+    </DocPage>
+  );
+}
