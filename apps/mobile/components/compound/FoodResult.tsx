@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors, space, fontFamily, typography, fontScale } from '../../theme';
-import { Verdict, SectionHeading, Bullets, Chip } from '../ui';
+import { Verdict, SectionHeading, Bullets, Chip, Note } from '../ui';
 import type { FoodEntry } from '@daengdaeng/constants';
 
 // SCR-006 음식 결과 — 안전도 판정 화면 본문.
 // 화면은 이 컴파운드를 조립만 하고, 레벨(safe/caution/danger) 분기는 내부에서 처리한다.
+// RULES(4): 수의사 면책 고지(Disclaimer)는 레벨과 무관하게 항상 렌더한다 — 삭제 금지 (App Store 1.4.1).
 export interface FoodResultProps {
   food: FoodEntry;
 }
@@ -25,6 +26,7 @@ function FoodResultRoot({ food }: FoodResultProps) {
       {food.related != null && food.related.length > 0 && (
         <FoodResult.RelatedFoods level={food.level} items={food.related} />
       )}
+      <FoodResult.Disclaimer />
     </View>
   );
 }
@@ -99,12 +101,17 @@ function FoodRelated({ level, items }: { level: FoodEntry['level']; items: strin
   );
 }
 
+function FoodDisclaimer() {
+  return <Note icon="ℹ️">참고용 정보예요. 이미 먹었거나 이상 증상이 있으면 수의사와 상담하세요.</Note>;
+}
+
 export const FoodResult = Object.assign(FoodResultRoot, {
   Header: FoodHeader,
   Description: FoodDescription,
   Symptoms: FoodSymptoms,
   Nutrition: FoodNutrition,
   RelatedFoods: FoodRelated,
+  Disclaimer: FoodDisclaimer,
 });
 
 const styles = StyleSheet.create({
