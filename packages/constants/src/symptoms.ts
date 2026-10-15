@@ -277,7 +277,7 @@ export const SYMPTOM_RESULTS: Record<SeverityLevel, SymptomResult> = {
   },
   watch: {
     level: 'watch',
-    title: '지금 당장 급하진 않아요',
+    title: '지금 당장 급하지는 않아 보여요',
     reason: '활력이 유지되고 증상이 가벼운 편이에요. 집에서 지켜보며 관리해 주세요.',
     actions: [
       '깨끗한 물을 충분히 주세요',
