@@ -6,7 +6,7 @@ import { colors, space, fontFamily, typography } from '../theme';
 import { Card, Row, Divider, SectionHeading } from '../components/ui';
 import { usePet, formatAge } from '../lib/pets';
 
-// SCR-016 · 설정 — 프로필 · 지원·개인정보처리방침(apps/web, App Store 5.1.1). (알림·단위 설정은 v1.0 미지원이라 뺐다) (헤더/뒤로는 루트 Stack 제공)
+// SCR-016 · 설정 — 프로필 · 지원·개인정보처리방침(App Store 5.1.1)·이용약관(건강 정보 면책). (알림·단위 설정은 v1.0 미지원이라 뺐다) (헤더/뒤로는 루트 Stack 제공)
 // 도메인 구매 시 apps/web lib/content.ts 의 siteUrl 과 함께 바꾼다.
 const SITE_URL = 'https://daengdaeng-care.pages.dev';
 
@@ -41,6 +41,8 @@ export default function SettingsScreen() {
           <Row icon="💬" title="고객 지원" onPress={() => Linking.openURL(`${SITE_URL}/support`)} />
           <Divider inset />
           <Row icon="ℹ️" title="개인정보 처리방침" onPress={() => Linking.openURL(`${SITE_URL}/privacy`)} />
+          <Divider inset />
+          <Row icon="📄" title="이용약관" onPress={() => Linking.openURL(`${SITE_URL}/terms`)} />
         </Card>
       </View>
 

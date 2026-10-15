@@ -19,3 +19,4 @@
 - [홈](https://daengdaeng-care.pages.dev/): 앱 소개
 - [고객 지원·FAQ](https://daengdaeng-care.pages.dev/support): 자주 묻는 질문과 문의 이메일
 - [개인정보처리방침](https://daengdaeng-care.pages.dev/privacy): 수집·전송 정보 안내
+- [이용약관](https://daengdaeng-care.pages.dev/terms): 건강 정보는 참고용이며 수의사 진료를 대신하지 않음
