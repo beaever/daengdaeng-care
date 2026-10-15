@@ -23,6 +23,25 @@ describe('FOODS 데이터 정합성', () => {
     }
   });
 
+  it.each(entries)('"%s" 키와 name 이 같다 (결과 화면이 FOODS[name] 으로 찾는다)', (key, food) => {
+    expect(food.name).toBe(key);
+  });
+
+  it('별칭이 다른 음식의 이름과 겹치지 않는다 (마늘 검색 → 양파 결과 같은 혼동 방지)', () => {
+    const names = new Set(Object.keys(FOODS));
+    for (const [key, food] of entries) {
+      for (const alias of food.aliases ?? []) {
+        expect(names.has(alias) && alias !== key, `${key} 의 별칭 "${alias}" 가 다른 음식 이름과 같음`).toBe(false);
+      }
+    }
+  });
+
+  it('caution 등급 음식은 급여 방법(serve)을 안내한다', () => {
+    for (const [key, food] of entries.filter(([, f]) => f.level === 'caution')) {
+      expect(food.serve, `${key}에 serve 누락`).toBeTruthy();
+    }
+  });
+
   it('POPULAR_FOODS는 모두 검색으로 찾을 수 있다', () => {
     for (const name of POPULAR_FOODS) {
       expect(searchFood(name), `${name} 검색 실패`).not.toBeNull();
@@ -31,6 +50,15 @@ describe('FOODS 데이터 정합성', () => {
 });
 
 describe('searchFood()', () => {
+  it('마늘은 양파가 아닌 마늘 항목을 찾는다', () => {
+    expect(searchFood('마늘')?.name).toBe('마늘');
+  });
+
+  it('별칭으로 묶인 음식을 찾는다 (맥주 → 술, 달걀 → 계란)', () => {
+    expect(searchFood('맥주')?.name).toBe('술');
+    expect(searchFood('달걀')?.name).toBe('계란');
+  });
+
   it('한글 정확 일치로 항목을 찾는다', () => {
     expect(searchFood('포도')?.level).toBe('danger');
   });
