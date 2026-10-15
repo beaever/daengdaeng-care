@@ -77,7 +77,7 @@
 - [x] **T1.6 `sampleData.ts` 정리** · `mobile-engineer`
   - 병원 샘플(T1.7에서 제거)을 제외한 샘플 데이터 삭제
   - 완료 조건: `sampleData` 에 병원 외 데이터 0건
-- [ ] **T1.7 Kakao Local 연동 (F004)** · `data-engineer` — **Phase 1 마지막 (사용자 결정 2026-10-01)**
+- [x] **T1.7 Kakao Local 연동 (F004)** · `data-engineer` — **Phase 1 마지막 (사용자 결정 2026-10-01)**
   - `searchHospitals` 구현을 Kakao Local 키워드 검색(`EXPO_PUBLIC_KAKAO_KEY`, EAS 환경변수)으로 교체, 병원 샘플 데이터와 `sampleData.ts` 삭제
   - 오프라인·API 실패 안내
   - 리스크: REST 키가 앱 번들에 포함된다. 카카오 콘솔에서 사용량 알림을 설정해 둔다.
@@ -106,9 +106,10 @@
   - ✅ App Store Connect 앱 생성 (번들 ID `care.daengdaeng.app`)
   - ✅ `eas.json` 에 `ascAppId` 입력
   - ✅ `eas credentials` 로 배포 인증서·프로비저닝 생성 (기존 배포 인증서 재사용)
-- [ ] **T3.2 개인정보처리방침·지원 페이지** · `mobile-engineer` (apps/web)
+- [x] **T3.2 개인정보처리방침·지원 페이지** · `mobile-engineer` (apps/web)
   - `apps/web` 에 `/privacy`, `/support` 추가 후 Vercel 배포. 앱 설정 화면에도 링크
   - 내용: 데이터는 기기에만 저장, 위치는 병원 검색 요청 시 카카오에만 전송, 광고·추적 없음
+  - **결과 (2026-10-14):** Cloudflare Pages 정적 배포(`daengdaeng-care.pages.dev`)로 결정. `/privacy`·`/support`·`llms.txt`·JSON-LD. 앱 설정에 고객 지원·개인정보 처리방침 링크, 이용약관 행 삭제(Apple 표준 EULA)
 - [ ] **T3.3 App Privacy·연령 등급** · `release-engineer`
   - 광고·추적이 없으므로 ATT 불필요. 위치는 "앱 기능, 사용자와 연결되지 않음"으로 신고할지 검토
 - [ ] **T3.4 메타데이터** · `release-engineer`

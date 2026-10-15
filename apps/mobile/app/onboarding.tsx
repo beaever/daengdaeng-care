@@ -24,7 +24,7 @@ const SLIDES: Slide[] = [
     emoji: '🩺',
     bg: palette.info.soft,
     title: '병원에 가야 할지\n고민될 때',
-    sub: '증상을 입력하면 지금 병원에 가야 하는지 알려드려요.',
+    sub: '증상을 입력하면 병원에 가야 할지 판단을 도와드려요.',
   },
   {
     emoji: '📋',
