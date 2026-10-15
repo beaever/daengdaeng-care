@@ -215,6 +215,7 @@ export const FOODS: Record<string, FoodEntry> = {
     sources: ['https://www.aspca.org/pet-care/aspca-poison-control/people-foods-avoid-feeding-your-pets', 'https://www.merckvetmanual.com/toxicology/mycotoxicoses/tremorgenic-neuromycotoxicosis-in-dogs'],
   },
 
+  // 체리·복숭아·자두: 출처는 씨를 뺀 과육을 허용하지만, 씨 사고 방지를 위해 보수적으로 위험 처리 (2026-10-15 사용자 결정)
   // ── 주의 ──────────────────────────────────────────────
   체리: {
     name: '체리', level: 'danger',
@@ -222,20 +223,19 @@ export const FOODS: Record<string, FoodEntry> = {
     symptoms: ['(씨 섭취 시) 호흡 곤란', '잇몸이 선홍색으로 변함', '동공 확장', '구토'],
     aliases: ['cherry', '앵두'],
     sources: ['https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants/cherry', 'https://www.petpoisonhelpline.com/pet-tips/are-cherries-safe-for-dogs/'],
+    related: ['복숭아', '자두'],
   },
   복숭아: {
-    name: '복숭아', level: 'caution',
-    reason: '과육은 먹어도 되지만 씨·잎·줄기에 시안화물 성분이 있어요. 특히 크고 단단한 씨는 장을 막을 수 있어요.',
-    serve: '씨와 껍질을 빼고 과육만 작게 잘라 조금. 통조림은 당이 많아 피하세요.',
+    name: '복숭아', level: 'danger',
+    reason: '씨·잎·줄기에 시안화물 성분이 있고, 크고 단단한 씨는 장을 막을 수 있어요. 씨를 삼키는 사고를 막기 위해 주지 않는 게 안전해요. 씨를 먹었다면 동물병원에 문의하세요.',
     symptoms: ['(씨 섭취 시) 구토', '변을 못 봄', '배를 아파함'],
     related: ['자두', '체리', '살구'],
     aliases: ['peach', '천도복숭아', '살구', 'apricot'],
     sources: ['https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants/peach', 'https://www.petpoisonhelpline.com/poison/peach-pits/'],
   },
   자두: {
-    name: '자두', level: 'caution',
-    reason: '과육은 소량 괜찮지만 씨·잎·줄기에 시안화물 성분이 있고, 씨는 장을 막을 수 있어요.',
-    serve: '씨를 반드시 빼고 과육만 조금.',
+    name: '자두', level: 'danger',
+    reason: '씨·잎·줄기에 시안화물 성분이 있고, 씨는 장을 막을 수 있어요. 씨를 삼키는 사고를 막기 위해 주지 않는 게 안전해요. 씨를 먹었다면 동물병원에 문의하세요.',
     symptoms: ['(씨 섭취 시) 구토', '배를 아파함'],
     related: ['복숭아', '체리'],
     aliases: ['plum', '푸룬'],
