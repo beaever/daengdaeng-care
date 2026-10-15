@@ -36,8 +36,13 @@ describe('FOODS 데이터 정합성', () => {
     }
   });
 
-  it.each(entries)('"%s" 항목은 근거 자료 URL(source)을 갖는다', (_key, food) => {
-    expect(food.source).toMatch(/^https:\/\//);
+  it.each(entries)('"%s" 항목은 근거 자료 URL 1~2개를 갖고, 판매업체 출처는 쓰지 않는다', (_key, food) => {
+    expect(food.sources.length).toBeGreaterThanOrEqual(1);
+    expect(food.sources.length).toBeLessThanOrEqual(2);
+    for (const url of food.sources) {
+      expect(url).toMatch(/^https:\/\//);
+      expect(url).not.toMatch(/petco|chewy|amazon/);
+    }
   });
 
   it('caution 등급 음식은 급여 방법(serve)을 안내한다', () => {

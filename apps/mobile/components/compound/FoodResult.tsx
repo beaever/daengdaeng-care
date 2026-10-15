@@ -27,7 +27,7 @@ function FoodResultRoot({ food }: FoodResultProps) {
         <FoodResult.RelatedFoods level={food.level} items={food.related} />
       )}
       <FoodResult.Disclaimer />
-      <FoodResult.Source url={food.source} />
+      <FoodResult.Source url={food.sources[0]} />
     </View>
   );
 }
