@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Linking } from 'react-native';
 import { colors, space, fontFamily, typography, fontScale } from '../../theme';
 import { Verdict, SectionHeading, Bullets, Chip, Note } from '../ui';
 import type { FoodEntry } from '@daengdaeng/constants';
@@ -27,6 +27,7 @@ function FoodResultRoot({ food }: FoodResultProps) {
         <FoodResult.RelatedFoods level={food.level} items={food.related} />
       )}
       <FoodResult.Disclaimer />
+      <FoodResult.Source url={food.source} />
     </View>
   );
 }
@@ -105,6 +106,16 @@ function FoodDisclaimer() {
   return <Note icon="ℹ️">참고용 정보예요. 이미 먹었거나 이상 증상이 있으면 수의사와 상담하세요.</Note>;
 }
 
+// 근거 자료 출처 (App Store 1.4.1·심사 노트의 출처 표기). 누르면 원문을 연다.
+function FoodSource({ url }: { url: string }) {
+  const host = url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
+  return (
+    <Text style={styles.source} accessibilityRole="link" onPress={() => Linking.openURL(url)}>
+      근거 자료: {host}
+    </Text>
+  );
+}
+
 export const FoodResult = Object.assign(FoodResultRoot, {
   Header: FoodHeader,
   Description: FoodDescription,
@@ -112,6 +123,7 @@ export const FoodResult = Object.assign(FoodResultRoot, {
   Nutrition: FoodNutrition,
   RelatedFoods: FoodRelated,
   Disclaimer: FoodDisclaimer,
+  Source: FoodSource,
 });
 
 const styles = StyleSheet.create({
@@ -126,4 +138,5 @@ const styles = StyleSheet.create({
   },
   serve: { marginTop: space[3] },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  source: { fontFamily, fontSize: typography.caption.size, color: colors.text3, textAlign: 'center' },
 });

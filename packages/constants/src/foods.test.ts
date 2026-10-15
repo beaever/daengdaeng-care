@@ -36,6 +36,10 @@ describe('FOODS 데이터 정합성', () => {
     }
   });
 
+  it.each(entries)('"%s" 항목은 근거 자료 URL(source)을 갖는다', (_key, food) => {
+    expect(food.source).toMatch(/^https:\/\//);
+  });
+
   it('caution 등급 음식은 급여 방법(serve)을 안내한다', () => {
     for (const [key, food] of entries.filter(([, f]) => f.level === 'caution')) {
       expect(food.serve, `${key}에 serve 누락`).toBeTruthy();
