@@ -15,9 +15,10 @@ export default function SymptomResultScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ verdict?: string }>();
+  // 값이 없거나 잘못된 링크면 근거 없이 "괜찮다"고 하지 않도록 진료 권장(today)으로 둔다.
   const verdict: SeverityLevel = LEVELS.includes(params.verdict as SeverityLevel)
     ? (params.verdict as SeverityLevel)
-    : 'watch';
+    : 'today';
   const result = SYMPTOM_RESULTS[verdict];
 
   return (

@@ -38,6 +38,24 @@ describe('migrate', () => {
     expect(execAsync).toHaveBeenCalledWith('PRAGMA user_version = 2');
   });
 
+  it('user_version 은 스키마 변경과 같은 트랜잭션 안에서 올린다 (중간에 앱이 죽어도 어긋나지 않게)', async () => {
+    const { db, execAsync, withTransactionAsync } = mockDb(0);
+    let inTx = false;
+    const pragmaInTx: boolean[] = [];
+    withTransactionAsync.mockImplementation(async (fn: () => Promise<void>) => {
+      inTx = true;
+      await fn();
+      inTx = false;
+    });
+    execAsync.mockImplementation(async (sql: string) => {
+      if (/PRAGMA user_version = /.test(sql)) pragmaInTx.push(inTx);
+    });
+
+    await migrate(db);
+
+    expect(pragmaInTx).toEqual([true, true]);
+  });
+
   it('이미 최신(user_version 2)이면 재실행해도 아무것도 하지 않는다 (멱등)', async () => {
     const { db, execAsync, withTransactionAsync } = mockDb(2);
 

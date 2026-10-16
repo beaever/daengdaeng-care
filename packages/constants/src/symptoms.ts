@@ -42,6 +42,10 @@ export const EMERGENCY_SYMPTOMS = [
   { id: 'emergency', emoji: '🚨', label: '응급 증상', sub: '발작 · 의식 없음 · 호흡 곤란' },
 ];
 
+// 소화기 — 카테고리가 설사·변비·식욕부진도 안내하므로 토하지 않은 경우도 같은 트리로 받는다.
+// 피 섞인 구토·혈변·검은 변은 즉시, 이물질·하루 넘는 설사는 당일
+// 출처: https://www.merckvetmanual.com/multimedia/table/when-to-see-a-veterinarian
+//       https://vcahospitals.com/know-your-pet/diarrhea-in-dogs
 export const VOMITING_QUESTIONS: SymptomQuestion[] = [
   {
     q: '오늘 몇 번 토했나요?',
@@ -49,15 +53,16 @@ export const VOMITING_QUESTIONS: SymptomQuestion[] = [
       { label: '1~2번', next: 1 },
       { label: '3~4번', verdict: 'today' },
       { label: '5번 이상', verdict: 'emergency' },
-      { label: '아직 안 토함', next: 1 },
+      { label: '토하진 않았어요 (설사·변비·식욕부진)', next: 1 },
     ],
   },
   {
-    q: '토사물에 피나 이물질이 섞여 있나요?',
+    q: '토사물이나 변은 어떤가요?',
     options: [
-      { label: '네, 피가 섞여 있어요', verdict: 'emergency' },
-      { label: '이물질이 보여요', verdict: 'today' },
-      { label: '아니요, 음식물뿐이에요', next: 2 },
+      { label: '피가 섞여 있거나 까만 변을 봐요', verdict: 'emergency' },
+      { label: '토사물에 이물질이 보여요', verdict: 'today' },
+      { label: '설사가 하루 넘게 계속되거나 하루에 여러 번 해요', verdict: 'today' },
+      { label: '해당 없어요', next: 2 },
     ],
   },
   {
