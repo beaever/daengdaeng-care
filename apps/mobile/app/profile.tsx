@@ -8,7 +8,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { BREEDS, POPULAR_BREEDS, searchBreeds } from '@daengdaeng/constants';
 import { colors, radius, space, fontFamily, typography, fontScale } from '../theme';
 import { Field, Input, PillGroup, Button, Chip } from '../components/ui';
-import { usePet, savePet, savePetPhoto, photoUri } from '../lib/pets';
+import { usePet, savePet, savePetPhoto, deletePetPhoto, photoUri } from '../lib/pets';
 import { toLocalDateString, parseLocalDate } from '../lib/recordSummary';
 
 const SEX = [
@@ -84,7 +84,8 @@ export default function ProfileScreen() {
   const save = async () => {
     setSaving(true);
     try {
-      const photo = pickedPhoto ? savePetPhoto(pickedPhoto, pet?.photo) : (pet?.photo ?? null);
+      const prevPhoto = pet?.photo ?? null;
+      const photo = pickedPhoto ? savePetPhoto(pickedPhoto) : prevPhoto;
       await savePet(db, {
         name: name.trim(),
         breed: breed.trim() || null,
@@ -93,6 +94,7 @@ export default function ProfileScreen() {
         neutered: neuteredValue(neuter),
         photo,
       });
+      if (prevPhoto && prevPhoto !== photo) deletePetPhoto(prevPhoto);
       reload();
       if (editing) router.back();
       else router.replace('/home');

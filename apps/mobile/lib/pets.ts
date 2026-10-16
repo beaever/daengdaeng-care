@@ -52,21 +52,21 @@ export async function savePet(db: SQLiteDatabase, input: Omit<Pet, 'id'>): Promi
 }
 
 /**
- * expo-image-picker 로 고른 사진을 document 디렉터리에 pet-<timestamp>.jpg 로 복사하고,
- * 이전 파일이 있으면 삭제한다. 반환값은 파일명만 (절대 URI 아님 — iOS 컨테이너 UUID가
- * 재설치/업데이트마다 바뀌므로 절대 URI를 저장하면 다음 실행에서 깨진다).
+ * expo-image-picker 로 고른 사진을 document 디렉터리에 pet-<timestamp>.jpg 로 복사한다.
+ * 반환값은 파일명만 (절대 URI 아님 — iOS 컨테이너 UUID가 재설치/업데이트마다 바뀌므로
+ * 절대 URI를 저장하면 다음 실행에서 깨진다).
  */
-export function savePetPhoto(pickedUri: string, prev?: string | null): string {
+export function savePetPhoto(pickedUri: string): string {
   const filename = `pet-${Date.now()}.jpg`;
   const dest = new File(Paths.document, filename);
   new File(pickedUri).copySync(dest, { overwrite: true });
-
-  if (prev) {
-    const prevFile = new File(Paths.document, prev);
-    if (prevFile.exists) prevFile.delete();
-  }
-
   return filename;
+}
+
+/** 이전 사진 파일을 지운다. DB가 새 파일명으로 저장된 뒤에만 부른다 — 먼저 지우면 저장 실패 시 사진이 사라진다. */
+export function deletePetPhoto(photo: string): void {
+  const file = new File(Paths.document, photo);
+  if (file.exists) file.delete();
 }
 
 /** DB에 저장된 파일명을 현재 세션의 document 디렉터리 기준 URI로 변환한다. */

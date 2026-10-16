@@ -34,19 +34,20 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
           created_at TEXT DEFAULT (datetime('now'))
         );
       `);
+      // 버전도 같은 트랜잭션에서 올린다 — 커밋 직후 앱이 죽어도 스키마와 버전이 어긋나지 않게.
+      await db.execAsync('PRAGMA user_version = 1');
     });
-    await db.execAsync('PRAGMA user_version = 1');
     version = 1;
   }
 
   if (version < 2) {
     await db.withTransactionAsync(async () => {
       await db.execAsync('ALTER TABLE records ADD COLUMN next_date TEXT;');
+      await db.execAsync('PRAGMA user_version = 2');
     });
-    await db.execAsync('PRAGMA user_version = 2');
     version = 2;
   }
 
   // 다음 마이그레이션은 이어 붙인다:
-  // if (version < 3) { ... await db.execAsync('PRAGMA user_version = 3'); version = 3; }
+  // if (version < 3) { await db.withTransactionAsync(async () => { ...; await db.execAsync('PRAGMA user_version = 3'); }); version = 3; }
 }

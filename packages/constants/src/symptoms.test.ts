@@ -99,6 +99,13 @@ describe('SYMPTOM_QUESTIONS 카테고리별 결정 트리', () => {
     expect(SYMPTOM_QUESTIONS.digest).toBe(VOMITING_QUESTIONS);
   });
 
+  it('digest: 토하지 않아도 혈변이면 emergency 에 도달한다 (설사만 하는 경우가 watch 로 빠지지 않게)', () => {
+    const noVomit = VOMITING_QUESTIONS[0].options.find((o) => o.label.startsWith('토하진 않았어요'));
+    expect(noVomit?.next).toBeDefined();
+    const stool = VOMITING_QUESTIONS[noVomit!.next!].options.find((o) => o.label.includes('변'));
+    expect(stool?.verdict).toBe('emergency');
+  });
+
   describe.each(Object.entries(SYMPTOM_QUESTIONS))('"%s" 트리', (id, tree) => {
     it('모든 선택지는 next 또는 verdict 중 정확히 하나만 가진다', () => {
       expect(tree.length).toBeGreaterThan(0);
