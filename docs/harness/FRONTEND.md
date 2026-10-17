@@ -10,8 +10,7 @@ Frontend는 **컴포넌트 라이브러리 + 모바일 앱 + 랜딩페이지** �
 | 레이어 | 기술 |
 |--------|------|
 | 모노레포 | Turborepo + pnpm |
-| 컴포넌트 라이브러리 | React 18 + TypeScript + Vite |
-| 문서화/시각 테스트 | Storybook 8 + Chromatic |
+| 컴포넌트 | `apps/mobile/components` (RN, ui·compound) |
 | 모바일 앱 | Expo (Managed Workflow) + React Native + TypeScript |
 | 네비게이션 | Expo Router |
 | 로컬 DB | expo-sqlite (ORM 없음) |

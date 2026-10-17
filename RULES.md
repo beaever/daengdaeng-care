@@ -81,11 +81,10 @@ word-break: keep-all 을 모든 한글 텍스트 영역에 적용한다.
 
 ### 파일 구조
 ```
-ComponentName/
-  ComponentName.tsx      ← 구현
-  ComponentName.module.css ← 스타일
-  ComponentName.stories.tsx ← Storybook
-  index.ts               ← re-export
+apps/mobile/components/
+  ui/ComponentName.tsx        ← 아톰·몰리큘 (StyleSheet + theme.ts 토큰)
+  compound/ComponentName.tsx  ← 컴파운드 (레벨 분기는 내부에서)
+  ui/index.ts, compound/index.ts ← re-export
 ```
 
 ### 커밋 메시지
@@ -109,11 +108,8 @@ docs(harness): Frontend 가이드 업데이트
 
 ```
 1. 토큰 (packages/tokens)
-2. 아톰 (packages/ui/atoms)
-3. 몰리큘 (packages/ui/molecules)
-4. 컴파운드 (packages/ui/compound)
-5. 모바일 화면 (apps/mobile)
-6. 랜딩페이지 (apps/web)
+2. 아톰·몰리큘 (apps/mobile/components/ui)
+3. 컴파운드 (apps/mobile/components/compound)
+4. 모바일 화면 (apps/mobile/app)
+5. 랜딩페이지 (apps/web)
 ```
-
-각 단계마다 Storybook Story + Chromatic 스냅샷 포함.
