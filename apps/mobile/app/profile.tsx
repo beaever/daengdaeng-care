@@ -4,10 +4,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import * as ImagePicker from 'expo-image-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { BREEDS, POPULAR_BREEDS, searchBreeds } from '@daengdaeng/constants';
 import { colors, radius, space, fontFamily, typography, fontScale } from '../theme';
-import { Field, Input, PillGroup, Button, Chip } from '../components/ui';
+import { Field, Input, PillGroup, Button, Chip, DateField } from '../components/ui';
 import { usePet, savePet, savePetPhoto, deletePetPhoto, photoUri } from '../lib/pets';
 import { toLocalDateString, parseLocalDate } from '../lib/recordSummary';
 
@@ -46,7 +45,6 @@ export default function ProfileScreen() {
   const [sex, setSex] = useState<'남아' | '여아'>('남아');
   const [neuter, setNeuter] = useState('몰라요');
   const [pickedPhoto, setPickedPhoto] = useState<string | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [saving, setSaving] = useState(false);
   const seeded = useRef(false);
 
@@ -188,30 +186,13 @@ export default function ProfileScreen() {
               <Text style={styles.breedHint}>목록에 없으면 그대로 입력해도 돼요</Text>
             )}
           </Field>
-          <Field label="생년월일">
-            <Pressable
-              style={styles.select}
-              onPress={() => setShowDatePicker((v) => !v)}
-              accessibilityRole="button"
-              accessibilityLabel="생년월일 선택"
-            >
-              <Text style={dob ? styles.selectValue : styles.selectPlaceholder}>{dob ?? '날짜 선택'}</Text>
-              <Text style={styles.selectChevron}>⌄</Text>
-            </Pressable>
-            {showDatePicker && (
-              <DateTimePicker
-                value={dob ? parseLocalDate(dob) : new Date()}
-                mode="date"
-                display="inline"
-                maximumDate={new Date()}
-                locale="ko-KR"
-                onChange={(_, selected) => {
-                  setShowDatePicker(false);
-                  if (selected) setDob(toLocalDateString(selected));
-                }}
-              />
-            )}
-          </Field>
+          <DateField
+            label="생년월일"
+            value={dob ? parseLocalDate(dob) : null}
+            onChange={(d) => setDob(toLocalDateString(d))}
+            placeholder="날짜 선택"
+            maximumDate={new Date()}
+          />
           <Field label="성별">
             <PillGroup options={SEX} value={sex} onChange={(v) => setSex(v as '남아' | '여아')} />
           </Field>
@@ -255,17 +236,6 @@ const styles = StyleSheet.create({
   avatarIcon: { fontSize: 24 },
   avatarText: { fontFamily, fontSize: typography.caption.size, color: colors.text3, fontWeight: '600' },
   fields: { gap: space[4] },
-  select: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: 52, // Dynamic Type 확대 시 날짜 텍스트 잘림 방지 (고정 height 금지)
-    paddingHorizontal: 16,
-    backgroundColor: colors.surface2,
-    borderRadius: radius.sm,
-  },
-  selectValue: { fontFamily, fontSize: typography.callout.size, color: colors.text },
-  selectPlaceholder: { fontFamily, fontSize: typography.callout.size, color: colors.text3 },
-  selectChevron: { fontFamily, fontSize: 18, color: colors.text3 },
   breedChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: space[2] },
   breedHint: { fontFamily, fontSize: typography.caption.size, color: colors.text3, marginTop: 4 },
   matchList: { marginTop: 4 },

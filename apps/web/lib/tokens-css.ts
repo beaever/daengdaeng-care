@@ -22,9 +22,7 @@ function kebab(s: string): string {
 function themeVars(theme: Record<string, string>): string[] {
   const out: string[] = [];
   for (const [k, v] of Object.entries(theme)) {
-    // 그림자는 별도 접두사(--shadow-*), 그 외는 그대로 토큰명 사용
-    const name = k.startsWith('shadow') ? `--${kebab(k)}` : `--${kebab(k)}`;
-    out.push(`  ${name}: ${v};`);
+    out.push(`  --${kebab(k)}: ${v};`);
   }
   return out;
 }

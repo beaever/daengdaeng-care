@@ -33,3 +33,5 @@ export { PillGroup } from './PillGroup';
 export type { PillGroupProps, PillGroupOption } from './PillGroup';
 export { Field, Input, Textarea } from './Input';
 export type { FieldProps, InputProps } from './Input';
+export { DateField } from './DateField';
+export type { DateFieldProps } from './DateField';

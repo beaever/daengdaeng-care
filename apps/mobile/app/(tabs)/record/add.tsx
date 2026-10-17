@@ -3,9 +3,8 @@ import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-nati
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { colors, space, radius, fontFamily, typography } from '../../../theme';
-import { Field, Input, Textarea, Button, PillGroup } from '../../../components/ui';
+import { Field, Input, Textarea, Button, PillGroup, DateField } from '../../../components/ui';
 import type { PillGroupOption } from '../../../components/ui';
 import { RECORD_META } from '../../../components/compound';
 import { addRecord, type RecordType, type NewRecord } from '../../../lib/records';
@@ -202,50 +201,6 @@ function RecordTypeSelector({
   );
 }
 
-// 날짜 선택 행 — app/profile.tsx 의 생년월일 필드와 동일한 패턴(로컬 날짜, inline 피커).
-function DateField({
-  label,
-  value,
-  onChange,
-  maximumDate,
-  minimumDate,
-}: {
-  label: string;
-  value: Date;
-  onChange: (d: Date) => void;
-  maximumDate?: Date;
-  minimumDate?: Date;
-}) {
-  const [show, setShow] = useState(false);
-  return (
-    <Field label={label}>
-      <Pressable
-        style={styles.select}
-        onPress={() => setShow((v) => !v)}
-        accessibilityRole="button"
-        accessibilityLabel={`${label} 선택`}
-      >
-        <Text style={styles.selectValue}>{toLocalDateString(value).replace(/-/g, '.')}</Text>
-        <Text style={styles.selectChev}>⌄</Text>
-      </Pressable>
-      {show && (
-        <DateTimePicker
-          value={value}
-          mode="date"
-          display="inline"
-          locale="ko-KR"
-          maximumDate={maximumDate}
-          minimumDate={minimumDate}
-          onChange={(_, selected) => {
-            setShow(false);
-            if (selected) onChange(selected);
-          }}
-        />
-      )}
-    </Field>
-  );
-}
-
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   content: { padding: space[5], gap: space[5] },
@@ -267,15 +222,4 @@ const styles = StyleSheet.create({
   typeLabel: { fontFamily, fontSize: typography.sub.size, fontWeight: '600', color: colors.text2 },
   typeLabelOn: { color: colors.brandText, fontWeight: '700' },
   pillRows: { gap: space[2] },
-  select: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 52, // Dynamic Type 확대 시 날짜 텍스트 잘림 방지 (고정 height 금지)
-    paddingHorizontal: 16,
-    backgroundColor: colors.surface2,
-    borderRadius: radius.sm,
-  },
-  selectValue: { fontFamily, fontSize: typography.callout.size, color: colors.text },
-  selectChev: { fontFamily, fontSize: 18, color: colors.text3 },
 });
