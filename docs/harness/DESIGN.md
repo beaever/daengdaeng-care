@@ -7,7 +7,7 @@ Design은 **디자인 토큰의 단일 출처**를 소유한다. 모든 시각�
 
 ## 핵심 원칙
 
-1. **토큰이 단일 출처** — `packages/tokens/src/index.ts` 와 `packages/ui/src/styles/tokens.css` 를 기준으로 한다. 컴포넌트에 hex/숫자 하드코딩 절대 금지
+1. **토큰이 단일 출처** — `packages/tokens/src/index.ts` 를 기준으로 한다 (앱은 `theme.ts`, 웹은 `apps/web/lib/tokens-css.ts` 로 변환). 컴포넌트에 hex/숫자 하드코딩 절대 금지
 2. **안전도 색 = 신뢰** — safe/caution/danger/emergency 색은 앱의 핵심 신뢰 지표. 브랜드색과 절대 혼용하지 않는다
 3. **다크모드 동등** — 라이트모드와 동일한 수준의 QA를 다크모드에서 수행한다
 4. **SUIT 폰트 우선** — 한글 가독성 1순위. 폴백: Apple SD Gothic Neo → Pretendard
@@ -47,12 +47,3 @@ docs/design_handoff_daengdaeng_care/
 | 본문 | `--text`, `--text-2`, `--text-3` | `#1F1B13` 직접 |
 | 배경 | `--bg`, `--surface`, `--surface-2` | `#FFFDF9` 직접 |
 | 다크모드 | 동일 토큰 (자동 전환) | 다크 전용 hex 하드코딩 |
-
----
-
-## Storybook 운영 규칙
-
-- Story 파일명: `ComponentName.stories.tsx`
-- 기본 Story 이름: 가장 흔한 사용 케이스
-- `autodocs` 태그 필수 (컴포넌트 문서 자동 생성)
-- Chromatic 승인 없이 디자인 변경 PR 머지 불가

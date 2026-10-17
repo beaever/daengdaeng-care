@@ -25,7 +25,6 @@ docs/design_handoff_daengdaeng_care/
 ## 패키지 구조
 ```
 packages/tokens    ← 디자인 토큰 TS
-packages/ui        ← 웹 컴포넌트 (Vite + Storybook) — 동결, 앱에서 사용 안 함
 packages/constants ← 음식 DB, 증상 트리 (앱 데이터 단일 출처)
 apps/mobile        ← Expo RN 앱 (components/ui, components/compound 가 앱 컴포넌트)
 apps/web           ← Next.js 랜딩

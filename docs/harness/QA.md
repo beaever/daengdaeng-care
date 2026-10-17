@@ -13,7 +13,6 @@ QA는 **품질 게이트**를 소유한다. 기능이 명세대로 동작하는�
 
 ### 컴포넌트/로직 테스트 (jest-expo — `apps/mobile`)
 - 범위: `components/ui`, `components/compound`, `lib`(SQLite 저장/조회 등)
-- Storybook/Chromatic은 `packages/ui`(동결, 웹 전용)에만 존재 — 앱 화면과 무관, 앱 QA 범위 아님
 
 ### E2E 테스트 — 없음
 - Detox 등 미도입. 실기기 수동 QA(아래 체크리스트)가 E2E를 대체한다

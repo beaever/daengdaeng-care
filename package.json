@@ -14,9 +14,6 @@
     "type-check": "turbo run type-check",
     "test": "turbo run test",
     "check": "turbo run type-check lint test build",
-    "storybook": "turbo run storybook --filter=@daengdaeng/ui",
-    "storybook:build": "turbo run storybook:build --filter=@daengdaeng/ui",
-    "chromatic": "turbo run chromatic --filter=@daengdaeng/ui",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {

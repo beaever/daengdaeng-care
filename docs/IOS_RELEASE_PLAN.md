@@ -12,7 +12,7 @@
 |------|------|------|
 | 플랫폼 | iOS 전용. `android` 설정은 두되 빌드·QA하지 않음 | 출시 범위 축소 |
 | 광고 | **v1.0 미적용.** 화면의 광고 자리 표시자도 제거. MAU가 오르면 v1.x에서 도입 | 사용자 결정 (2026-09-26) |
-| 컴포넌트 | 앱은 `apps/mobile/components` (RN)만 사용. `packages/ui` 는 웹·Storybook용으로 동결 | 앱이 `packages/ui` 를 import하지 않음 |
+| 컴포넌트 | 앱은 `apps/mobile/components` (RN)만 사용. 쓰이지 않던 `packages/ui`(웹·Storybook)는 삭제 | `packages/ui` 없음 |
 | 데이터 | 음식·증상은 `@daengdaeng/constants`를 단일 출처로 사용. `lib/sampleData.ts` 는 삭제 대상 | 테스트된 로직과 실제 앱 로직 일치 |
 | 로컬 DB | `expo-sqlite` 직접 사용 (Drizzle 없음) | 테이블이 2개라 ORM이 오버헤드 |
 | 다크모드 | v1.0은 라이트 고정 (`userInterfaceStyle: "light"`). 다크는 v1.1 | `theme.ts` 의 `colors` 가 light로 고정되어 있음 |
