@@ -109,7 +109,7 @@
 - [x] **T3.2 개인정보처리방침·지원 페이지** · `mobile-engineer` (apps/web)
   - `apps/web` 에 `/privacy`, `/support` 추가 후 Vercel 배포. 앱 설정 화면에도 링크
   - 내용: 데이터는 기기에만 저장, 위치는 병원 검색 요청 시 카카오에만 전송, 광고·추적 없음
-  - **결과 (2026-10-14):** Cloudflare Pages 정적 배포(`daengdaeng-care.pages.dev`)로 결정. `/privacy`·`/support`·`llms.txt`·JSON-LD. 앱 설정에 고객 지원·개인정보 처리방침 링크, 이용약관 행 삭제(Apple 표준 EULA)
+  - **결과 (2026-10-14):** Cloudflare Pages 정적 배포(`daengdaeng-care.pages.dev`)로 결정. `/privacy`·`/support`·`llms.txt`·JSON-LD. 앱 설정에 고객 지원·개인정보 처리방침 링크, 이용약관은 2026-10-15 건강 정보 면책 조항이 필요해 `/terms` 로 다시 추가
 - [ ] **T3.3 App Privacy·연령 등급** · `release-engineer`
   - 광고·추적이 없으므로 ATT 불필요. 위치는 "앱 기능, 사용자와 연결되지 않음"으로 신고할지 검토
 - [ ] **T3.4 메타데이터** · `release-engineer`

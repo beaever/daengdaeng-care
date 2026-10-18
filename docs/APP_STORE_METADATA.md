@@ -15,6 +15,7 @@ T3.3(App Privacy·연령 등급)·T3.4(메타데이터) 에서 App Store Connect
 | 개인정보처리방침 URL | https://daengdaeng-care.pages.dev/privacy |
 | 지원 URL | https://daengdaeng-care.pages.dev/support |
 | 마케팅 URL (선택) | https://daengdaeng-care.pages.dev |
+| 이용약관 (설명 끝·EULA) | https://daengdaeng-care.pages.dev/terms |
 | 저작권 | © 2026 댕댕케어 |
 
 > 의료 카테고리는 심사가 엄격하므로 쓰지 않는다 (계획서 T3.4).
@@ -49,7 +50,11 @@ T3.3(App Privacy·연령 등급)·T3.4(메타데이터) 에서 App Store Connect
 반려견 프로필과 건강 기록은 기기 안에만 저장돼요. 서버로 보내지 않아요.
 
 ※ 댕댕케어가 제공하는 정보는 참고용이며 수의사의 진단을 대신하지 않습니다. 이상 증상이 있거나 응급 상황으로 의심되면 즉시 동물병원에 방문하세요.
+
+이용약관: https://daengdaeng-care.pages.dev/terms
 ```
+
+> 사용권 계약(EULA)은 Apple 표준을 그대로 두고, 건강 정보 면책은 `/terms` 와 앱 설정 링크로 고지한다.
 
 ## 4. 키워드 (100자, 쉼표 구분·공백 없이)
 
