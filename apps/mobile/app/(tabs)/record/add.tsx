@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
+import * as ImagePicker from 'expo-image-picker';
 import { colors, space, radius, fontFamily, typography } from '../../../theme';
 import { Field, Input, Textarea, Button, PillGroup, DateField } from '../../../components/ui';
 import type { PillGroupOption } from '../../../components/ui';
 import { RECORD_META } from '../../../components/compound';
 import { addRecord, type RecordType, type NewRecord } from '../../../lib/records';
+import { savePetPhoto, deletePetPhoto } from '../../../lib/pets';
 import { toLocalDateString, parseLocalDate, addYears } from '../../../lib/recordSummary';
 
-const TYPE_ORDER: RecordType[] = ['vaccine', 'weight', 'vet'];
+const TYPE_ORDER: RecordType[] = ['vaccine', 'weight', 'vet', 'walk'];
 
 const VACCINE_OPTIONS: PillGroupOption[] = [
   { label: 'DHPPL', value: 'DHPPL' },
@@ -30,6 +32,17 @@ function normalizeWeight(raw: string): string | null {
   return normalized;
 }
 
+/** 산책 시간(분) — 비어 있으면 '', 1~600 정수가 아니면 null. */
+function normalizeMinutes(raw: string): string | null {
+  const t = raw.trim();
+  if (t === '') return '';
+  if (!/^\d+$/.test(t)) return null;
+  const n = Number(t);
+  return n >= 1 && n <= 600 ? String(n) : null;
+}
+
+const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = { mediaTypes: ['images'], quality: 0.7 };
+
 // SCR-015 · 기록 추가 (모달/시트) — 기록 종류 선택 → 종류별 동적 폼 → 저장하기.
 // 폼 자체는 화면 입력이므로 화면에서 조립. 종류 아이콘·라벨은 RECORD_META 단일 출처(RULES 2·3).
 export default function AddRecordScreen() {
@@ -46,6 +59,8 @@ export default function AddRecordScreen() {
   const [hospitalName, setHospitalName] = useState('');
   const [visitReason, setVisitReason] = useState('');
   const [notes, setNotes] = useState('');
+  const [walkMinutes, setWalkMinutes] = useState('');
+  const [pickedPhoto, setPickedPhoto] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const today = new Date();
@@ -59,8 +74,33 @@ export default function AddRecordScreen() {
   const vaccineValid = vaccineKind !== '기타' || vaccineOther.trim().length > 0;
   const weightValid = normalizeWeight(weightText) !== null;
   const vetValid = hospitalName.trim().length > 0;
-  const canSave =
-    !saving && (type === 'vaccine' ? vaccineValid : type === 'weight' ? weightValid : vetValid);
+  const walkValid = normalizeMinutes(walkMinutes) !== null;
+  const typeValid = { vaccine: vaccineValid, weight: weightValid, vet: vetValid, walk: walkValid }[type];
+  const canSave = !saving && typeValid;
+
+  const takePhoto = async () => {
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert('카메라 권한이 필요해요', 'iPhone 설정 → 댕댕케어에서 카메라를 허용해주세요.');
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync(PICKER_OPTIONS);
+    if (!result.canceled && result.assets[0]) setPickedPhoto(result.assets[0].uri);
+  };
+
+  const choosePhoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS);
+    if (!result.canceled && result.assets[0]) setPickedPhoto(result.assets[0].uri);
+  };
+
+  const pickPhoto = () => {
+    Alert.alert('산책 사진', undefined, [
+      { text: '사진 찍기', onPress: takePhoto },
+      { text: '앨범에서 고르기', onPress: choosePhoto },
+      ...(pickedPhoto ? [{ text: '사진 빼기', style: 'destructive' as const, onPress: () => setPickedPhoto(null) }] : []),
+      { text: '취소', style: 'cancel' },
+    ]);
+  };
 
   const buildInput = (): NewRecord => {
     const dateStr = toLocalDateString(date);
@@ -82,6 +122,15 @@ export default function AddRecordScreen() {
         notes: notesValue,
       };
     }
+    if (type === 'walk') {
+      const minutes = normalizeMinutes(walkMinutes);
+      return {
+        type: 'walk',
+        date: dateStr,
+        title: minutes ? `${minutes}분 산책` : '산책',
+        notes: notesValue,
+      };
+    }
     return {
       type: 'vet',
       date: dateStr,
@@ -93,10 +142,13 @@ export default function AddRecordScreen() {
 
   const save = async () => {
     setSaving(true);
+    let photo: string | null = null;
     try {
-      await addRecord(db, buildInput());
+      if (type === 'walk' && pickedPhoto) photo = savePetPhoto(pickedPhoto);
+      await addRecord(db, { ...buildInput(), photo });
       router.back();
     } catch {
+      if (photo) deletePetPhoto(photo); // DB 저장 실패 시 복사한 파일이 고아로 남지 않게
       Alert.alert('저장하지 못했어요', '잠시 후 다시 시도해주세요.');
     } finally {
       setSaving(false);
@@ -158,6 +210,29 @@ export default function AddRecordScreen() {
           </>
         )}
 
+        {type === 'walk' && (
+          <>
+            <DateField label="산책한 날" value={date} onChange={changeDate} maximumDate={today} />
+            <Field label="산책 시간 (분, 선택)">
+              <Input placeholder="예) 30" inputMode="numeric" value={walkMinutes} onChangeText={setWalkMinutes} />
+            </Field>
+            <Field label="사진 (선택)">
+              <Pressable
+                onPress={pickPhoto}
+                accessibilityRole="button"
+                accessibilityLabel={pickedPhoto ? '산책 사진 바꾸기' : '산책 사진 추가'}
+                style={styles.photoBox}
+              >
+                {pickedPhoto ? (
+                  <Image source={{ uri: pickedPhoto }} style={styles.photo} accessibilityIgnoresInvertColors />
+                ) : (
+                  <Text style={styles.photoHint}>📷 사진 찍기 · 앨범에서 고르기</Text>
+                )}
+              </Pressable>
+            </Field>
+          </>
+        )}
+
         <Field label="메모 (선택)">
           <Textarea placeholder="특이사항을 적어주세요" value={notes} onChangeText={setNotes} />
         </Field>
@@ -170,7 +245,7 @@ export default function AddRecordScreen() {
   );
 }
 
-// 기록 종류 3칩 그리드 — 선택 시 brand 강조.
+// 기록 종류 4칩 그리드 — 선택 시 brand 강조.
 function RecordTypeSelector({
   value,
   onChange,
@@ -222,4 +297,14 @@ const styles = StyleSheet.create({
   typeLabel: { fontFamily, fontSize: typography.sub.size, fontWeight: '600', color: colors.text2 },
   typeLabelOn: { color: colors.brandText, fontWeight: '700' },
   pillRows: { gap: space[2] },
+  photoBox: {
+    minHeight: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface2,
+    borderRadius: radius.sm,
+    overflow: 'hidden',
+  },
+  photo: { width: '100%', aspectRatio: 4 / 3 },
+  photoHint: { fontFamily, fontSize: typography.sub.size, fontWeight: '600', color: colors.text2 },
 });

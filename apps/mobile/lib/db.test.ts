@@ -10,32 +10,46 @@ function mockDb(initialVersion: number) {
 }
 
 describe('migrate', () => {
-  it('첫 실행(user_version 0)이면 테이블을 만들고 next_date 컬럼까지 추가해 버전을 2로 올린다', async () => {
+  it('첫 실행(user_version 0)이면 테이블을 만들고 next_date·photo 컬럼까지 추가해 버전을 3으로 올린다', async () => {
     const { db, execAsync, withTransactionAsync } = mockDb(0);
 
     await migrate(db);
 
-    expect(withTransactionAsync).toHaveBeenCalledTimes(2);
+    expect(withTransactionAsync).toHaveBeenCalledTimes(3);
     const createTableCall = execAsync.mock.calls.find(([sql]) => /CREATE TABLE/.test(sql));
     expect(createTableCall).toBeDefined();
     const alterCall = execAsync.mock.calls.find(([sql]) => /ALTER TABLE records ADD COLUMN next_date/.test(sql));
     expect(alterCall).toBeDefined();
     expect(execAsync).toHaveBeenCalledWith('PRAGMA user_version = 1');
     expect(execAsync).toHaveBeenCalledWith('PRAGMA user_version = 2');
+    expect(execAsync).toHaveBeenCalledWith('ALTER TABLE records ADD COLUMN photo TEXT;');
+    expect(execAsync).toHaveBeenCalledWith('PRAGMA user_version = 3');
   });
 
-  it('user_version 1이면 ALTER TABLE만 실행해 버전을 2로 올린다', async () => {
+  it('user_version 1이면 ALTER TABLE만 실행해 버전을 3으로 올린다', async () => {
     const { db, execAsync, withTransactionAsync } = mockDb(1);
 
     await migrate(db);
 
-    expect(withTransactionAsync).toHaveBeenCalledTimes(1);
+    expect(withTransactionAsync).toHaveBeenCalledTimes(2);
     const createTableCall = execAsync.mock.calls.find(([sql]) => /CREATE TABLE/.test(sql));
     expect(createTableCall).toBeUndefined();
     const alterCall = execAsync.mock.calls.find(([sql]) => /ALTER TABLE records ADD COLUMN next_date/.test(sql));
     expect(alterCall).toBeDefined();
     expect(execAsync).not.toHaveBeenCalledWith('PRAGMA user_version = 1');
     expect(execAsync).toHaveBeenCalledWith('PRAGMA user_version = 2');
+    expect(execAsync).toHaveBeenCalledWith('PRAGMA user_version = 3');
+  });
+
+  it('user_version 2이면 photo 컬럼만 추가해 버전을 3으로 올린다', async () => {
+    const { db, execAsync, withTransactionAsync } = mockDb(2);
+
+    await migrate(db);
+
+    expect(withTransactionAsync).toHaveBeenCalledTimes(1);
+    expect(execAsync).toHaveBeenCalledWith('ALTER TABLE records ADD COLUMN photo TEXT;');
+    expect(execAsync).not.toHaveBeenCalledWith('PRAGMA user_version = 2');
+    expect(execAsync).toHaveBeenCalledWith('PRAGMA user_version = 3');
   });
 
   it('user_version 은 스키마 변경과 같은 트랜잭션 안에서 올린다 (중간에 앱이 죽어도 어긋나지 않게)', async () => {
@@ -53,11 +67,11 @@ describe('migrate', () => {
 
     await migrate(db);
 
-    expect(pragmaInTx).toEqual([true, true]);
+    expect(pragmaInTx).toEqual([true, true, true]);
   });
 
-  it('이미 최신(user_version 2)이면 재실행해도 아무것도 하지 않는다 (멱등)', async () => {
-    const { db, execAsync, withTransactionAsync } = mockDb(2);
+  it('이미 최신(user_version 3)이면 재실행해도 아무것도 하지 않는다 (멱등)', async () => {
+    const { db, execAsync, withTransactionAsync } = mockDb(3);
 
     await migrate(db);
 
@@ -66,5 +80,6 @@ describe('migrate', () => {
     expect(createTableCall).toBeUndefined();
     expect(execAsync).not.toHaveBeenCalledWith('PRAGMA user_version = 1');
     expect(execAsync).not.toHaveBeenCalledWith('PRAGMA user_version = 2');
+    expect(execAsync).not.toHaveBeenCalledWith('PRAGMA user_version = 3');
   });
 });

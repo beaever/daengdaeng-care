@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { fontFamily, typography, space, colors } from '../../theme';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { fontFamily, typography, space, radius, colors } from '../../theme';
 import { Avatar, Card, Segment, EmptyState, Button } from '../ui';
 import { photoUri, type Pet } from '../../lib/pets';
 import { type HealthRecord as LibHealthRecord, type RecordType } from '../../lib/records';
@@ -15,6 +15,7 @@ export const RECORD_META: Record<RecordType, { emoji: string; label: string }> =
   vaccine: { emoji: '💉', label: '예방접종' },
   weight: { emoji: '⚖️', label: '체중' },
   vet: { emoji: '🏥', label: '병원 방문' },
+  walk: { emoji: '🐾', label: '산책' },
 };
 
 /** 카테고리 탭 값 — 전체 + 기록 종류 */
@@ -54,6 +55,7 @@ const TAB_OPTIONS: { value: RecordTab; label: string }[] = [
   { value: 'vaccine', label: '접종' },
   { value: 'weight', label: '체중' },
   { value: 'vet', label: '병원' },
+  { value: 'walk', label: '산책' },
 ];
 
 function CategoryTabs({ tab, onTab }: { tab: RecordTab; onTab: (tab: RecordTab) => void }) {
@@ -117,7 +119,7 @@ function entryTitle(rec: LibHealthRecord): string {
   return rec.type === 'weight' ? `${rec.title} kg` : rec.title;
 }
 
-/** 기록 종류별 부가 설명 — 다음 접종일 / 직전 대비 체중 증감 / 방문 사유. */
+/** 기록 종류별 부가 설명 — 다음 접종일 / 직전 대비 체중 증감 / 방문 사유·산책 시간. */
 function entrySub(rec: LibHealthRecord, records: LibHealthRecord[]): string | undefined {
   if (rec.type === 'vaccine') {
     return rec.next_date ? `다음 접종: ${rec.next_date.replace(/-/g, '.')}` : undefined;
@@ -157,6 +159,9 @@ function Entry({
           {sub != null && <Text style={styles.entrySub}>{sub}</Text>}
           {rec.notes != null && rec.notes !== '' && <Text style={styles.entryNotes}>{rec.notes}</Text>}
         </View>
+        {rec.photo != null && (
+          <Image source={{ uri: photoUri(rec.photo) }} style={styles.entryPhoto} accessibilityIgnoresInvertColors />
+        )}
       </Card>
     </Pressable>
   );
@@ -195,4 +200,5 @@ const styles = StyleSheet.create({
   entryTitle: { fontFamily, fontSize: typography.callout.size, fontWeight: '700', color: colors.text },
   entrySub: { fontFamily, fontSize: typography.caption.size, color: colors.text2 },
   entryNotes: { fontFamily, fontSize: typography.caption.size, color: colors.text3 },
+  entryPhoto: { width: 64, height: 64, borderRadius: radius.sm, backgroundColor: colors.surface2 },
 });
