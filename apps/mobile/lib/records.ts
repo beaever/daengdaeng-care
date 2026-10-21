@@ -5,6 +5,7 @@ import { useFocusEffect } from 'expo-router';
 import { type SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addYears } from './recordSummary';
 import { deletePetPhoto } from './pets';
+import type { RoutePoint } from './geo';
 
 export type RecordType = 'vaccine' | 'weight' | 'vet' | 'walk';
 
@@ -35,6 +36,22 @@ export async function listRecords(db: SQLiteDatabase): Promise<HealthRecord[]> {
             EXISTS(SELECT 1 FROM walk_points WHERE record_id = records.id) AS has_route
      FROM records WHERE pet_id = $petId ORDER BY date DESC, id DESC`,
     { $petId: PET_ID }
+  );
+}
+
+export async function getRecord(db: SQLiteDatabase, id: number): Promise<HealthRecord | null> {
+  return db.getFirstAsync<HealthRecord>(
+    `SELECT id, pet_id, type, date, title, sub, notes, next_date, photo, created_at,
+            EXISTS(SELECT 1 FROM walk_points WHERE record_id = records.id) AS has_route
+     FROM records WHERE id = $id`,
+    { $id: id }
+  );
+}
+
+export async function listRoutePoints(db: SQLiteDatabase, recordId: number): Promise<RoutePoint[]> {
+  return db.getAllAsync<RoutePoint>(
+    'SELECT seg, ts, lat, lng FROM walk_points WHERE record_id = $id ORDER BY seg, ts',
+    { $id: recordId }
   );
 }
 

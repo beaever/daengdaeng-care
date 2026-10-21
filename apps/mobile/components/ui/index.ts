@@ -35,3 +35,5 @@ export { Field, Input, Textarea } from './Input';
 export type { FieldProps, InputProps } from './Input';
 export { DateField } from './DateField';
 export type { DateFieldProps } from './DateField';
+export { WalkRouteMap } from './WalkRouteMap';
+export type { WalkRouteMapProps } from './WalkRouteMap';

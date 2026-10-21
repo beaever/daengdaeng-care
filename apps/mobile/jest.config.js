@@ -32,6 +32,8 @@ preset.moduleNameMapper = {
   // 흩어져 있다. 사본이 다르면 버전이 같아도 훅 디스패처가 달라 "Cannot read properties of
   // null (reading 'useRef')"가 난다. apps/mobile 자신의 react/react-test-renderer(19.2.3,
   // jest-expo가 고정하는 버전과 동일)로 강제 고정해 하나의 인스턴스만 쓰게 한다.
+  // 네이티브 지도 모듈은 jest 에서 로드되지 않는다 — ui/index 를 통해 끌려오므로 스텁으로 대체.
+  '^react-native-maps$': '<rootDir>/jest.mapsStub.js',
   '^react$': '<rootDir>/node_modules/react',
   '^react/(.*)$': '<rootDir>/node_modules/react/$1',
   '^react-test-renderer$': '<rootDir>/../../node_modules/react-test-renderer',
