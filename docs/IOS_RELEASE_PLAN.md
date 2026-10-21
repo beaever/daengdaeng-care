@@ -101,6 +101,7 @@
 - [ ] **T2.26 산책 경로 기록 (2026-10-20 추가, v1.0 포함)** · `release-engineer`·`data-engineer`·`mobile-engineer`·`qa-engineer`
   - 방식: `Location.startLocationUpdatesAsync`(expo-task-manager) + "앱 사용 중" 권한만. `requestBackgroundPermissionsAsync` 호출 금지, `UIBackgroundModes: location`, 시작~종료 사이에만 수신(일시정지 시 중단), 파란 위치 표시. 경로는 기기 SQLite(`walk_points`)에만 저장
   - W1 (release) expo-task-manager, app.json `isIosBackgroundLocationEnabled`, 위치 권한 문구 교체 · W2 (data) DB v4, `lib/geo.ts`, records 연동 · W3 (data) `lib/walkTask.ts`·`lib/walk.ts`, 앱 시작 시 잔여 태스크 정리 · W4 (mobile) WalkRouteMap, 기록 경로 보기 · W5 (mobile) WalkSession 컴파운드·`app/walk.tsx`·홈/추가 시트 진입점·미완료 세션 Alert · W6 (release) 개인정보처리방침(웹 재배포 필요)·메타데이터·계획서 · W7 (qa+사람) 컴파운드 테스트, TestFlight, QA.md "산책 경로" 실외 체크리스트
+  - 2026-10-21 하단 탭 변경: 홈·**산책**·증상·병원·기록 (음식 판별은 탭에서 빼고 홈 바로가기로만 진입, 탭 5개 유지). 산책 탭 = 산책 시작 + 산책 기록 목록
   - 완료 조건: introspect 에 `UIBackgroundModes` location 만 있고 `NSLocationAlways*` 없음, 실외 체크리스트 13개 통과, 치명 버그 0
 - [ ] **T2.3 실기기 QA** · `qa-engineer`
   - QA.md 체크리스트를 iPhone SE(375pt)와 Pro Max에서 수행

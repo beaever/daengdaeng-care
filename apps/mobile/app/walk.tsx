@@ -64,7 +64,7 @@ export default function WalkScreen() {
     try {
       await save(db, { photo, notes: notes.trim() || null });
       router.back();
-      router.navigate('/record');
+      router.navigate('/walks');
     } catch {
       Alert.alert('저장하지 못했어요', '잠시 후 다시 시도해주세요.');
     } finally {

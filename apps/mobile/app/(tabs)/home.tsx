@@ -29,11 +29,6 @@ export default function HomeScreen() {
     }, [db])
   );
 
-  const startWalk = async () => {
-    await promptPendingWalk(db).catch(() => {});
-    router.push('/walk');
-  };
-
   if (!pet) return null; // 로딩 중이거나(undefined) 프로필 없음(null) — 라우팅으로 대부분 방지됨
 
   const list = records ?? [];
@@ -63,7 +58,6 @@ export default function HomeScreen() {
             <QuickMenu.Item icon="🩺" label="증상 체크" sub="병원 가야 하나?" onPress={() => router.push('/symptom')} />
             <QuickMenu.Item icon="🏥" label="병원 찾기" sub="근처 동물병원" onPress={() => router.push('/hospital')} />
             <QuickMenu.Item icon="📋" label="건강 기록" sub="체중·접종·병원" onPress={() => router.push('/record')} />
-            <QuickMenu.Item icon="🐾" label="산책 시작" sub="경로·시간 기록" onPress={startWalk} />
           </QuickMenu>
         </View>
 
