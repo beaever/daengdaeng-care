@@ -38,3 +38,44 @@ export function formatDistance(m: number): string {
   if (roundedTens < 1000) return `${roundedTens}m`;
   return `${(m / 1000).toFixed(1)}km`;
 }
+
+/** 저장되는 경로 포인트. seg 는 일시정지/재개마다 +1 — 다른 seg 끼리는 잇지 않는다. */
+export interface RoutePoint extends LatLng {
+  seg: number;
+  /** epoch ms */
+  ts: number;
+}
+
+/** acceptPoint 입력용. accuracy = 수평 정확도(m), 알 수 없으면 null. */
+export interface RawPoint extends LatLng {
+  ts: number;
+  accuracy: number | null;
+}
+
+export const MAX_ACCURACY_M = 30;
+export const MAX_SPEED_MPS = 7;
+export const MIN_MOVE_M = 3;
+
+/** 같은 seg 안의 연속 포인트 사이 거리(m)의 합. */
+export function routeDistance(points: RoutePoint[]): number {
+  let sum = 0;
+  for (let i = 1; i < points.length; i++) {
+    if (points[i].seg === points[i - 1].seg) sum += distanceMeters(points[i - 1], points[i]);
+  }
+  return sum;
+}
+
+/**
+ * 새 위치를 경로에 넣을지 판단한다. 버림: 정확도 > 30m 또는 null, 시작 전 캐시 위치(ts < startedAt),
+ * 직전 대비 속도 > 7m/s(GPS 튐), 직전과 < 3m(제자리 떨림). prev 없으면 앞 두 조건만 본다.
+ */
+export function acceptPoint(prev: RoutePoint | null, next: RawPoint, startedAt: number): boolean {
+  if (next.accuracy === null || next.accuracy > MAX_ACCURACY_M) return false;
+  if (next.ts < startedAt) return false;
+  if (!prev) return true;
+  const d = distanceMeters(prev, next);
+  if (d < MIN_MOVE_M) return false;
+  const dt = (next.ts - prev.ts) / 1000;
+  // 일시정지 후 재개 첫 포인트는 시간차가 커서 속도 검사를 자연 통과한다.
+  return dt > 0 && d / dt <= MAX_SPEED_MPS;
+}
