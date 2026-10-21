@@ -48,6 +48,14 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
     version = 2;
   }
 
+  if (version < 3) {
+    await db.withTransactionAsync(async () => {
+      await db.execAsync('ALTER TABLE records ADD COLUMN photo TEXT;');
+      await db.execAsync('PRAGMA user_version = 3');
+    });
+    version = 3;
+  }
+
   // 다음 마이그레이션은 이어 붙인다:
-  // if (version < 3) { await db.withTransactionAsync(async () => { ...; await db.execAsync('PRAGMA user_version = 3'); }); version = 3; }
+  // if (version < 4) { await db.withTransactionAsync(async () => { ...; await db.execAsync('PRAGMA user_version = 4'); }); version = 4; }
 }

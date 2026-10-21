@@ -94,6 +94,10 @@
   - **결과 (2026-10-08):** 임시 아이콘(브랜드 그라데이션 + 흰 발바닥, 알파 없음)과 스플래시(브랜드 500 단색) 적용, version 1.0.0. expo-location 의 영어 기본 `NSMotionUsageDescription` 을 `motionUsagePermission: false` 로 제거했다. 앱 manifest(UserDefaults·FileTimestamp·SystemBootTime)는 prebuild 가 생성하고, expo-file-system·react-native-maps 는 자체 manifest 가 있다. 누락은 TestFlight 업로드 시 ITMS-91053 메일로 확인한다. 동작하지 않던 홈 알림 아이콘과 설정 "앱 설정"(알림·단위) 섹션을 삭제했다. 정식 아이콘이 생기면 `assets/icon.png` 만 교체하면 된다.
 - [x] **T2.2 접근성 기본** · `mobile-engineer`
   - 터치 타깃 44pt, 아이콘 버튼에 `accessibilityLabel`, 큰 글씨(Dynamic Type 최대)에서 레이아웃 확인
+- [ ] **T2.25 산책 기록 (2026-10-20 추가)** · `mobile-engineer`
+  - 건강 기록에 `walk` 종류 추가: 날짜·산책 시간(분, 선택)·사진 1장(촬영 또는 앨범, 선택)·메모. GPS 경로 기록은 v1.1 이후 검토
+  - DB v3: `records.photo` 컬럼. 사진은 프로필 사진과 같이 document 디렉터리에 파일명으로 저장, 기록 삭제 시 함께 삭제
+  - 카메라 권한 문구 추가 → 개인정보처리방침 권한 항목 갱신(웹 재배포 필요)
 - [ ] **T2.3 실기기 QA** · `qa-engineer`
   - QA.md 체크리스트를 iPhone SE(375pt)와 Pro Max에서 수행
   - EAS production 빌드 (첫 EAS 빌드, Xcode 26 클라우드 빌드 검증 겸함) → TestFlight 내부 테스터 배포

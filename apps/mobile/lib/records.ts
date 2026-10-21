@@ -4,8 +4,9 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { type SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addYears } from './recordSummary';
+import { deletePetPhoto } from './pets';
 
-export type RecordType = 'vaccine' | 'weight' | 'vet';
+export type RecordType = 'vaccine' | 'weight' | 'vet' | 'walk';
 
 export interface HealthRecord {
   id: number;
@@ -16,17 +17,19 @@ export interface HealthRecord {
   sub: string | null;
   notes: string | null;
   next_date: string | null;
+  /** document 디렉터리 기준 파일명 (savePetPhoto 반환값) */
+  photo: string | null;
   created_at: string;
 }
 
 export type NewRecord = Pick<HealthRecord, 'type' | 'date' | 'title'> &
-  Partial<Pick<HealthRecord, 'sub' | 'notes' | 'next_date'>>;
+  Partial<Pick<HealthRecord, 'sub' | 'notes' | 'next_date' | 'photo'>>;
 
 const PET_ID = 1;
 
 export async function listRecords(db: SQLiteDatabase): Promise<HealthRecord[]> {
   return db.getAllAsync<HealthRecord>(
-    `SELECT id, pet_id, type, date, title, sub, notes, next_date, created_at
+    `SELECT id, pet_id, type, date, title, sub, notes, next_date, photo, created_at
      FROM records WHERE pet_id = $petId ORDER BY date DESC, id DESC`,
     { $petId: PET_ID }
   );
@@ -39,8 +42,8 @@ export async function addRecord(db: SQLiteDatabase, input: NewRecord): Promise<v
     input.next_date !== undefined ? input.next_date : input.type === 'vaccine' ? addYears(input.date, 1) : null;
 
   await db.runAsync(
-    `INSERT INTO records (pet_id, type, date, title, sub, notes, next_date)
-     VALUES ($petId, $type, $date, $title, $sub, $notes, $nextDate)`,
+    `INSERT INTO records (pet_id, type, date, title, sub, notes, next_date, photo)
+     VALUES ($petId, $type, $date, $title, $sub, $notes, $nextDate, $photo)`,
     {
       $petId: PET_ID,
       $type: input.type,
@@ -49,12 +52,16 @@ export async function addRecord(db: SQLiteDatabase, input: NewRecord): Promise<v
       $sub: input.sub ?? null,
       $notes: input.notes ?? null,
       $nextDate: nextDate,
+      $photo: input.photo ?? null,
     }
   );
 }
 
 export async function deleteRecord(db: SQLiteDatabase, id: number): Promise<void> {
+  const row = await db.getFirstAsync<{ photo: string | null }>('SELECT photo FROM records WHERE id = $id', { $id: id });
   await db.runAsync('DELETE FROM records WHERE id = $id', { $id: id });
+  // DB 삭제가 끝난 뒤에 파일을 지운다 — 반대 순서면 삭제 실패 시 사진만 사라진다.
+  if (row?.photo) deletePetPhoto(row.photo);
 }
 
 export function useRecords(): { records: HealthRecord[] | undefined; reload: () => void } {

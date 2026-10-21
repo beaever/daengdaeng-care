@@ -20,6 +20,7 @@ function rec(partial: Partial<HealthRecord> & Pick<HealthRecord, 'id' | 'type' |
     sub: null,
     notes: null,
     next_date: null,
+    photo: null,
     created_at: '2026-01-01 00:00:00',
     ...partial,
   };
