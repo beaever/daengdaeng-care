@@ -6,6 +6,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { colors, space } from '../../../theme';
 import { HealthRecord } from '../../../components/compound';
 import { EmptyState, Button } from '../../../components/ui';
+import { usePet } from '../../../lib/pets';
 import { getRecord, listRoutePoints, type HealthRecord as Rec } from '../../../lib/records';
 import type { RoutePoint } from '../../../lib/geo';
 
@@ -15,6 +16,7 @@ export default function RecordDetailScreen() {
   const router = useRouter();
   const db = useSQLiteContext();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { pet } = usePet();
   const [state, setState] = useState<{ rec: Rec | null; points: RoutePoint[] } | undefined>(undefined);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function RecordDetailScreen() {
       style={styles.root}
       contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + space[8] }]}
     >
-      <HealthRecord.Detail rec={state.rec} points={state.points} />
+      <HealthRecord.Detail rec={state.rec} points={state.points} petPhoto={pet?.photo} />
     </ScrollView>
   );
 }

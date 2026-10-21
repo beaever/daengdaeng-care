@@ -36,4 +36,6 @@ export type { FieldProps, InputProps } from './Input';
 export { DateField } from './DateField';
 export type { DateFieldProps } from './DateField';
 export { WalkRouteMap } from './WalkRouteMap';
+export { StickerPhoto } from './StickerPhoto';
+export type { StickerPhotoProps } from './StickerPhoto';
 export type { WalkRouteMapProps } from './WalkRouteMap';

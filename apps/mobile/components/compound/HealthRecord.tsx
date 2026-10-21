@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { fontFamily, typography, space, radius, colors } from '../../theme';
-import { Avatar, Card, Segment, EmptyState, Button, WalkRouteMap } from '../ui';
+import { Avatar, Card, Segment, EmptyState, Button, WalkRouteMap, StickerPhoto } from '../ui';
 import type { RoutePoint } from '../../lib/geo';
 import { photoUri, type Pet } from '../../lib/pets';
 import { type HealthRecord as LibHealthRecord, type RecordType } from '../../lib/records';
@@ -179,7 +179,7 @@ function Entry({
 }
 
 /** 기록 상세 — 경로 지도(있을 때) + 제목·거리·사진·메모. record/[id] 화면에서 조립한다. */
-function Detail({ rec, points }: { rec: LibHealthRecord; points: RoutePoint[] }) {
+function Detail({ rec, points, petPhoto }: { rec: LibHealthRecord; points: RoutePoint[]; petPhoto?: string | null }) {
   const m = RECORD_META[rec.type];
   const sub = entrySub(rec, [rec]);
   return (
@@ -190,7 +190,12 @@ function Detail({ rec, points }: { rec: LibHealthRecord; points: RoutePoint[] })
       <Text style={styles.detailTitle}>{entryTitle(rec)}</Text>
       {sub != null && <Text style={styles.detailSub}>{sub}</Text>}
       {rec.photo != null && (
-        <Image source={{ uri: photoUri(rec.photo) }} style={styles.detailPhoto} accessibilityIgnoresInvertColors />
+        // 산책 사진에만 반려견 스티커를 겹친다
+        rec.type === 'walk' ? (
+          <StickerPhoto uri={photoUri(rec.photo)!} stickerUri={photoUri(petPhoto ?? null)} style={styles.detailPhoto} />
+        ) : (
+          <Image source={{ uri: photoUri(rec.photo) }} style={styles.detailPhoto} accessibilityIgnoresInvertColors />
+        )
       )}
       {rec.notes != null && rec.notes !== '' && <Text style={styles.detailNotes}>{rec.notes}</Text>}
     </View>
@@ -236,7 +241,7 @@ const styles = StyleSheet.create({
   detailMap: { height: 280, borderRadius: radius.md, marginBottom: space[2] },
   detailTitle: { fontFamily, fontSize: typography.title.size, fontWeight: '700', color: colors.text },
   detailSub: { fontFamily, fontSize: typography.callout.size, color: colors.text2 },
-  detailPhoto: { width: '100%', aspectRatio: 4 / 3, borderRadius: radius.md, backgroundColor: colors.surface2 },
+  detailPhoto: { width: '100%', aspectRatio: 4 / 3, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.surface2 },
   detailNotes: { fontFamily, fontSize: typography.callout.size, color: colors.text },
   entryPhoto: { width: 64, height: 64, borderRadius: radius.sm, backgroundColor: colors.surface2 },
 });

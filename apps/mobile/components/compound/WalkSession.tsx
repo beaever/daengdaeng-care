@@ -1,8 +1,8 @@
 import React, { createContext, useContext } from 'react';
-import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import MapView, { Polyline } from 'react-native-maps';
 import { colors, space, radius, fontFamily, typography, fontScale } from '../../theme';
-import { Button, Field, Textarea, WalkRouteMap } from '../ui';
+import { Button, Field, Textarea, WalkRouteMap, StickerPhoto } from '../ui';
 import { formatDistance, type RoutePoint } from '../../lib/geo';
 import type { WalkPhase } from '../../lib/walk';
 
@@ -93,6 +93,8 @@ export interface WalkFinishProps {
   distanceM: number;
   points: RoutePoint[];
   photo: string | null;
+  /** 스티커로 겹칠 프로필 사진 URI */
+  petPhoto?: string;
   onPickPhoto: () => void;
   notes: string;
   onChangeNotes: (t: string) => void;
@@ -118,7 +120,7 @@ function WalkFinish(p: WalkFinishProps) {
           style={styles.photoBox}
         >
           {p.photo ? (
-            <Image source={{ uri: p.photo }} style={styles.photo} accessibilityIgnoresInvertColors />
+            <StickerPhoto uri={p.photo} stickerUri={p.petPhoto} />
           ) : (
             <Text style={styles.photoHint}>📷 사진 찍기 · 앨범에서 고르기</Text>
           )}

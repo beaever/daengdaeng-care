@@ -8,12 +8,14 @@ import { WalkSession } from '../components/compound';
 import { useWalkSession, start, pause, resume, finish, save, discard, type WalkResult } from '../lib/walk';
 import { pickWalkPhoto } from '../lib/walkPhoto';
 import { promptPendingWalk } from '../lib/walkRecover';
+import { usePet, photoUri } from '../lib/pets';
 
 // 산책 경로 기록 화면 (fullScreenModal). 진입 시 idle 이면 기록을 시작한다.
 export default function WalkScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const db = useSQLiteContext();
+  const { pet } = usePet();
   const view = useWalkSession();
   const [result, setResult] = useState<WalkResult | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
@@ -92,6 +94,7 @@ export default function WalkScreen() {
           <WalkSession.Finish
             {...fin}
             photo={photo}
+            petPhoto={photoUri(pet?.photo ?? null)}
             onPickPhoto={() => pickWalkPhoto(photo, setPhoto)}
             notes={notes}
             onChangeNotes={setNotes}
