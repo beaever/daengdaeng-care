@@ -95,9 +95,13 @@
 - [x] **T2.2 접근성 기본** · `mobile-engineer`
   - 터치 타깃 44pt, 아이콘 버튼에 `accessibilityLabel`, 큰 글씨(Dynamic Type 최대)에서 레이아웃 확인
 - [ ] **T2.25 산책 기록 (2026-10-20 추가)** · `mobile-engineer`
-  - 건강 기록에 `walk` 종류 추가: 날짜·산책 시간(분, 선택)·사진 1장(촬영 또는 앨범, 선택)·메모. GPS 경로 기록은 v1.1 이후 검토
+  - 건강 기록에 `walk` 종류 추가: 날짜·산책 시간(분, 선택)·사진 1장(촬영 또는 앨범, 선택)·메모. GPS 경로 기록은 당초 v1.1 이후 검토였으나 **2026-10-20 v1.0 포함으로 결정** (T2.26)
   - DB v3: `records.photo` 컬럼. 사진은 프로필 사진과 같이 document 디렉터리에 파일명으로 저장, 기록 삭제 시 함께 삭제
   - 카메라 권한 문구 추가 → 개인정보처리방침 권한 항목 갱신(웹 재배포 필요)
+- [ ] **T2.26 산책 경로 기록 (2026-10-20 추가, v1.0 포함)** · `release-engineer`·`data-engineer`·`mobile-engineer`·`qa-engineer`
+  - 방식: `Location.startLocationUpdatesAsync`(expo-task-manager) + "앱 사용 중" 권한만. `requestBackgroundPermissionsAsync` 호출 금지, `UIBackgroundModes: location`, 시작~종료 사이에만 수신(일시정지 시 중단), 파란 위치 표시. 경로는 기기 SQLite(`walk_points`)에만 저장
+  - W1 (release) expo-task-manager, app.json `isIosBackgroundLocationEnabled`, 위치 권한 문구 교체 · W2 (data) DB v4, `lib/geo.ts`, records 연동 · W3 (data) `lib/walkTask.ts`·`lib/walk.ts`, 앱 시작 시 잔여 태스크 정리 · W4 (mobile) WalkRouteMap, 기록 경로 보기 · W5 (mobile) WalkSession 컴파운드·`app/walk.tsx`·홈/추가 시트 진입점·미완료 세션 Alert · W6 (release) 개인정보처리방침(웹 재배포 필요)·메타데이터·계획서 · W7 (qa+사람) 컴파운드 테스트, TestFlight, QA.md "산책 경로" 실외 체크리스트
+  - 완료 조건: introspect 에 `UIBackgroundModes` location 만 있고 `NSLocationAlways*` 없음, 실외 체크리스트 13개 통과, 치명 버그 0
 - [ ] **T2.3 실기기 QA** · `qa-engineer`
   - QA.md 체크리스트를 iPhone SE(375pt)와 Pro Max에서 수행
   - EAS production 빌드 (첫 EAS 빌드, Xcode 26 클라우드 빌드 검증 겸함) → TestFlight 내부 테스터 배포
@@ -115,10 +119,11 @@
   - 내용: 데이터는 기기에만 저장, 위치는 병원 검색 요청 시 카카오에만 전송, 광고·추적 없음
   - **결과 (2026-10-14):** Cloudflare Pages 정적 배포(`daengdaeng-care.pages.dev`)로 결정. `/privacy`·`/support`·`llms.txt`·JSON-LD. 앱 설정에 고객 지원·개인정보 처리방침 링크, 이용약관은 2026-10-15 건강 정보 면책 조항이 필요해 `/terms` 로 다시 추가
 - [ ] **T3.3 App Privacy·연령 등급** · `release-engineer`
-  - 광고·추적이 없으므로 ATT 불필요. 위치는 "앱 기능, 사용자와 연결되지 않음"으로 신고할지 검토
+  - 광고·추적이 없으므로 ATT 불필요. 위치는 "앱 기능, 사용자와 연결되지 않음"으로 신고할지 검토. 산책 경로는 기기 밖으로 전송되지 않으므로 수집 아님 (T2.26, 변경 없음 — APP_STORE_METADATA.md §7)
 - [ ] **T3.4 메타데이터** · `release-engineer`
   - 6.9인치 스크린샷, 앱 이름, 부제, 설명, 키워드, 카테고리(라이프스타일 권장. 의료 카테고리는 심사가 엄격함)
   - 심사 노트: 증상 체크는 참고용이며 진단이 아니라는 설명과 음식 DB 출처 명시 (가이드라인 1.4.1 대응)
+  - 산책 경로: 심사 노트에 "While Using" 권한만 사용·Always 미요청·시작~종료 사이에만 기록·기기 밖 미전송·Simulator City Walk 테스트 방법을 영문으로 명시, 스크린샷에 산책 경로 화면 추가 (백그라운드 위치 2.5.4 대응)
 - [ ] **T3.5 릴리스** · `release-engineer`
   - `/gitflow release v1.0.0` → `dev → main` 머지 → `/ios-release` (production 빌드 + submit)
   - 완료 조건: 심사 제출. 거절되면 사유를 기록하고 fix 태스크를 추가
@@ -141,5 +146,6 @@ T0.1 ─┬─ T0.2 ─ T0.3 ─ T0.4
       └─ T1.1 ─ T1.2
          T1.3, T1.4 (병렬 가능) ─ T1.5 ─ T1.6 ─ T1.7(Kakao 연동)
                                           └─ T2.1 ─ T2.2 ─ T2.3 ─ T3.x
+T2.1 ─ T2.25 ─ T2.26(W1·W2 ─ W3·W4 ─ W5 ─ W7, W6 은 W1 후) ─ T2.3 ─ T3.x
 T3.1(앱 레코드·ascAppId)은 사람이 할 일이고 선행 조건이 없으므로 아무 때나 먼저 해둘 수 있음
 ```

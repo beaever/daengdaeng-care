@@ -43,11 +43,12 @@ T3.3(App Privacy·연령 등급)·T3.4(메타데이터) 에서 App Store Connect
 현재 위치 주변 동물병원을 거리순으로 보여드려요. 지도와 목록으로 보고, 바로 전화하거나 길찾기를 시작할 수 있어요.
 위치 권한 없이도 지역명으로 검색할 수 있어요.
 
-■ 건강 기록 — 체중 · 예방접종 · 병원 방문
+■ 건강 기록 — 체중 · 예방접종 · 병원 방문 · 산책(경로 기록)
 우리 아이 건강 다이어리. 체중 변화와 접종 기록을 남기고, 다음 예방접종일까지 남은 날을 홈에서 확인하세요.
+산책을 시작하면 걸은 경로·시간·거리를 지도에 기록하고, 사진과 메모도 함께 남길 수 있어요.
 
 ■ 내 정보는 내 기기에만
-반려견 프로필과 건강 기록은 기기 안에만 저장돼요. 서버로 보내지 않아요.
+반려견 프로필과 건강 기록, 산책 경로는 기기 안에만 저장돼요. 서버로 보내지 않아요.
 
 ※ 댕댕케어가 제공하는 정보는 참고용이며 수의사의 진단을 대신하지 않습니다. 이상 증상이 있거나 응급 상황으로 의심되면 즉시 동물병원에 방문하세요.
 
@@ -59,7 +60,7 @@ T3.3(App Privacy·연령 등급)·T3.4(메타데이터) 에서 App Store Connect
 ## 4. 키워드 (100자, 쉼표 구분·공백 없이)
 
 ```
-강아지,반려견,애견,반려동물,동물병원,강아지음식,먹어도되는음식,증상,예방접종,체중,건강기록,펫,댕댕이,포도,초콜릿
+강아지,반려견,애견,반려동물,동물병원,강아지음식,먹어도되는음식,증상,예방접종,체중,건강기록,펫,댕댕이,포도,초콜릿,산책,산책기록
 ```
 
 > 앱 이름·카테고리에 이미 있는 단어("댕댕케어", "라이프스타일")는 넣지 않는다. 경쟁 앱 이름·상표는 넣지 않는다 (2.3.7).
@@ -72,6 +73,7 @@ T3.3(App Privacy·연령 등급)·T3.4(메타데이터) 에서 App Store Connect
 3. 증상 체크 결과 (면책 고지가 보이게)
 4. 병원 찾기 — 지도
 5. 건강 기록
+6. 산책 경로 — 기록 중 지도 또는 저장된 경로 보기 (City Walk 시뮬레이션)
 
 > 광고·가짜 리뷰·다른 앱 UI 를 넣지 않는다. 샘플 반려견 이름은 실존 인물과 무관한 이름 사용.
 
@@ -85,6 +87,7 @@ T3.3(App Privacy·연령 등급)·T3.4(메타데이터) 에서 App Store Connect
 - No account or login is required. All pet profile and health record data is stored only on the device (SQLite).
 - Symptom checker and food lookup show general reference information only and are NOT a diagnosis. Every result screen shows a disclaimer advising users to consult a veterinarian. Emergency results link directly to the nearby animal hospital finder.
 - Food safety information is based on publicly available veterinary references (e.g. ASPCA Animal Poison Control "People Foods to Avoid Feeding Your Pets").
+- Walk tracking: Home > "산책 시작" (Start walk). The app records the walk route using "While Using" location permission only; it never requests "Always". Location updates run only between Start and End (paused while the walk is paused), so the route keeps recording when the screen is locked, and iOS shows the blue location indicator. Walk routes are stored only on the device and are never transmitted. To test in Simulator: Features > Location > City Walk.
 - Hospital search uses the Kakao Local API (South Korea). The device's coordinates are sent to Kakao only when the hospital tab is used. If location permission is denied, users can search by region name instead.
 - The app contains no ads, no analytics, and no tracking.
 - Best tested with a South Korean location (e.g. Simulator > Features > Location > Custom: 37.4979, 127.0276 — Gangnam Station, Seoul).
@@ -100,6 +103,7 @@ T3.3(App Privacy·연령 등급)·T3.4(메타데이터) 에서 App Store Connect
 | 그 외 모든 유형 (연락처·건강·사진·식별자·사용 데이터·진단 등) | 아니요 | — | — | — |
 
 - 사진·반려견 건강 기록은 기기 밖으로 나가지 않으므로 "수집"이 아니다 (Apple 정의: 기기 밖으로 전송되어 개발자·제3자가 접근할 수 있는 경우만 수집).
+- 산책 경로(위치 좌표)는 기기 SQLite 에만 저장되고 어떤 서버로도 전송되지 않으므로 "수집"이 아니다. 백그라운드 위치(UIBackgroundModes location)를 써도 기기 밖 전송이 없으면 신고 대상이 아니며, 위 위치 항목(카카오 병원 검색)만 유지한다. 앱 기능이 병원 검색 + 산책 기록이라는 점은 심사 노트에 적었다.
 - 지역명 검색의 Apple 지오코딩은 OS 기능이라 신고 대상이 아니다.
 - ATT(추적 허용 팝업) 불필요.
 
