@@ -1,12 +1,19 @@
-import React from 'react';
+import '../lib/walkTask';
+import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SQLiteProvider } from 'expo-sqlite';
 import { colors } from '../theme';
 import { DATABASE_NAME, migrate } from '../lib/db';
+import { stopLeftoverUpdates } from '../lib/walk';
 
 export default function RootLayout() {
+  // 강제 종료 전 등록된 위치 태스크가 복원됐으면 멈춘다 (App Review 2.5.4)
+  useEffect(() => {
+    stopLeftoverUpdates();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
