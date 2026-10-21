@@ -77,9 +77,14 @@ export async function start(db: SQLiteDatabase): Promise<StartResult> {
   }
 }
 
+// 상태 변경 시 useWalkSession 을 1초 폴링 전에 즉시 갱신한다 (버튼 표시 지연 방지).
+const listeners = new Set<() => void>();
+const notify = () => listeners.forEach((fn) => fn());
+
 export async function pause(): Promise<void> {
   if (state.phase !== 'recording') return;
   state = { ...state, phase: 'paused', accumMs: elapsed(), activeSince: null };
+  notify();
   await stopUpdates();
 }
 
@@ -87,6 +92,7 @@ export async function resume(): Promise<void> {
   if (state.phase !== 'paused' || !walkSession.current) return;
   walkSession.current = { ...walkSession.current, seg: walkSession.current.seg + 1 };
   state = { ...state, phase: 'recording', activeSince: Date.now() };
+  notify();
   await startUpdates();
 }
 
@@ -200,9 +206,11 @@ export function useWalkSession(): WalkSessionView {
     };
     tick();
     const id = setInterval(tick, 1000);
+    listeners.add(tick);
     return () => {
       alive = false;
       clearInterval(id);
+      listeners.delete(tick);
     };
   }, [db]);
 

@@ -17,3 +17,5 @@ export { HospitalList } from './HospitalList';
 export type { HospitalListProps } from './HospitalList';
 export { HealthRecord, RECORD_META } from './HealthRecord';
 export type { HealthRecordProps, RecordTab } from './HealthRecord';
+export { WalkSession } from './WalkSession';
+export type { WalkSessionProps, WalkFinishProps } from './WalkSession';

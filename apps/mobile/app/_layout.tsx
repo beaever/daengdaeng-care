@@ -36,6 +36,8 @@ export default function RootLayout() {
           />
           {/* profile: 등록 모드는 헤더 없음(온보딩 흐름), 편집 모드 헤더는 profile.tsx 에서 Stack.Screen 으로 켠다 */}
           <Stack.Screen name="profile" />
+          {/* 산책 경로 기록 — 기록 중 실수로 닫히지 않게 스와이프 닫기 끔 */}
+          <Stack.Screen name="walk" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
         </Stack>
       </SQLiteProvider>
     </SafeAreaProvider>

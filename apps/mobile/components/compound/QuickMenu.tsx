@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { colors, radius, fontFamily, typography, rnShadow, fontScale } from '../../theme';
 
-// 홈 "바로가기" 2×2 그리드 — 컴파운드(QuickMenu + QuickMenu.Item).
+// 홈 "바로가기" 2열 그리드 — 컴파운드(QuickMenu + QuickMenu.Item).
 export interface QuickMenuProps {
   children: React.ReactNode;
 }
