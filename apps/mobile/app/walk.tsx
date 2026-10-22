@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Alert, Linking, ScrollView, StyleSheet } from 'react-native';
+import { View, Alert, Linking, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -87,22 +87,19 @@ export default function WalkScreen() {
       <WalkSession phase={phase}>
         <WalkSession.Map points={view.points} />
         <WalkSession.Stats elapsedMs={view.elapsedMs} distanceM={view.distanceM} />
-        <View style={{ paddingBottom: insets.bottom, backgroundColor: colors.surface }}>
-          <WalkSession.Controls onPause={pause} onResume={resume} onEnd={onEnd} />
-        </View>
-        <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom }} keyboardShouldPersistTaps="handled">
-          <WalkSession.Finish
-            {...fin}
-            photo={photo}
-            petPhoto={photoUri(pet?.photo ?? null)}
-            onPickPhoto={() => pickWalkPhoto(photo, setPhoto)}
-            notes={notes}
-            onChangeNotes={setNotes}
-            saving={saving}
-            onSave={onSave}
-            onDiscard={onDiscard}
-          />
-        </ScrollView>
+        <WalkSession.Controls onPause={pause} onResume={resume} onEnd={onEnd} bottomInset={insets.bottom} />
+        <WalkSession.Finish
+          {...fin}
+          photo={photo}
+          petPhoto={photoUri(pet?.photo ?? null)}
+          onPickPhoto={() => pickWalkPhoto(photo, setPhoto)}
+          notes={notes}
+          onChangeNotes={setNotes}
+          saving={saving}
+          onSave={onSave}
+          onDiscard={onDiscard}
+          bottomInset={insets.bottom}
+        />
       </WalkSession>
     </View>
   );

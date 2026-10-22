@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import React, { createContext, useContext, useRef } from 'react';
+import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import MapView, { Polyline } from 'react-native-maps';
 import { colors, space, radius, fontFamily, typography, fontScale } from '../../theme';
 import { Button, Field, Textarea, WalkRouteMap, StickerPhoto } from '../ui';
@@ -38,7 +38,13 @@ export function formatElapsed(ms: number): string {
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
 }
 
+// 산책 중 지도 줌 — 첫 위치를 받으면 이 고도(m, Apple 지도)로 확대한다. 이후엔 followsUserLocation 이 중심만 따라간다.
+const WALK_CAMERA_ALTITUDE = 600;
+const WALK_CAMERA_ZOOM = 17;
+
 function WalkMap({ points }: { points: RoutePoint[] }) {
+  const ref = useRef<MapView>(null);
+  const zoomed = useRef(false);
   const segs = new Map<number, { latitude: number; longitude: number }[]>();
   for (const p of points) {
     const line = segs.get(p.seg) ?? [];
@@ -47,7 +53,22 @@ function WalkMap({ points }: { points: RoutePoint[] }) {
   }
   if (!useActive()) return null;
   return (
-    <MapView style={styles.map} showsUserLocation followsUserLocation accessibilityLabel="산책 경로 지도">
+    <MapView
+      ref={ref}
+      style={styles.map}
+      showsUserLocation
+      followsUserLocation
+      onUserLocationChange={(e) => {
+        const c = e.nativeEvent.coordinate;
+        if (zoomed.current || !c) return;
+        zoomed.current = true;
+        ref.current?.animateCamera(
+          { center: { latitude: c.latitude, longitude: c.longitude }, altitude: WALK_CAMERA_ALTITUDE, zoom: WALK_CAMERA_ZOOM },
+          { duration: 300 }
+        );
+      }}
+      accessibilityLabel="산책 경로 지도"
+    >
       {[...segs.entries()].map(([seg, coordinates]) => (
         <Polyline key={seg} coordinates={coordinates} strokeColor={colors.brand} strokeWidth={5} />
       ))}
@@ -73,11 +94,21 @@ function WalkStats({ elapsedMs, distanceM }: { elapsedMs: number; distanceM: num
   );
 }
 
-function WalkControls({ onPause, onResume, onEnd }: { onPause: () => void; onResume: () => void; onEnd: () => void }) {
+function WalkControls({
+  onPause,
+  onResume,
+  onEnd,
+  bottomInset = 0,
+}: {
+  onPause: () => void;
+  onResume: () => void;
+  onEnd: () => void;
+  bottomInset?: number;
+}) {
   const phase = useContext(PhaseContext);
   if (!useActive()) return null;
   return (
-    <View style={styles.controls}>
+    <View style={[styles.controls, { paddingBottom: space[5] + bottomInset }]}>
       {phase === 'recording' ? (
         <Button variant="secondary" size="lg" style={styles.flex} onPress={onPause}>일시정지</Button>
       ) : (
@@ -101,13 +132,18 @@ export interface WalkFinishProps {
   saving?: boolean;
   onSave: () => void;
   onDiscard: () => void;
+  bottomInset?: number;
 }
 
 function WalkFinish(p: WalkFinishProps) {
   const phase = useContext(PhaseContext);
   if (phase !== 'finished') return null;
+  // 스크롤 영역은 finished 에서만 만든다 — 기록 중에 있으면 지도 아래 공간을 빈 칸으로 차지한다.
   return (
-    <View style={styles.finish}>
+    <ScrollView
+      contentContainerStyle={[styles.finish, { paddingBottom: space[5] + (p.bottomInset ?? 0) }]}
+      keyboardShouldPersistTaps="handled"
+    >
       {p.points.length >= 2 && <WalkRouteMap points={p.points} style={styles.summaryMap} />}
       <Text style={styles.summary} maxFontSizeMultiplier={fontScale.heading}>
         {p.minutes}분 산책 · {formatDistance(p.distanceM) || '0m'}
@@ -131,7 +167,7 @@ function WalkFinish(p: WalkFinishProps) {
       </Field>
       <Button block size="lg" disabled={p.saving} onPress={p.onSave}>저장하기</Button>
       <Button block variant="ghost" disabled={p.saving} onPress={p.onDiscard}>버리기</Button>
-    </View>
+    </ScrollView>
   );
 }
 
