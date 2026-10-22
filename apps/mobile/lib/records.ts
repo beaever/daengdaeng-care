@@ -5,6 +5,7 @@ import { useFocusEffect } from 'expo-router';
 import { type SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addYears } from './recordSummary';
 import { deletePetPhoto } from './pets';
+import type { RoutePoint } from './geo';
 
 export type RecordType = 'vaccine' | 'weight' | 'vet' | 'walk';
 
@@ -19,6 +20,8 @@ export interface HealthRecord {
   next_date: string | null;
   /** document 디렉터리 기준 파일명 (savePetPhoto 반환값) */
   photo: string | null;
+  /** 경로(walk_points)가 저장돼 있으면 1 — SQLite EXISTS 결과는 숫자 */
+  has_route: 0 | 1;
   created_at: string;
 }
 
@@ -29,9 +32,26 @@ const PET_ID = 1;
 
 export async function listRecords(db: SQLiteDatabase): Promise<HealthRecord[]> {
   return db.getAllAsync<HealthRecord>(
-    `SELECT id, pet_id, type, date, title, sub, notes, next_date, photo, created_at
+    `SELECT id, pet_id, type, date, title, sub, notes, next_date, photo, created_at,
+            EXISTS(SELECT 1 FROM walk_points WHERE record_id = records.id) AS has_route
      FROM records WHERE pet_id = $petId ORDER BY date DESC, id DESC`,
     { $petId: PET_ID }
+  );
+}
+
+export async function getRecord(db: SQLiteDatabase, id: number): Promise<HealthRecord | null> {
+  return db.getFirstAsync<HealthRecord>(
+    `SELECT id, pet_id, type, date, title, sub, notes, next_date, photo, created_at,
+            EXISTS(SELECT 1 FROM walk_points WHERE record_id = records.id) AS has_route
+     FROM records WHERE id = $id`,
+    { $id: id }
+  );
+}
+
+export async function listRoutePoints(db: SQLiteDatabase, recordId: number): Promise<RoutePoint[]> {
+  return db.getAllAsync<RoutePoint>(
+    'SELECT seg, ts, lat, lng FROM walk_points WHERE record_id = $id ORDER BY seg, ts',
+    { $id: recordId }
   );
 }
 
@@ -59,7 +79,10 @@ export async function addRecord(db: SQLiteDatabase, input: NewRecord): Promise<v
 
 export async function deleteRecord(db: SQLiteDatabase, id: number): Promise<void> {
   const row = await db.getFirstAsync<{ photo: string | null }>('SELECT photo FROM records WHERE id = $id', { $id: id });
-  await db.runAsync('DELETE FROM records WHERE id = $id', { $id: id });
+  await db.withTransactionAsync(async () => {
+    await db.runAsync('DELETE FROM walk_points WHERE record_id = $id', { $id: id });
+    await db.runAsync('DELETE FROM records WHERE id = $id', { $id: id });
+  });
   // DB 삭제가 끝난 뒤에 파일을 지운다 — 반대 순서면 삭제 실패 시 사진만 사라진다.
   if (row?.photo) deletePetPhoto(row.photo);
 }

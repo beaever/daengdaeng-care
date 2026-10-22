@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, type Href } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { colors, space, radius, fontFamily, fontScale } from '../../../theme';
 import { HealthRecord } from '../../../components/compound';
@@ -66,6 +66,7 @@ export default function RecordScreen() {
           tab={tab}
           onTab={setTab}
           onDelete={handleDelete}
+          onOpen={(id) => router.push(`/record/${id}` as Href)}
           onAdd={goAdd}
         />
       </ScrollView>

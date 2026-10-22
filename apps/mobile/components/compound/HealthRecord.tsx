@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { fontFamily, typography, space, radius, colors } from '../../theme';
-import { Avatar, Card, Segment, EmptyState, Button } from '../ui';
+import { Avatar, Card, Segment, EmptyState, Button, WalkRouteMap, StickerPhoto } from '../ui';
+import type { RoutePoint } from '../../lib/geo';
 import { photoUri, type Pet } from '../../lib/pets';
 import { type HealthRecord as LibHealthRecord, type RecordType } from '../../lib/records';
 import { groupByDate, weightDelta } from '../../lib/recordSummary';
@@ -28,15 +29,17 @@ export interface HealthRecordProps {
   tab: RecordTab;
   onTab: (tab: RecordTab) => void;
   onDelete: (id: number) => void;
+  /** 경로가 있는 기록(has_route)만 호출된다 */
+  onOpen?: (id: number) => void;
   onAdd: () => void;
 }
 
-function HealthRecordRoot({ pet, records, tab, onTab, onDelete, onAdd }: HealthRecordProps) {
+function HealthRecordRoot({ pet, records, tab, onTab, onDelete, onOpen, onAdd }: HealthRecordProps) {
   return (
     <View style={styles.root}>
       <HealthRecord.PetHeader pet={pet} />
       <HealthRecord.CategoryTabs tab={tab} onTab={onTab} />
-      <HealthRecord.Timeline records={records} tab={tab} onDelete={onDelete} onAdd={onAdd} />
+      <HealthRecord.Timeline records={records} tab={tab} onDelete={onDelete} onOpen={onOpen} onAdd={onAdd} />
     </View>
   );
 }
@@ -66,11 +69,13 @@ function Timeline({
   records,
   tab,
   onDelete,
+  onOpen,
   onAdd,
 }: {
   records: LibHealthRecord[] | undefined;
   tab: RecordTab;
   onDelete: (id: number) => void;
+  onOpen?: (id: number) => void;
   onAdd: () => void;
 }) {
   if (records === undefined) return null; // 로딩 중 — 깜빡임 방지
@@ -97,7 +102,7 @@ function Timeline({
       {groups.map((g) => (
         <HealthRecord.TimelineGroup key={g.date} date={g.date}>
           {g.items.map((rec) => (
-            <HealthRecord.Entry key={rec.id} rec={rec} records={filtered} onDelete={onDelete} />
+            <HealthRecord.Entry key={rec.id} rec={rec} records={filtered} onDelete={onDelete} onOpen={onOpen} />
           ))}
         </HealthRecord.TimelineGroup>
       ))}
@@ -136,20 +141,25 @@ function Entry({
   rec,
   records,
   onDelete,
+  onOpen,
 }: {
   rec: LibHealthRecord;
   records: LibHealthRecord[];
   onDelete: (id: number) => void;
+  onOpen?: (id: number) => void;
 }) {
   const m = RECORD_META[rec.type];
   const title = entryTitle(rec);
   const sub = entrySub(rec, records);
+  // 경로가 저장된 기록만 탭으로 열 수 있다.
+  const open = rec.has_route === 1 && onOpen ? () => onOpen(rec.id) : undefined;
   return (
     <Pressable
+      onPress={open}
       onLongPress={() => onDelete(rec.id)}
       accessibilityRole="button"
-      accessibilityLabel={`${m.label} 기록 ${title}`}
-      accessibilityHint="길게 눌러 삭제"
+      accessibilityLabel={`${m.label} 기록 ${title}${open ? ', 경로 있음' : ''}`}
+      accessibilityHint={open ? '눌러 경로 보기, 길게 눌러 삭제' : '길게 눌러 삭제'}
     >
       <Card pad style={styles.entry}>
         <Text style={styles.entryEmoji}>{m.emoji}</Text>
@@ -157,6 +167,7 @@ function Entry({
           <Text style={styles.entryLabel}>{m.label}</Text>
           <Text style={styles.entryTitle}>{title}</Text>
           {sub != null && <Text style={styles.entrySub}>{sub}</Text>}
+          {open && <Text style={styles.entryRoute}>경로 보기 ›</Text>}
           {rec.notes != null && rec.notes !== '' && <Text style={styles.entryNotes}>{rec.notes}</Text>}
         </View>
         {rec.photo != null && (
@@ -167,7 +178,32 @@ function Entry({
   );
 }
 
+/** 기록 상세 — 경로 지도(있을 때) + 제목·거리·사진·메모. record/[id] 화면에서 조립한다. */
+function Detail({ rec, points, petPhoto }: { rec: LibHealthRecord; points: RoutePoint[]; petPhoto?: string | null }) {
+  const m = RECORD_META[rec.type];
+  const sub = entrySub(rec, [rec]);
+  return (
+    <View style={styles.detail}>
+      {points.length > 0 && <WalkRouteMap points={points} style={styles.detailMap} />}
+      <Text style={styles.groupDate}>{rec.date.replace(/-/g, '.')}</Text>
+      <Text style={styles.entryLabel}>{m.label}</Text>
+      <Text style={styles.detailTitle}>{entryTitle(rec)}</Text>
+      {sub != null && <Text style={styles.detailSub}>{sub}</Text>}
+      {rec.photo != null && (
+        // 산책 사진에만 반려견 스티커를 겹친다
+        rec.type === 'walk' ? (
+          <StickerPhoto uri={photoUri(rec.photo)!} stickerUri={photoUri(petPhoto ?? null)} style={styles.detailPhoto} />
+        ) : (
+          <Image source={{ uri: photoUri(rec.photo) }} style={styles.detailPhoto} accessibilityIgnoresInvertColors />
+        )
+      )}
+      {rec.notes != null && rec.notes !== '' && <Text style={styles.detailNotes}>{rec.notes}</Text>}
+    </View>
+  );
+}
+
 export const HealthRecord = Object.assign(HealthRecordRoot, {
+  Detail,
   PetHeader,
   CategoryTabs,
   Timeline,
@@ -200,5 +236,12 @@ const styles = StyleSheet.create({
   entryTitle: { fontFamily, fontSize: typography.callout.size, fontWeight: '700', color: colors.text },
   entrySub: { fontFamily, fontSize: typography.caption.size, color: colors.text2 },
   entryNotes: { fontFamily, fontSize: typography.caption.size, color: colors.text3 },
+  entryRoute: { fontFamily, fontSize: typography.caption.size, fontWeight: '700', color: colors.brandText },
+  detail: { gap: space[2] },
+  detailMap: { height: 280, borderRadius: radius.md, marginBottom: space[2] },
+  detailTitle: { fontFamily, fontSize: typography.title.size, fontWeight: '700', color: colors.text },
+  detailSub: { fontFamily, fontSize: typography.callout.size, color: colors.text2 },
+  detailPhoto: { width: '100%', aspectRatio: 4 / 3, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.surface2 },
+  detailNotes: { fontFamily, fontSize: typography.callout.size, color: colors.text },
   entryPhoto: { width: 64, height: 64, borderRadius: radius.sm, backgroundColor: colors.surface2 },
 });

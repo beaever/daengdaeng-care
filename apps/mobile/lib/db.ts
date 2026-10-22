@@ -56,6 +56,25 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
     version = 3;
   }
 
+  if (version < 4) {
+    await db.withTransactionAsync(async () => {
+      // record_id NULL = 진행 중(미저장) 산책의 포인트
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS walk_points (
+          id        INTEGER PRIMARY KEY AUTOINCREMENT,
+          record_id INTEGER,
+          seg       INTEGER NOT NULL,
+          ts        INTEGER NOT NULL,
+          lat       REAL NOT NULL,
+          lng       REAL NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_walk_points_record ON walk_points(record_id);
+      `);
+      await db.execAsync('PRAGMA user_version = 4');
+    });
+    version = 4;
+  }
+
   // 다음 마이그레이션은 이어 붙인다:
-  // if (version < 4) { await db.withTransactionAsync(async () => { ...; await db.execAsync('PRAGMA user_version = 4'); }); version = 4; }
+  // if (version < 5) { await db.withTransactionAsync(async () => { ...; await db.execAsync('PRAGMA user_version = 5'); }); version = 5; }
 }

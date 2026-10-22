@@ -1,12 +1,19 @@
-import React from 'react';
+import '../lib/walkTask';
+import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SQLiteProvider } from 'expo-sqlite';
 import { colors } from '../theme';
 import { DATABASE_NAME, migrate } from '../lib/db';
+import { stopLeftoverUpdates } from '../lib/walk';
 
 export default function RootLayout() {
+  // 강제 종료 전 등록된 위치 태스크가 복원됐으면 멈춘다 (App Review 2.5.4)
+  useEffect(() => {
+    stopLeftoverUpdates();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
@@ -29,6 +36,8 @@ export default function RootLayout() {
           />
           {/* profile: 등록 모드는 헤더 없음(온보딩 흐름), 편집 모드 헤더는 profile.tsx 에서 Stack.Screen 으로 켠다 */}
           <Stack.Screen name="profile" />
+          {/* 산책 경로 기록 — 기록 중 실수로 닫히지 않게 스와이프 닫기 끔 */}
+          <Stack.Screen name="walk" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
         </Stack>
       </SQLiteProvider>
     </SafeAreaProvider>

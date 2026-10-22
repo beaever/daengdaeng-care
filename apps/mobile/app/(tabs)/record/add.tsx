@@ -3,12 +3,12 @@ import { View, Text, Image, ScrollView, Pressable, Alert, StyleSheet } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import * as ImagePicker from 'expo-image-picker';
 import { colors, space, radius, fontFamily, typography } from '../../../theme';
 import { Field, Input, Textarea, Button, PillGroup, DateField } from '../../../components/ui';
 import type { PillGroupOption } from '../../../components/ui';
 import { RECORD_META } from '../../../components/compound';
 import { addRecord, type RecordType, type NewRecord } from '../../../lib/records';
+import { pickWalkPhoto } from '../../../lib/walkPhoto';
 import { savePetPhoto, deletePetPhoto } from '../../../lib/pets';
 import { toLocalDateString, parseLocalDate, addYears } from '../../../lib/recordSummary';
 
@@ -40,8 +40,6 @@ function normalizeMinutes(raw: string): string | null {
   const n = Number(t);
   return n >= 1 && n <= 600 ? String(n) : null;
 }
-
-const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = { mediaTypes: ['images'], quality: 0.7 };
 
 // SCR-015 · 기록 추가 (모달/시트) — 기록 종류 선택 → 종류별 동적 폼 → 저장하기.
 // 폼 자체는 화면 입력이므로 화면에서 조립. 종류 아이콘·라벨은 RECORD_META 단일 출처(RULES 2·3).
@@ -78,28 +76,12 @@ export default function AddRecordScreen() {
   const typeValid = { vaccine: vaccineValid, weight: weightValid, vet: vetValid, walk: walkValid }[type];
   const canSave = !saving && typeValid;
 
-  const takePhoto = async () => {
-    const perm = await ImagePicker.requestCameraPermissionsAsync();
-    if (!perm.granted) {
-      Alert.alert('카메라 권한이 필요해요', 'iPhone 설정 → 댕댕케어에서 카메라를 허용해주세요.');
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync(PICKER_OPTIONS);
-    if (!result.canceled && result.assets[0]) setPickedPhoto(result.assets[0].uri);
-  };
+  const pickPhoto = () => pickWalkPhoto(pickedPhoto, setPickedPhoto);
 
-  const choosePhoto = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS);
-    if (!result.canceled && result.assets[0]) setPickedPhoto(result.assets[0].uri);
-  };
-
-  const pickPhoto = () => {
-    Alert.alert('산책 사진', undefined, [
-      { text: '사진 찍기', onPress: takePhoto },
-      { text: '앨범에서 고르기', onPress: choosePhoto },
-      ...(pickedPhoto ? [{ text: '사진 빼기', style: 'destructive' as const, onPress: () => setPickedPhoto(null) }] : []),
-      { text: '취소', style: 'cancel' },
-    ]);
+  // 시트를 닫고 산책 화면으로
+  const startTrackedWalk = () => {
+    router.back();
+    router.push('/walk');
   };
 
   const buildInput = (): NewRecord => {
@@ -212,6 +194,9 @@ export default function AddRecordScreen() {
 
         {type === 'walk' && (
           <>
+            <Button variant="outline" block onPress={startTrackedWalk}>
+              📍 경로 기록하며 산책 시작
+            </Button>
             <DateField label="산책한 날" value={date} onChange={changeDate} maximumDate={today} />
             <Field label="산책 시간 (분, 선택)">
               <Input placeholder="예) 30" inputMode="numeric" value={walkMinutes} onChangeText={setWalkMinutes} />

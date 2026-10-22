@@ -44,12 +44,14 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "근처 동물병원을 거리순으로 보여주기 위해 현재 위치를 사용해요.",
+          "locationWhenInUsePermission": "근처 동물병원을 거리순으로 찾고, 산책을 기록하는 동안 화면이 꺼져 있어도 산책 경로를 기록하기 위해 위치를 사용해요. 산책 경로는 기기에만 저장돼요.",
+          "isIosBackgroundLocationEnabled": true,
           "locationAlwaysAndWhenInUsePermission": false,
           "locationAlwaysPermission": false,
           "motionUsagePermission": false
         }
-      ]
+      ],
+      "./plugins/withoutBackgroundFetch"
     ],
     "experiments": {
       "typedRoutes": true

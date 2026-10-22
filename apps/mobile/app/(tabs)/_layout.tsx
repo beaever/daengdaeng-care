@@ -35,10 +35,12 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen name="home" options={{ title: '홈', tabBarIcon: tabIcon('🏠') }} />
-      <Tabs.Screen name="food" options={{ title: '음식', tabBarIcon: tabIcon('🍖') }} />
+      <Tabs.Screen name="walks" options={{ title: '산책', tabBarIcon: tabIcon('🐾') }} />
       <Tabs.Screen name="symptom" options={{ title: '증상', tabBarIcon: tabIcon('🩺') }} />
       <Tabs.Screen name="hospital" options={{ title: '병원', tabBarIcon: tabIcon('🏥') }} />
       <Tabs.Screen name="record" options={{ title: '기록', tabBarIcon: tabIcon('📋') }} />
+      {/* 음식 판별은 탭바에서 빼고 홈 바로가기로만 진입 (탭 5개 유지, HIG) */}
+      <Tabs.Screen name="food" options={{ href: null }} />
     </Tabs>
   );
 }

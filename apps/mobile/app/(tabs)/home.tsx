@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useSQLiteContext } from 'expo-sqlite';
 import { colors, space, fontFamily, typography, fontScale } from '../../theme';
 import { SectionHeading, IconButton } from '../../components/ui';
 import { PetProfileCard, QuickMenu, HealthSummaryCard } from '../../components/compound';
+import { promptPendingWalk } from '../../lib/walkRecover';
 import { usePet } from '../../lib/pets';
 import { useRecords } from '../../lib/records';
 import { latestWeight, lastVisitLabel, nextVaccineDays, formatDday } from '../../lib/recordSummary';
@@ -15,6 +17,17 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { pet } = usePet();
   const { records } = useRecords();
+  const db = useSQLiteContext();
+
+  // 홈 진입 시 끊긴 산책이 있으면 1회 묻는다
+  const asked = useRef(false);
+  useFocusEffect(
+    useCallback(() => {
+      if (asked.current) return;
+      asked.current = true;
+      promptPendingWalk(db).catch(() => {});
+    }, [db])
+  );
 
   if (!pet) return null; // 로딩 중이거나(undefined) 프로필 없음(null) — 라우팅으로 대부분 방지됨
 
