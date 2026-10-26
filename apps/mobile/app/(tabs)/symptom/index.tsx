@@ -2,18 +2,21 @@ import React from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { colors, space, radius, fontFamily, typography, safetyColors } from '../../../theme';
-import { symptomCats } from '../../../lib/sampleData';
+import { colors, space, radius, fontFamily, typography, safetyColors, fontScale } from '../../../theme';
+import { SYMPTOM_CATEGORIES, EMERGENCY_SYMPTOMS } from '@daengdaeng/constants';
 
 // SCR-009 · 증상 카테고리 (증상 탭) — 2열 그리드 + 응급 증상 배너.
 export default function SymptomCategoryScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const emergency = EMERGENCY_SYMPTOMS[0]!;
 
   return (
     <View style={styles.root}>
       <View style={[styles.header, { paddingTop: insets.top + space[2] }]}>
-        <Text style={styles.title}>어디가 안 좋아 보이나요?</Text>
+        <Text style={styles.title} maxFontSizeMultiplier={fontScale.heading}>
+          어디가 안 좋아 보이나요?
+        </Text>
         <Text style={styles.sub}>증상을 선택하면 단계별로 확인해드려요</Text>
       </View>
 
@@ -22,10 +25,11 @@ export default function SymptomCategoryScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.grid}>
-          {symptomCats.map((c) => (
+          {SYMPTOM_CATEGORIES.map((c) => (
             <Pressable
               key={c.id}
-              onPress={() => router.push('/symptom/questions')}
+              onPress={() => router.push({ pathname: '/symptom/questions', params: { cat: c.id } })}
+              accessibilityRole="button"
               style={({ pressed }) => [styles.cat, pressed && styles.catPressed]}
             >
               <Text style={styles.catEmoji}>{c.emoji}</Text>
@@ -38,12 +42,13 @@ export default function SymptomCategoryScreen() {
         {/* 응급 배너 — 결과(emergency)로 직행. 면책상 항상 노출. */}
         <Pressable
           onPress={() => router.push({ pathname: '/symptom/result', params: { verdict: 'emergency' } })}
+          accessibilityRole="button"
           style={({ pressed }) => [styles.emergency, pressed && styles.emergencyPressed]}
         >
-          <Text style={styles.emergencyEmoji}>🚨</Text>
+          <Text style={styles.emergencyEmoji}>{emergency.emoji}</Text>
           <View style={styles.emergencyText}>
-            <Text style={styles.emergencyTitle}>응급 증상</Text>
-            <Text style={styles.emergencySub}>발작 · 의식 없음 · 호흡 곤란</Text>
+            <Text style={styles.emergencyTitle}>{emergency.label}</Text>
+            <Text style={styles.emergencySub}>{emergency.sub}</Text>
           </View>
           <Text style={styles.emergencyChevron}>›</Text>
         </Pressable>

@@ -1,11 +1,37 @@
 import { Logo, PawMark } from '../components/Logo';
-import { features, stats } from '../lib/content';
+import { JsonLd } from '../components/JsonLd';
+import { contactEmail, features, site, siteUrl, stats } from '../lib/content';
 
 // 댕댕케어 랜딩 페이지 — 헤더 · 히어로 · 통계 · 기능 · CTA · 푸터.
 // 마케팅 페이지라 응급 화면 광고 규칙(RULES 1)은 해당 없음. 토큰 변수만 사용(RULES 2).
 export default function Home() {
   return (
     <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'MobileApplication',
+              name: site.name,
+              url: siteUrl,
+              description: site.description,
+              operatingSystem: 'iOS',
+              applicationCategory: 'LifestyleApplication',
+              inLanguage: 'ko',
+              offers: { '@type': 'Offer', price: 0, priceCurrency: 'KRW' },
+              featureList: features.map((f) => f.title),
+            },
+            {
+              '@type': 'Organization',
+              name: site.name,
+              url: siteUrl,
+              logo: `${siteUrl}/icon`,
+              email: contactEmail,
+            },
+          ],
+        }}
+      />
       <header className="header">
         <div className="wrap header__inner">
           <Logo />
@@ -35,7 +61,7 @@ export default function Home() {
                 <span className="accent">이 앱 하나로</span> 안심
               </h1>
               <p className="hero__sub">
-                음식 판별·사료 분석·증상 체크·병원 찾기·건강 기록.
+                음식 판별·증상 체크·병원 찾기·건강 기록.
                 <br />
                 매일의 궁금증을 3초 만에 해결하세요.
               </p>
@@ -43,11 +69,8 @@ export default function Home() {
                 <a className="btn btn--brand" href="#download">
                    App Store
                 </a>
-                <a className="btn btn--ghost" href="#download">
-                  ▶ Google Play
-                </a>
               </div>
-              <p className="hero__note">무료 다운로드 · iOS 15 이상 · 광고 포함(응급 화면 제외)</p>
+              <p className="hero__note">무료 · iPhone 전용 · 광고 없음</p>
             </div>
 
             {/* 폰 목업 */}
@@ -77,7 +100,7 @@ export default function Home() {
           <div className="wrap">
             <div className="section__head">
               <div className="section__k">Features</div>
-              <h2 className="section__t">반려견 건강, 5가지로 끝</h2>
+              <h2 className="section__t">반려견 건강, 4가지로 끝</h2>
             </div>
             <div className="features">
               {features.map((f) => (
@@ -103,9 +126,6 @@ export default function Home() {
                 <a className="btn btn--onbrand" href="#">
                    App Store
                 </a>
-                <a className="btn btn--onbrand" href="#">
-                  ▶ Google Play
-                </a>
               </div>
             </div>
           </div>
@@ -119,8 +139,9 @@ export default function Home() {
             <nav className="footer__links">
               <a href="#features">기능</a>
               <a href="#download">다운로드</a>
-              <a href="#">개인정보처리방침</a>
-              <a href="#">이용약관</a>
+              <a href="/support">고객 지원</a>
+              <a href="/terms">이용약관</a>
+              <a href="/privacy">개인정보처리방침</a>
             </nav>
             <span className="footer__copy">© 2026 댕댕케어</span>
           </div>

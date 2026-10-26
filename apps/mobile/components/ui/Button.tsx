@@ -28,6 +28,8 @@ export function Button({
     <Pressable
       onPress={onPress}
       disabled={disabled}
+      accessibilityRole="button"
+      hitSlop={{ top: 4, bottom: 4 }} // sm(minHeight 36) + 4·4 = 44pt 실효 터치 영역 (RULES 최소 터치 타깃, Chip.tsx 참고)
       style={({ pressed }) => [
         styles.base,
         sizeStyles[size],

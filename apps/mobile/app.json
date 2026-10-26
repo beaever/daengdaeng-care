@@ -3,23 +3,67 @@
     "name": "댕댕케어",
     "slug": "daengdaeng-care",
     "scheme": "daengdaeng",
-    "version": "0.1.0",
-    "orientation": "portrait",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "splash": {
-      "backgroundColor": "#FFFDF9"
+    "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
     },
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "care.daengdaeng.app"
+      "bundleIdentifier": "care.daengdaeng.app",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "care.daengdaeng.app"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#F59E0B"
+        }
+      ],
+      "expo-sqlite",
+      "@react-native-community/datetimepicker",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "반려견 프로필 사진과 산책 사진을 고르기 위해 사진 보관함에 접근해요.",
+          "cameraPermission": "산책 기록에 남길 반려견 사진을 찍기 위해 카메라를 사용해요.",
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "근처 동물병원을 거리순으로 찾고, 산책을 기록하는 동안 화면이 꺼져 있어도 산책 경로를 기록하기 위해 위치를 사용해요. 산책 경로는 기기에만 저장돼요.",
+          "isIosBackgroundLocationEnabled": true,
+          "locationAlwaysAndWhenInUsePermission": false,
+          "locationAlwaysPermission": false,
+          "motionUsagePermission": false
+        }
+      ],
+      "./plugins/withoutBackgroundFetch"
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "8147dac2-63d4-48ef-bea9-74e86ee679a1"
+      }
+    },
+    "icon": "./assets/icon.png"
   }
 }

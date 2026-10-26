@@ -49,7 +49,7 @@ git checkout -b feature/f001-food-checker
 
 ### 작업 중 커밋
 ```bash
-git add packages/ui/src/atoms/Button/
+git add apps/mobile/components/ui/Button.tsx
 git commit -m "feat(ui): Button 아톰 컴포넌트 구현"
 ```
 
@@ -58,12 +58,10 @@ git commit -m "feat(ui): Button 아톰 컴포넌트 구현"
 # Claude Code skill 사용 — /pr 입력 시 자동으로:
 # 1. dev 브랜치 기준 PR 생성
 # 2. PR 템플릿 자동 채움
-# 3. Chromatic 링크 포함
 ```
 
 ### PR 머지 조건
 - [ ] CI 통과 (type-check + lint + test)
-- [ ] Chromatic 승인 (UI 변경 있을 경우)
 - [ ] 하네스 체크리스트 완료
 
 ---

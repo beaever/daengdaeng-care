@@ -15,6 +15,7 @@ export default function RecordLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ title: '건강 기록' }} />
+      <Stack.Screen name="[id]" options={{ title: '기록' }} />
       <Stack.Screen name="add" options={{ title: '기록 추가', presentation: 'modal' }} />
     </Stack>
   );

@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { colors, space, fontFamily, typography } from '../../theme';
-import { Verdict, SectionHeading, Bullets, Chip } from '../ui';
-import type { Food } from '../../lib/sampleData';
+import { View, Text, StyleSheet, Linking } from 'react-native';
+import { colors, space, fontFamily, typography, fontScale } from '../../theme';
+import { Verdict, SectionHeading, Bullets, Chip, Note } from '../ui';
+import type { FoodEntry } from '@daengdaeng/constants';
 
 // SCR-006 음식 결과 — 안전도 판정 화면 본문.
 // 화면은 이 컴파운드를 조립만 하고, 레벨(safe/caution/danger) 분기는 내부에서 처리한다.
+// RULES(4): 수의사 면책 고지(Disclaimer)는 레벨과 무관하게 항상 렌더한다 — 삭제 금지 (App Store 1.4.1).
 export interface FoodResultProps {
-  food: Food;
+  food: FoodEntry;
 }
 
 function FoodResultRoot({ food }: FoodResultProps) {
@@ -25,12 +26,18 @@ function FoodResultRoot({ food }: FoodResultProps) {
       {food.related != null && food.related.length > 0 && (
         <FoodResult.RelatedFoods level={food.level} items={food.related} />
       )}
+      <FoodResult.Disclaimer />
+      <FoodResult.Source url={food.sources[0]} />
     </View>
   );
 }
 
 function FoodHeader({ name }: { name: string }) {
-  return <Text style={styles.name}>{name}</Text>;
+  return (
+    <Text style={styles.name} maxFontSizeMultiplier={fontScale.heading}>
+      {name}
+    </Text>
+  );
 }
 
 function FoodDescription({
@@ -38,7 +45,7 @@ function FoodDescription({
   text,
   serve,
 }: {
-  level: Food['level'];
+  level: FoodEntry['level'];
   text: string;
   serve?: string;
 }) {
@@ -82,7 +89,7 @@ function FoodNutrition({ items }: { items: string[] }) {
   );
 }
 
-function FoodRelated({ level, items }: { level: Food['level']; items: string[] }) {
+function FoodRelated({ level, items }: { level: FoodEntry['level']; items: string[] }) {
   return (
     <View style={styles.block}>
       <SectionHeading>{level === 'danger' ? '이것도 피하세요' : '함께 보면 좋아요'}</SectionHeading>
@@ -95,12 +102,28 @@ function FoodRelated({ level, items }: { level: Food['level']; items: string[] }
   );
 }
 
+function FoodDisclaimer() {
+  return <Note icon="ℹ️">참고용 정보예요. 이미 먹었거나 이상 증상이 있으면 수의사와 상담하세요.</Note>;
+}
+
+// 근거 자료 출처 (App Store 1.4.1·심사 노트의 출처 표기). 누르면 원문을 연다.
+function FoodSource({ url }: { url: string }) {
+  const host = url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
+  return (
+    <Text style={styles.source} accessibilityRole="link" onPress={() => Linking.openURL(url)}>
+      근거 자료: {host}
+    </Text>
+  );
+}
+
 export const FoodResult = Object.assign(FoodResultRoot, {
   Header: FoodHeader,
   Description: FoodDescription,
   Symptoms: FoodSymptoms,
   Nutrition: FoodNutrition,
   RelatedFoods: FoodRelated,
+  Disclaimer: FoodDisclaimer,
+  Source: FoodSource,
 });
 
 const styles = StyleSheet.create({
@@ -115,4 +138,5 @@ const styles = StyleSheet.create({
   },
   serve: { marginTop: space[3] },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  source: { fontFamily, fontSize: typography.caption.size, color: colors.text3, textAlign: 'center' },
 });

@@ -1,45 +1,53 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { fontFamily, typography, space, colors } from '../../theme';
-import { Avatar, Card, Segment } from '../ui';
-import type { Pet, HealthRecordItem, RecordType } from '../../lib/sampleData';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { fontFamily, typography, space, radius, colors } from '../../theme';
+import { Avatar, Card, Segment, EmptyState, Button, WalkRouteMap, StickerPhoto } from '../ui';
+import type { RoutePoint } from '../../lib/geo';
+import { photoUri, type Pet } from '../../lib/pets';
+import { type HealthRecord as LibHealthRecord, type RecordType } from '../../lib/records';
+import { groupByDate, weightDelta } from '../../lib/recordSummary';
 
 // SCR-014 · 건강 기록 — 펫 헤더 + 카테고리 탭 + 타임라인.
-// 화면(record/index.tsx)은 이 컴파운드를 조립만 한다. FAB·AdBanner는 화면 chrome.
-// 기록 종류별 아이콘·라벨 분기는 컴파운드 내부(RECORD_META)에 둔다(RULES 3).
+// 화면(record/index.tsx)은 이 컴파운드를 조립만 한다. FAB는 화면 chrome.
+// 기록 종류별 아이콘·라벨·필드 분기는 컴파운드 내부(RECORD_META)에 둔다(RULES 3).
 
 /** 기록 종류 메타 — 아이콘·라벨 단일 출처 */
 export const RECORD_META: Record<RecordType, { emoji: string; label: string }> = {
   vaccine: { emoji: '💉', label: '예방접종' },
   weight: { emoji: '⚖️', label: '체중' },
   vet: { emoji: '🏥', label: '병원 방문' },
+  walk: { emoji: '🐾', label: '산책' },
 };
 
 /** 카테고리 탭 값 — 전체 + 기록 종류 */
 export type RecordTab = 'all' | RecordType;
 
 export interface HealthRecordProps {
-  pet: Pet;
-  records: HealthRecordItem[];
+  pet: Pick<Pet, 'name' | 'photo'>;
+  /** undefined = 로딩 중 (useRecords) */
+  records: LibHealthRecord[] | undefined;
   tab: RecordTab;
   onTab: (tab: RecordTab) => void;
+  onDelete: (id: number) => void;
+  /** 경로가 있는 기록(has_route)만 호출된다 */
+  onOpen?: (id: number) => void;
+  onAdd: () => void;
 }
 
-function HealthRecordRoot({ pet, records, tab, onTab }: HealthRecordProps) {
-  const filtered = tab === 'all' ? records : records.filter((r) => r.type === tab);
+function HealthRecordRoot({ pet, records, tab, onTab, onDelete, onOpen, onAdd }: HealthRecordProps) {
   return (
     <View style={styles.root}>
       <HealthRecord.PetHeader pet={pet} />
       <HealthRecord.CategoryTabs tab={tab} onTab={onTab} />
-      <HealthRecord.Timeline records={filtered} />
+      <HealthRecord.Timeline records={records} tab={tab} onDelete={onDelete} onOpen={onOpen} onAdd={onAdd} />
     </View>
   );
 }
 
-function PetHeader({ pet }: { pet: Pet }) {
+function PetHeader({ pet }: { pet: Pick<Pet, 'name' | 'photo'> }) {
   return (
     <View style={styles.petHeader}>
-      <Avatar size="sm" emoji="🐶" />
+      <Avatar size="sm" src={photoUri(pet.photo)} />
       <Text style={styles.petName}>{pet.name}</Text>
     </View>
   );
@@ -50,24 +58,52 @@ const TAB_OPTIONS: { value: RecordTab; label: string }[] = [
   { value: 'vaccine', label: '접종' },
   { value: 'weight', label: '체중' },
   { value: 'vet', label: '병원' },
+  { value: 'walk', label: '산책' },
 ];
 
 function CategoryTabs({ tab, onTab }: { tab: RecordTab; onTab: (tab: RecordTab) => void }) {
-  return (
-    <Segment
-      options={TAB_OPTIONS}
-      value={tab}
-      onChange={(v) => onTab(v as RecordTab)}
-    />
-  );
+  return <Segment options={TAB_OPTIONS} value={tab} onChange={(v) => onTab(v as RecordTab)} />;
 }
 
-function Timeline({ records }: { records: HealthRecordItem[] }) {
+function Timeline({
+  records,
+  tab,
+  onDelete,
+  onOpen,
+  onAdd,
+}: {
+  records: LibHealthRecord[] | undefined;
+  tab: RecordTab;
+  onDelete: (id: number) => void;
+  onOpen?: (id: number) => void;
+  onAdd: () => void;
+}) {
+  if (records === undefined) return null; // 로딩 중 — 깜빡임 방지
+
+  const filtered = tab === 'all' ? records : records.filter((r) => r.type === tab);
+
+  if (filtered.length === 0) {
+    return tab === 'all' ? (
+      <EmptyState
+        icon="🗒️"
+        title="아직 기록이 없어요"
+        action={
+          <Button onPress={onAdd}>기록 추가</Button>
+        }
+      />
+    ) : (
+      <EmptyState title={`${RECORD_META[tab].label} 기록이 없어요`} />
+    );
+  }
+
+  const groups = groupByDate(filtered);
   return (
     <View style={styles.timeline}>
-      {records.map((rec) => (
-        <HealthRecord.TimelineGroup key={rec.id} date={rec.date}>
-          <HealthRecord.Entry rec={rec} />
+      {groups.map((g) => (
+        <HealthRecord.TimelineGroup key={g.date} date={g.date}>
+          {g.items.map((rec) => (
+            <HealthRecord.Entry key={rec.id} rec={rec} records={filtered} onDelete={onDelete} onOpen={onOpen} />
+          ))}
         </HealthRecord.TimelineGroup>
       ))}
     </View>
@@ -77,27 +113,97 @@ function Timeline({ records }: { records: HealthRecordItem[] }) {
 function TimelineGroup({ date, children }: { date: string; children: React.ReactNode }) {
   return (
     <View style={styles.group}>
-      <Text style={styles.groupDate}>{date}</Text>
+      <Text style={styles.groupDate}>{date.replace(/-/g, '.')}</Text>
       {children}
     </View>
   );
 }
 
-function Entry({ rec }: { rec: HealthRecordItem }) {
+/** 기록 종류별 제목 표기 — vaccine/vet은 title 그대로, weight는 'kg' 단위를 붙인다. */
+function entryTitle(rec: LibHealthRecord): string {
+  return rec.type === 'weight' ? `${rec.title} kg` : rec.title;
+}
+
+/** 기록 종류별 부가 설명 — 다음 접종일 / 직전 대비 체중 증감 / 방문 사유·산책 시간. */
+function entrySub(rec: LibHealthRecord, records: LibHealthRecord[]): string | undefined {
+  if (rec.type === 'vaccine') {
+    return rec.next_date ? `다음 접종: ${rec.next_date.replace(/-/g, '.')}` : undefined;
+  }
+  if (rec.type === 'weight') {
+    const delta = weightDelta(records, rec);
+    if (delta === undefined) return undefined;
+    return `이전 기록 대비 ${delta > 0 ? '+' : ''}${delta}kg`;
+  }
+  return rec.sub ?? undefined;
+}
+
+function Entry({
+  rec,
+  records,
+  onDelete,
+  onOpen,
+}: {
+  rec: LibHealthRecord;
+  records: LibHealthRecord[];
+  onDelete: (id: number) => void;
+  onOpen?: (id: number) => void;
+}) {
   const m = RECORD_META[rec.type];
+  const title = entryTitle(rec);
+  const sub = entrySub(rec, records);
+  // 경로가 저장된 기록만 탭으로 열 수 있다.
+  const open = rec.has_route === 1 && onOpen ? () => onOpen(rec.id) : undefined;
   return (
-    <Card pad style={styles.entry}>
-      <Text style={styles.entryEmoji}>{m.emoji}</Text>
-      <View style={styles.entryBody}>
-        <Text style={styles.entryLabel}>{m.label}</Text>
-        <Text style={styles.entryTitle}>{rec.title}</Text>
-        <Text style={styles.entrySub}>{rec.sub}</Text>
-      </View>
-    </Card>
+    <Pressable
+      onPress={open}
+      onLongPress={() => onDelete(rec.id)}
+      accessibilityRole="button"
+      accessibilityLabel={`${m.label} 기록 ${title}${open ? ', 경로 있음' : ''}`}
+      accessibilityHint={open ? '눌러 경로 보기, 길게 눌러 삭제' : '길게 눌러 삭제'}
+    >
+      <Card pad style={styles.entry}>
+        <Text style={styles.entryEmoji}>{m.emoji}</Text>
+        <View style={styles.entryBody}>
+          <Text style={styles.entryLabel}>{m.label}</Text>
+          <Text style={styles.entryTitle}>{title}</Text>
+          {sub != null && <Text style={styles.entrySub}>{sub}</Text>}
+          {open && <Text style={styles.entryRoute}>경로 보기 ›</Text>}
+          {rec.notes != null && rec.notes !== '' && <Text style={styles.entryNotes}>{rec.notes}</Text>}
+        </View>
+        {rec.photo != null && (
+          <Image source={{ uri: photoUri(rec.photo) }} style={styles.entryPhoto} accessibilityIgnoresInvertColors />
+        )}
+      </Card>
+    </Pressable>
+  );
+}
+
+/** 기록 상세 — 경로 지도(있을 때) + 제목·거리·사진·메모. record/[id] 화면에서 조립한다. */
+function Detail({ rec, points, petPhoto }: { rec: LibHealthRecord; points: RoutePoint[]; petPhoto?: string | null }) {
+  const m = RECORD_META[rec.type];
+  const sub = entrySub(rec, [rec]);
+  return (
+    <View style={styles.detail}>
+      {points.length > 0 && <WalkRouteMap points={points} style={styles.detailMap} />}
+      <Text style={styles.groupDate}>{rec.date.replace(/-/g, '.')}</Text>
+      <Text style={styles.entryLabel}>{m.label}</Text>
+      <Text style={styles.detailTitle}>{entryTitle(rec)}</Text>
+      {sub != null && <Text style={styles.detailSub}>{sub}</Text>}
+      {rec.photo != null && (
+        // 산책 사진에만 반려견 스티커를 겹친다
+        rec.type === 'walk' ? (
+          <StickerPhoto uri={photoUri(rec.photo)!} stickerUri={photoUri(petPhoto ?? null)} style={styles.detailPhoto} />
+        ) : (
+          <Image source={{ uri: photoUri(rec.photo) }} style={styles.detailPhoto} accessibilityIgnoresInvertColors />
+        )
+      )}
+      {rec.notes != null && rec.notes !== '' && <Text style={styles.detailNotes}>{rec.notes}</Text>}
+    </View>
   );
 }
 
 export const HealthRecord = Object.assign(HealthRecordRoot, {
+  Detail,
   PetHeader,
   CategoryTabs,
   Timeline,
@@ -129,4 +235,13 @@ const styles = StyleSheet.create({
   },
   entryTitle: { fontFamily, fontSize: typography.callout.size, fontWeight: '700', color: colors.text },
   entrySub: { fontFamily, fontSize: typography.caption.size, color: colors.text2 },
+  entryNotes: { fontFamily, fontSize: typography.caption.size, color: colors.text3 },
+  entryRoute: { fontFamily, fontSize: typography.caption.size, fontWeight: '700', color: colors.brandText },
+  detail: { gap: space[2] },
+  detailMap: { height: 280, borderRadius: radius.md, marginBottom: space[2] },
+  detailTitle: { fontFamily, fontSize: typography.title.size, fontWeight: '700', color: colors.text },
+  detailSub: { fontFamily, fontSize: typography.callout.size, color: colors.text2 },
+  detailPhoto: { width: '100%', aspectRatio: 4 / 3, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.surface2 },
+  detailNotes: { fontFamily, fontSize: typography.callout.size, color: colors.text },
+  entryPhoto: { width: 64, height: 64, borderRadius: radius.sm, backgroundColor: colors.surface2 },
 });

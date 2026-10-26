@@ -1,5 +1,8 @@
 node_modules/
 dist/
+.next/
+out/
+*.tsbuildinfo
 .turbo/
 .cache/
 coverage/
@@ -8,7 +11,6 @@ coverage/
 .env
 .env.local
 .env.*.local
-storybook-static/
 android/
 ios/
 .expo/

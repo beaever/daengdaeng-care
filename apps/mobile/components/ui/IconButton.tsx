@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
-import { colors, radius, fontFamily } from '../../theme';
+import { colors, radius, fontFamily, fontScale } from '../../theme';
 
 export interface IconButtonProps {
   /** 이모지/문자 아이콘 */
@@ -23,7 +23,9 @@ export function IconButton({ icon, accessibilityLabel, onPress, disabled }: Icon
         disabled && styles.disabled,
       ]}
     >
-      <Text style={styles.icon}>{icon}</Text>
+      <Text style={styles.icon} maxFontSizeMultiplier={fontScale.icon}>
+        {icon}
+      </Text>
     </Pressable>
   );
 }

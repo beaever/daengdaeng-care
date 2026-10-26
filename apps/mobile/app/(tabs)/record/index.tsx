@@ -1,21 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import { colors, space, radius, layout, fontFamily } from '../../../theme';
-import { AdBanner } from '../../../components/ui';
+import { Stack, useRouter, type Href } from 'expo-router';
+import { useSQLiteContext } from 'expo-sqlite';
+import { colors, space, radius, fontFamily, fontScale } from '../../../theme';
 import { HealthRecord } from '../../../components/compound';
 import type { RecordTab } from '../../../components/compound';
-import { pet, records } from '../../../lib/sampleData';
+import { usePet } from '../../../lib/pets';
+import { useRecords, deleteRecord } from '../../../lib/records';
 
-// SCR-014 · 건강 기록 (기록 탭) — HealthRecord 컴파운드 + 우하단 FAB + 하단 AdBanner.
-// 건강 기록은 응급(emergency) 화면이 아니므로 광고 허용(RULES 1). 화면은 조립만 한다(RULES 3).
+// SCR-014 · 건강 기록 (기록 탭) — HealthRecord 컴파운드 + 우하단 FAB. 화면은 조립만 한다(RULES 3).
 export default function RecordScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const db = useSQLiteContext();
   const [tab, setTab] = useState<RecordTab>('all');
+  const { pet } = usePet();
+  const { records, reload } = useRecords();
 
   const goAdd = () => router.push('/record/add');
+
+  const handleDelete = (id: number) => {
+    Alert.alert('기록을 삭제할까요?', undefined, [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        style: 'destructive',
+        onPress: () => {
+          deleteRecord(db, id).then(reload);
+        },
+      },
+    ]);
+  };
+
+  if (!pet) return null; // 로딩 중이거나(undefined) 프로필 없음(null) — 라우팅으로 대부분 방지됨
 
   return (
     <View style={styles.root}>
@@ -23,34 +41,47 @@ export default function RecordScreen() {
       <Stack.Screen
         options={{
           headerRight: () => (
-            <Pressable onPress={goAdd} hitSlop={10} style={styles.headerAdd}>
-              <Text style={styles.headerAddIcon}>＋</Text>
+            <Pressable
+              onPress={goAdd}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel="기록 추가"
+              style={styles.headerAdd}
+            >
+              <Text style={styles.headerAddIcon} maxFontSizeMultiplier={fontScale.icon}>
+                ＋
+              </Text>
             </Pressable>
           ),
         }}
       />
 
       <ScrollView
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: layout.adBannerHeight + insets.bottom + space[16] },
-        ]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + space[16] }]}
         showsVerticalScrollIndicator={false}
       >
-        <HealthRecord pet={pet} records={records} tab={tab} onTab={setTab} />
+        <HealthRecord
+          pet={pet}
+          records={records}
+          tab={tab}
+          onTab={setTab}
+          onDelete={handleDelete}
+          onOpen={(id) => router.push(`/record/${id}` as Href)}
+          onAdd={goAdd}
+        />
       </ScrollView>
 
-      {/* 우하단 FAB — AdBanner 위에 띄움 */}
+      {/* 우하단 FAB */}
       <Pressable
         onPress={goAdd}
-        style={[styles.fab, { bottom: layout.adBannerHeight + insets.bottom + space[4] }]}
+        accessibilityRole="button"
+        accessibilityLabel="기록 추가"
+        style={[styles.fab, { bottom: insets.bottom + space[4] }]}
       >
-        <Text style={styles.fabIcon}>＋</Text>
+        <Text style={styles.fabIcon} maxFontSizeMultiplier={fontScale.icon}>
+          ＋
+        </Text>
       </Pressable>
-
-      <View style={{ paddingBottom: insets.bottom }}>
-        <AdBanner title="우리 아이 건강검진 패키지" description="AD · 댕댕동물병원" />
-      </View>
     </View>
   );
 }

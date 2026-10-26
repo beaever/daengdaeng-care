@@ -3,33 +3,37 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { colors, space } from '../../../theme';
-import { AdBanner } from '../../../components/ui';
 import { FoodResult } from '../../../components/compound';
-import { foods } from '../../../lib/sampleData';
+import { EmptyState } from '../../../components/ui';
+import { FOODS, searchFood } from '@daengdaeng/constants';
 
-// SCR-006 · 음식 결과 (음식 탭) — FoodResult 컴파운드 + 하단 AdBanner.
-// 음식 안전도(safe/caution/danger)는 응급(emergency) 레벨이 아니므로 광고 허용.
+// SCR-006 · 음식 결과 (음식 탭) — FoodResult 컴파운드.
 export default function FoodResultScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ name?: string }>();
-  const food = (params.name != null ? foods[params.name] : undefined) ?? foods['포도']!;
+  const food = params.name != null ? (FOODS[params.name] ?? searchFood(params.name)) : null;
 
   return (
     <View style={styles.root}>
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingBottom: space[8] + insets.bottom }]}
         showsVerticalScrollIndicator={false}
       >
-        <FoodResult food={food} />
+        {food != null ? (
+          <FoodResult food={food} />
+        ) : (
+          <EmptyState
+            icon="🔍"
+            title="확인되지 않은 음식이에요"
+            description="걱정되는 증상이 있다면 가까운 수의사와 상담해 주세요."
+          />
+        )}
       </ScrollView>
-      <View style={{ paddingBottom: insets.bottom }}>
-        <AdBanner title="우리 아이 맞춤 영양 간식" description="AD · 펫푸드랩" />
-      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: space[5], paddingBottom: space[8] },
+  content: { padding: space[5] },
 });

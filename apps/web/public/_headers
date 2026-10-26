@@ -1,0 +1,5 @@
+# Cloudflare Pages 응답 헤더 — Next 정적 내보내기의 확장자 없는 이미지(app/icon.tsx, app/opengraph-image.tsx)에 타입 지정
+/icon
+  Content-Type: image/png
+/opengraph-image
+  Content-Type: image/png

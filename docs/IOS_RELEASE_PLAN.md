@@ -1,0 +1,152 @@
+# 댕댕케어 v1.0 — iOS 출시 개발 계획
+
+> **목표:** App Store 심사 통과 및 출시. **iOS만**, **광고 없음**.
+> **진행 방식:** 태스크 하나 = 브랜치 하나 = PR 하나. `/harness <태스크ID>` 로 실행한다.
+> 체크박스는 PR이 `dev` 에 머지되면 체크한다.
+
+---
+
+## 확정된 결정
+
+| 결정 | 내용 | 근거 |
+|------|------|------|
+| 플랫폼 | iOS 전용. `android` 설정은 두되 빌드·QA하지 않음 | 출시 범위 축소 |
+| 광고 | **v1.0 미적용.** 화면의 광고 자리 표시자도 제거. MAU가 오르면 v1.x에서 도입 | 사용자 결정 (2026-09-26) |
+| 컴포넌트 | 앱은 `apps/mobile/components` (RN)만 사용. 쓰이지 않던 `packages/ui`(웹·Storybook)는 삭제 | `packages/ui` 없음 |
+| 데이터 | 음식·증상은 `@daengdaeng/constants`를 단일 출처로 사용. `lib/sampleData.ts` 는 삭제 대상 | 테스트된 로직과 실제 앱 로직 일치 |
+| 로컬 DB | `expo-sqlite` 직접 사용 (Drizzle 없음) | 테이블이 2개라 ORM이 오버헤드 |
+| 다크모드 | v1.0은 라이트 고정 (`userInterfaceStyle: "light"`). 다크는 v1.1 | `theme.ts` 의 `colors` 가 light로 고정되어 있음 |
+| 캐시 | v1.0은 캐시 없이 로딩·에러·오프라인 상태만 처리 | 트래픽이 한도(카카오 월 300만 건)보다 훨씬 적음 |
+
+---
+
+## 담당 에이전트 (`.claude/agents/`)
+
+| 에이전트 | 모델 | 하네스 파트 | 역할 |
+|----------|------|-------------|------|
+| `planner` | opus | PRODUCT | 태스크를 구현 단계로 쪼갬, 범위·리스크 판단 (읽기 전용) |
+| `mobile-engineer` | sonnet | FRONTEND·DESIGN | `apps/mobile` 화면과 컴포넌트 구현 |
+| `data-engineer` | sonnet | BACKEND | SQLite, Kakao/OPFF 연동, 권한, 에러 처리 |
+| `release-engineer` | sonnet | INFRA | Expo SDK, app.json/eas.json, 권한 문구, 스토어 제출 |
+| `qa-engineer` | sonnet | QA | 테스트 작성, 검증 명령 실행 |
+| `rules-guard` | haiku | RULES | RULES.md 위반 검사 (읽기 전용, 빠름) |
+
+---
+
+## Phase 0 — 기반 정비
+
+- [x] **T0.1 Expo SDK 업그레이드** · `release-engineer`
+  - 배경: Apple은 2026-04-28 이후 업로드되는 앱에 iOS 26 SDK(Xcode 26) 빌드를 요구한다. SDK 52 / RN 0.76이 EAS의 Xcode 26 이미지에서 빌드되는지 **먼저 확인**하고, 안 되면 Xcode 26을 지원하는 최신 SDK로 올린다.
+  - 완료 조건: `npx expo-doctor` 통과 (React 중복 경고 1건은 허용 — INFRA.md "알려진 제약"), 시뮬레이터에서 5개 탭 정상 동작. (EAS production 빌드 검증은 기능 구현 후 T2.3으로 이동 — 2026-09-27 결정)
+- [x] **T0.2 광고 코드 제거** · `mobile-engineer`
+  - `food/result`, `symptom/result`, `record/index`, `hospital/index` 의 AdBanner/NativeAd 제거
+  - `symptom/interstitial.tsx` 삭제: `questions → result` 로 바로 이동
+  - `components/ui/AdBanner.tsx`, `NativeAd.tsx` 삭제 (필요하면 git 이력에서 복원)
+  - 완료 조건: `grep -rn "AdBanner\|NativeAd\|interstitial" apps/mobile/app apps/mobile/components` 결과 0건
+- [x] **T0.3 데이터 단일 출처화** · `mobile-engineer`
+  - `apps/mobile` 에 `@daengdaeng/constants` 의존성 추가
+  - 음식 검색은 `searchFood`, 증상은 `SYMPTOM_CATEGORIES` 등으로 교체
+  - 완료 조건: `sampleData` 에 음식·증상 데이터가 남지 않음, 영문 별칭 검색("grape")이 앱에서 동작
+- [x] **T0.4 모바일 테스트 러너 + CI** · `qa-engineer`
+  - `jest-expo` + `@testing-library/react-native` 도입, CI의 `turbo test` 에 모바일 포함
+  - 첫 테스트: 증상 결과 화면에 면책 고지가 항상 보임 (규칙 4)
+  - 완료 조건: CI에서 모바일 테스트 실행·통과
+
+## Phase 1 — 기능 실데이터화 (F001~F006)
+
+- [x] **T1.1 로컬 DB + 반려견 프로필 (F006)** · `data-engineer`
+  - `expo-sqlite` 로 `pets`, `records` 테이블 구성 (스키마는 BACKEND.md), `PRAGMA user_version` 으로 마이그레이션
+  - 온보딩과 프로필 편집 저장, 반려견 사진은 `expo-image-picker`
+  - 완료 조건: 앱을 재시작해도 프로필 유지, 첫 실행이면 온보딩으로 이동
+- [x] **T1.2 건강 기록 CRUD (F005)** · `mobile-engineer` (T1.1 이후)
+  - 기록 추가·목록·삭제를 DB와 연결, 빈 상태 표시
+  - 완료 조건: 재시작 후 기록 유지, 날짜순 정렬
+- [x] **T1.3 병원 찾기 UI (F004)** · `data-engineer` → `mobile-engineer`
+  - `expo-location` (사용 중 권한) + 지도: `react-native-maps` (iOS 기본 Apple 지도, 키·비용 없음)에 현재 위치와 병원 마커 표시. 마커를 누르면 해당 병원 카드로 이동
+  - 병원 데이터는 `lib/hospitals.ts` 의 `searchHospitals({ lat, lng })` 인터페이스 뒤에 둔다. Kakao 키 연동 전까지는 샘플 데이터를 현재 위치 기준 거리순으로 반환 (T1.7에서 교체)
+  - 권한 거부 시: 지역명 입력으로 대체. 전화(`tel:`)와 길찾기(Apple 지도 링크)
+  - 완료 조건: 시뮬레이터에서 지도·마커·목록이 거리순으로 표시, 권한 거부 안내
+- [x] **T1.4 사료 분석 (F002)** · `data-engineer` → `mobile-engineer`
+  - `expo-camera` 바코드 스캔 + Open Pet Food Facts 조회, 조회 실패 시 "등록되지 않은 제품" 안내와 수동 검색
+  - **결정 게이트:** 착수 전 국내 주요 사료 바코드 20개의 OPFF 등록률을 확인한다. 등록률이 낮으면 F002를 v1.1로 미루고 사료 탭을 숨긴다. 샘플 데이터 화면을 그대로 내보내면 심사 4.2(최소 기능) 거절 위험이 있다.
+  - 완료 조건: 실기기 스캔 → 성분 표시, 미등록·권한 거부 처리
+  - **게이트 결과 (2026-10-08): v1.1로 연기.** OPFF 전체 15,485개 중 한국 판매 등록 5개(제품명·성분 모두 비어 있음), 국내 유통 브랜드(ANF·내추럴발란스·나우·지위픽) 0건. 사료 스캔·분석 화면과 홈 바로가기를 삭제했다. 코드는 git 이력(T1.4 PR 이전)에 남아 있다.
+- [x] **T1.5 전역 에러·오프라인 처리** · `mobile-engineer`
+  - 네트워크가 필요한 화면(병원)의 로딩·에러·오프라인 상태
+  - 완료 조건: 비행기 모드에서 모든 탭이 멈추지 않고 안내 문구 표시
+- [x] **T1.6 `sampleData.ts` 정리** · `mobile-engineer`
+  - 병원 샘플(T1.7에서 제거)을 제외한 샘플 데이터 삭제
+  - 완료 조건: `sampleData` 에 병원 외 데이터 0건
+- [x] **T1.7 Kakao Local 연동 (F004)** · `data-engineer` — **Phase 1 마지막 (사용자 결정 2026-10-01)**
+  - `searchHospitals` 구현을 Kakao Local 키워드 검색(`EXPO_PUBLIC_KAKAO_KEY`, EAS 환경변수)으로 교체, 병원 샘플 데이터와 `sampleData.ts` 삭제
+  - 오프라인·API 실패 안내
+  - 리스크: REST 키가 앱 번들에 포함된다. 카카오 콘솔에서 사용량 알림을 설정해 둔다.
+  - 완료 조건: 실기기에서 실제 주변 병원이 거리순 표시, `grep -rn sampleData apps/mobile` 결과 0건
+
+## Phase 2 — iOS 품질
+
+- [x] **T2.1 앱 설정 정리** · `release-engineer`
+  - `app.json`: `icon` (1024px), 스플래시 이미지, `userInterfaceStyle: "light"`, `ios.config.usesNonExemptEncryption: false`
+  - `infoPlist` 권한 문구(한국어): 위치(사용 중), 사진 보관함 (카메라는 F002 연기로 불필요)
+  - 사용하는 SDK의 `privacyManifests` (Required Reason API) 확인
+  - `_layout.tsx` 의 StatusBar를 라이트 고정 테마와 맞춤
+  - 완료 조건: `eas build` 결과물의 Info.plist에 권한 문구 2종 포함
+  - **결과 (2026-10-08):** 임시 아이콘(브랜드 그라데이션 + 흰 발바닥, 알파 없음)과 스플래시(브랜드 500 단색) 적용, version 1.0.0. expo-location 의 영어 기본 `NSMotionUsageDescription` 을 `motionUsagePermission: false` 로 제거했다. 앱 manifest(UserDefaults·FileTimestamp·SystemBootTime)는 prebuild 가 생성하고, expo-file-system·react-native-maps 는 자체 manifest 가 있다. 누락은 TestFlight 업로드 시 ITMS-91053 메일로 확인한다. 동작하지 않던 홈 알림 아이콘과 설정 "앱 설정"(알림·단위) 섹션을 삭제했다. 정식 아이콘이 생기면 `assets/icon.png` 만 교체하면 된다.
+- [x] **T2.2 접근성 기본** · `mobile-engineer`
+  - 터치 타깃 44pt, 아이콘 버튼에 `accessibilityLabel`, 큰 글씨(Dynamic Type 최대)에서 레이아웃 확인
+- [ ] **T2.25 산책 기록 (2026-10-20 추가)** · `mobile-engineer`
+  - 건강 기록에 `walk` 종류 추가: 날짜·산책 시간(분, 선택)·사진 1장(촬영 또는 앨범, 선택)·메모. GPS 경로 기록은 당초 v1.1 이후 검토였으나 **2026-10-20 v1.0 포함으로 결정** (T2.26)
+  - DB v3: `records.photo` 컬럼. 사진은 프로필 사진과 같이 document 디렉터리에 파일명으로 저장, 기록 삭제 시 함께 삭제
+  - 카메라 권한 문구 추가 → 개인정보처리방침 권한 항목 갱신(웹 재배포 필요)
+- [ ] **T2.26 산책 경로 기록 (2026-10-20 추가, v1.0 포함)** · `release-engineer`·`data-engineer`·`mobile-engineer`·`qa-engineer`
+  - 방식: `Location.startLocationUpdatesAsync`(expo-task-manager) + "앱 사용 중" 권한만. `requestBackgroundPermissionsAsync` 호출 금지, `UIBackgroundModes: location`, 시작~종료 사이에만 수신(일시정지 시 중단), 파란 위치 표시. 경로는 기기 SQLite(`walk_points`)에만 저장
+  - W1 (release) expo-task-manager, app.json `isIosBackgroundLocationEnabled`, 위치 권한 문구 교체 · W2 (data) DB v4, `lib/geo.ts`, records 연동 · W3 (data) `lib/walkTask.ts`·`lib/walk.ts`, 앱 시작 시 잔여 태스크 정리 · W4 (mobile) WalkRouteMap, 기록 경로 보기 · W5 (mobile) WalkSession 컴파운드·`app/walk.tsx`·홈/추가 시트 진입점·미완료 세션 Alert · W6 (release) 개인정보처리방침(웹 재배포 필요)·메타데이터·계획서 · W7 (qa+사람) 컴파운드 테스트, TestFlight, QA.md "산책 경로" 실외 체크리스트
+  - 2026-10-21 하단 탭 변경: 홈·**산책**·증상·병원·기록 (음식 판별은 탭에서 빼고 홈 바로가기로만 진입, 탭 5개 유지). 산책 탭 = 산책 시작 + 산책 기록 목록
+  - 완료 조건: introspect 에 `UIBackgroundModes` location 만 있고 `NSLocationAlways*` 없음, 실외 체크리스트 13개 통과, 치명 버그 0
+- [ ] **T2.3 실기기 QA** · `qa-engineer`
+  - QA.md 체크리스트를 iPhone SE(375pt)와 Pro Max에서 수행
+  - EAS production 빌드 (첫 EAS 빌드, Xcode 26 클라우드 빌드 검증 겸함) → TestFlight 내부 테스터 배포
+  - 완료 조건: 치명 버그 0건, 결과는 PR 또는 이슈로 기록
+
+## Phase 3 — App Store 제출
+
+- [x] **T3.1 앱 레코드·인증서** · 사람 (`release-engineer` 가 안내)
+  - ✅ Apple Developer Program 가입 완료
+  - ✅ App Store Connect 앱 생성 (번들 ID `care.daengdaeng.app`)
+  - ✅ `eas.json` 에 `ascAppId` 입력
+  - ✅ `eas credentials` 로 배포 인증서·프로비저닝 생성 (기존 배포 인증서 재사용)
+- [x] **T3.2 개인정보처리방침·지원 페이지** · `mobile-engineer` (apps/web)
+  - `apps/web` 에 `/privacy`, `/support` 추가 후 Vercel 배포. 앱 설정 화면에도 링크
+  - 내용: 데이터는 기기에만 저장, 위치는 병원 검색 요청 시 카카오에만 전송, 광고·추적 없음
+  - **결과 (2026-10-14):** Cloudflare Pages 정적 배포(`daengdaeng-care.pages.dev`)로 결정. `/privacy`·`/support`·`llms.txt`·JSON-LD. 앱 설정에 고객 지원·개인정보 처리방침 링크, 이용약관은 2026-10-15 건강 정보 면책 조항이 필요해 `/terms` 로 다시 추가
+- [ ] **T3.3 App Privacy·연령 등급** · `release-engineer`
+  - 광고·추적이 없으므로 ATT 불필요. 위치는 "앱 기능, 사용자와 연결되지 않음"으로 신고할지 검토. 산책 경로는 기기 밖으로 전송되지 않으므로 수집 아님 (T2.26, 변경 없음 — APP_STORE_METADATA.md §7)
+- [ ] **T3.4 메타데이터** · `release-engineer`
+  - 6.9인치 스크린샷, 앱 이름, 부제, 설명, 키워드, 카테고리(라이프스타일 권장. 의료 카테고리는 심사가 엄격함)
+  - 심사 노트: 증상 체크는 참고용이며 진단이 아니라는 설명과 음식 DB 출처 명시 (가이드라인 1.4.1 대응)
+  - 산책 경로: 심사 노트에 "While Using" 권한만 사용·Always 미요청·시작~종료 사이에만 기록·기기 밖 미전송·Simulator City Walk 테스트 방법을 영문으로 명시, 스크린샷에 산책 경로 화면 추가 (백그라운드 위치 2.5.4 대응)
+- [ ] **T3.5 릴리스** · `release-engineer`
+  - `/gitflow release v1.0.0` → `dev → main` 머지 → `/ios-release` (production 빌드 + submit)
+  - 완료 조건: 심사 제출. 거절되면 사유를 기록하고 fix 태스크를 추가
+
+---
+
+## v1.0 범위 밖 (출시 후)
+
+| 항목 | 도입 조건 |
+|------|-----------|
+| 광고 (AdMob + ATT + SKAdNetwork) | MAU 기준 달성 시. 규칙 1(응급 화면 무광고)은 그때도 유지 |
+| 다크모드 | v1.1 (`theme.ts` 에 `useColorScheme` 연결) |
+| API 캐시 | 카카오 호출량이 무료 한도에 가까워질 때 |
+| 푸시 알림, 다중 프로필, Android | PRODUCT.md 로드맵 |
+
+## 실행 순서 요약
+
+```
+T0.1 ─┬─ T0.2 ─ T0.3 ─ T0.4
+      └─ T1.1 ─ T1.2
+         T1.3, T1.4 (병렬 가능) ─ T1.5 ─ T1.6 ─ T1.7(Kakao 연동)
+                                          └─ T2.1 ─ T2.2 ─ T2.3 ─ T3.x
+T2.1 ─ T2.25 ─ T2.26(W1·W2 ─ W3·W4 ─ W5 ─ W7, W6 은 W1 후) ─ T2.3 ─ T3.x
+T3.1(앱 레코드·ascAppId)은 사람이 할 일이고 선행 조건이 없으므로 아무 때나 먼저 해둘 수 있음
+```

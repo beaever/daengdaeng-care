@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, radius, fontFamily, typography } from '../../theme';
+import { colors, radius, fontFamily, typography, fontScale } from '../../theme';
 
 export interface OptionProps {
   label: string;
@@ -18,7 +18,11 @@ export function Option({ label, description, selected = false, onSelect }: Optio
       style={[styles.option, selected && styles.optionSelected]}
     >
       <View style={[styles.check, selected && styles.checkSelected]}>
-        {selected && <Text style={styles.checkMark}>✓</Text>}
+        {selected && (
+          <Text style={styles.checkMark} maxFontSizeMultiplier={fontScale.icon}>
+            ✓
+          </Text>
+        )}
       </View>
       <View style={styles.body}>
         <Text style={styles.label}>{label}</Text>

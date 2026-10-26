@@ -9,9 +9,9 @@ v1.0은 **서버리스** 아키텍처다. Backend는 외부 API 연동, 로컬 D
 
 ```
 음식 판별    → packages/constants/foods.ts (번들 내 JSON, API 불필요)
-사료 분석    → Open Pet Food Facts API (클라이언트에서 직접 호출)
+사료 분석    → v1.1 (OPFF 국내 등록률 ≈0%, IOS_RELEASE_PLAN T1.4)
 병원 찾기    → Kakao Local API (클라이언트에서 직접 호출)
-건강 기록    → expo-sqlite + Drizzle ORM (기기 로컬)
+건강 기록    → expo-sqlite (기기 로컬, ORM 없음 · PRAGMA user_version 마이그레이션)
 ```
 
 **서버, 데이터베이스 서버, 인증 서버 없음** — 운영 비용 $0 목표
@@ -41,7 +41,7 @@ Authorization: KakaoAK {REST_API_KEY}
 
 ---
 
-## 로컬 DB 스키마 (expo-sqlite + Drizzle)
+## 로컬 DB 스키마 (expo-sqlite)
 
 ```sql
 -- 반려견 프로필
@@ -52,25 +52,53 @@ CREATE TABLE pets (
   dob      TEXT,           -- ISO date string
   sex      TEXT,           -- '남아' | '여아'
   neutered INTEGER,        -- 0|1
-  photo    TEXT            -- file URI
+  photo    TEXT            -- document 디렉터리 기준 파일명 (절대 URI 아님 — iOS 컨테이너 UUID 변경 대응)
 );
 
--- 건강 기록
+-- 건강 기록 (v2: next_date 컬럼 추가)
 CREATE TABLE records (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   pet_id     INTEGER REFERENCES pets(id),
-  type       TEXT NOT NULL,  -- 'vaccine' | 'weight' | 'vet'
+  type       TEXT NOT NULL,  -- 'vaccine' | 'weight' | 'vet' | 'walk'
   date       TEXT NOT NULL,  -- ISO date string
   title      TEXT NOT NULL,
   sub        TEXT,
   notes      TEXT,
+  next_date  TEXT,           -- YYYY-MM-DD, type='vaccine'에서만 사용 (v2, PRAGMA user_version 2)
+  photo      TEXT,           -- document 디렉터리 기준 파일명, type='walk'에서만 사용 (v3)
   created_at TEXT DEFAULT (datetime('now'))
 );
+
+-- 산책 경로 포인트 (v4). 세션 테이블 없음: record_id IS NULL = 진행 중(미저장) 산책
+CREATE TABLE walk_points (
+  id        INTEGER PRIMARY KEY AUTOINCREMENT,
+  record_id INTEGER,          -- records.id. 저장 시 UPDATE 로 연결, 기록 삭제 시 함께 삭제
+  seg       INTEGER NOT NULL, -- 일시정지/재개마다 +1, 다른 seg 끼리는 선·거리로 잇지 않음
+  ts        INTEGER NOT NULL, -- epoch ms
+  lat       REAL NOT NULL,
+  lng       REAL NOT NULL
+);
+CREATE INDEX idx_walk_points_record ON walk_points(record_id);
 ```
+
+`listRecords` 는 `EXISTS(SELECT 1 FROM walk_points WHERE record_id = records.id) AS has_route` (0 | 1) 를 함께 돌려준다.
+
+### type별 컬럼 매핑
+
+기록 입력 폼은 하나의 `records` 테이블을 공유하며, `type` 에 따라 같은 컬럼을 다른 의미로 쓴다.
+
+| type      | title           | sub       | next_date                              | notes |
+|-----------|-----------------|-----------|-----------------------------------------|-------|
+| `vaccine` | 백신 종류       | (미사용)  | 다음 접종 예정일. 기본값 = 접종일(date) + 1년, 사용자가 수정 가능 (백신별 주기표 없음) | 메모 |
+| `weight`  | kg 숫자 문자열 (예: `"3.2"`) | (미사용) | (미사용) | 메모 |
+| `vet`     | 병원 이름       | 방문 사유 | (미사용) | 메모 |
+| `walk`    | `"30분 산책"` 또는 `"산책"` | 경로 기록 시 거리 `formatDistance` (예: `"1.2km"`), 수동 입력은 미사용 | (미사용) | 메모. 사진은 `photo` 컬럼 |
 
 ---
 
 ## 캐싱 전략
+
+> v1.0은 캐시 없이 로딩·에러·오프라인 상태만 처리한다. 아래는 호출량이 늘어날 때 적용한다.
 
 | 데이터 | 캐시 방법 | TTL |
 |--------|-----------|-----|

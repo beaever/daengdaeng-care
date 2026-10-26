@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    height: 52,
+    minHeight: 52, // Dynamic Type 확대 시 입력 텍스트 잘림 방지 (고정 height 금지)
     paddingHorizontal: 16,
     backgroundColor: colors.surface2,
     borderWidth: 1.5,
