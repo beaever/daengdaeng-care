@@ -14,7 +14,7 @@ export default function FoodLayout() {
         contentStyle: { backgroundColor: colors.bg },
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false, title: '음식 판별' }} />
       <Stack.Screen name="result" options={{ title: '이거 먹어도 될까요?' }} />
     </Stack>
   );

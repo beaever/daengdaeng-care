@@ -40,4 +40,7 @@ preset.moduleNameMapper = {
   '^react-test-renderer/(.*)$': '<rootDir>/../../node_modules/react-test-renderer/$1',
 };
 
+// 4) 캐시가 빈 첫 실행(CI·turbo 병렬)에서는 첫 render 가 RN 모듈 변환을 기다리느라 5초 기본값을 넘긴다.
+preset.testTimeout = 20000;
+
 module.exports = preset;
