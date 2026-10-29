@@ -14,7 +14,7 @@ export default function SymptomLayout() {
         contentStyle: { backgroundColor: colors.bg },
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false, title: '증상 체크' }} />
       <Stack.Screen name="questions" options={{ title: '증상 체크' }} />
       <Stack.Screen name="result" options={{ title: '증상 체크 결과' }} />
     </Stack>
