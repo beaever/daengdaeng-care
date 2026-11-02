@@ -3,11 +3,11 @@ import { View, Text, ScrollView, Alert, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { colors, space, fontFamily, typography, fontScale } from '../../theme';
-import { Button } from '../../components/ui';
-import { HealthRecord } from '../../components/compound';
-import { promptPendingWalk } from '../../lib/walkRecover';
-import { useRecords, deleteRecord } from '../../lib/records';
+import { colors, space, fontFamily, typography, fontScale } from '../../../theme';
+import { Button } from '../../../components/ui';
+import { HealthRecord } from '../../../components/compound';
+import { promptPendingWalk } from '../../../lib/walkRecover';
+import { useRecords, deleteRecord } from '../../../lib/records';
 
 // 산책 탭 — 산책 시작 CTA + 산책 기록 타임라인(HealthRecord.Timeline 재사용). 화면은 조립만 한다(RULES 3).
 export default function WalksScreen() {
@@ -45,7 +45,7 @@ export default function WalksScreen() {
           records={records}
           tab="walk"
           onDelete={handleDelete}
-          onOpen={(id) => router.push(`/record/${id}` as Href)}
+          onOpen={(id) => router.push(`/walks/${id}` as Href)}
           onAdd={startWalk}
         />
       </View>
