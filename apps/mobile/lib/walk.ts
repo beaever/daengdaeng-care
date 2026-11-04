@@ -165,9 +165,11 @@ export interface PendingWalk {
   minutes: number;
   distanceM: number;
   pointCount: number;
+  /** 산책을 시작한 날 (로컬 YYYY-MM-DD) */
+  date: string;
 }
 
-/** seg 별 (마지막 ts − 첫 ts) 합 → 분. 최소 1분. */
+/** seg 별 (마지막 ts − 첫 ts) 합 → 분. 최소 1분. points 는 1개 이상. */
 export function pendingSummary(points: RoutePoint[]): PendingWalk {
   const bySeg = new Map<number, { first: number; last: number }>();
   for (const p of points) {
@@ -177,10 +179,15 @@ export function pendingSummary(points: RoutePoint[]): PendingWalk {
   }
   let ms = 0;
   bySeg.forEach((s) => (ms += s.last - s.first));
-  return { minutes: Math.max(1, Math.round(ms / 60000)), distanceM: routeDistance(points), pointCount: points.length };
+  return {
+    minutes: Math.max(1, Math.round(ms / 60000)),
+    distanceM: routeDistance(points),
+    pointCount: points.length,
+    date: toLocalDateString(new Date(points[0].ts)),
+  };
 }
 
-/** 강제 종료로 남은 미저장 포인트가 있으면 요약을, 없으면 null. 저장은 saveResult(db, 요약, {...}), 버리기는 discard(db). */
+/** 강제 종료로 남은 미저장 포인트가 있으면 요약을, 없으면 null. 저장은 saveResult(db, 요약, { date: 요약.date }), 버리기는 discard(db). */
 export async function recoverPending(db: SQLiteDatabase): Promise<PendingWalk | null> {
   const points = await listUnsavedPoints(db);
   return points.length ? pendingSummary(points) : null;
