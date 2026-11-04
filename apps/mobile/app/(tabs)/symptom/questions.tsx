@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import { useRouter, useNavigation, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { colors, space } from '../../../theme';
 import { SymptomChecker } from '../../../components/compound';
 import { SYMPTOM_QUESTIONS, type SymptomOption, type SymptomQuestion } from '@daengdaeng/constants';
@@ -20,57 +20,41 @@ function longestRemainingPath(questions: SymptomQuestion[], idx: number): number
 }
 
 // SCR-010 · 증상 질문 (증상 탭) — SymptomChecker 조립. 보기 선택으로 분기.
+// 질문마다 화면을 쌓는다 — 뒤로 가기·스와이프가 그대로 직전 질문으로 간다
+// (native-stack 은 beforeRemove 로 뒤로 가기를 막을 수 없다).
 export default function SymptomQuestionsScreen() {
   const router = useRouter();
-  const navigation = useNavigation();
-  const params = useLocalSearchParams<{ cat?: string }>();
-  // 방문한 질문 인덱스 경로. 마지막 원소가 현재 질문 — 분기 트리에서도 정확한 뒤로가기를 보장한다.
-  const [history, setHistory] = useState<number[]>([0]);
+  const params = useLocalSearchParams<{ cat?: string; q?: string; step?: string }>();
+  const idx = Number(params.q ?? 0);
+  const step = Number(params.step ?? 1);
   const questions = params.cat != null ? SYMPTOM_QUESTIONS[params.cat] : undefined;
-  const idx = history[history.length - 1]!;
+  const question = questions?.[idx];
 
-  // 카테고리가 바뀌면 새 질문 트리의 처음부터 시작.
+  // 카테고리나 질문이 없으면(잘못된 링크) 증상 탭으로 안전하게 복귀.
   useEffect(() => {
-    setHistory([0]);
-  }, [params.cat]);
-
-  // 뒤로가기: 방문 경로가 남아 있으면 직전 질문으로, 첫 질문이면 카테고리로(기본 동작).
-  useEffect(() => {
-    const unsub = navigation.addListener('beforeRemove', (e) => {
-      if (history.length > 1) {
-        e.preventDefault();
-        setHistory((h) => h.slice(0, -1));
-      }
-    });
-    return unsub;
-  }, [navigation, history]);
-
-  // 카테고리가 없거나 질문 트리가 없으면 증상 탭으로 안전하게 복귀.
-  useEffect(() => {
-    if (questions == null) {
+    if (question == null) {
       router.replace('/symptom');
     }
-  }, [questions, router]);
+  }, [question, router]);
 
-  if (questions == null) return null;
-
-  const question = questions[idx]!;
-  const current = history.length;
-  const total = history.length - 1 + longestRemainingPath(questions, idx);
+  if (questions == null || question == null) return null;
 
   const onSelect = (opt: SymptomOption) => {
     if (opt.verdict) {
       router.push({ pathname: '/symptom/result', params: { verdict: opt.verdict } });
     } else if (typeof opt.next === 'number') {
-      setHistory((h) => [...h, opt.next as number]);
+      router.push({
+        pathname: '/symptom/questions',
+        params: { cat: params.cat, q: String(opt.next), step: String(step + 1) },
+      });
     }
   };
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
       <SymptomChecker
-        current={current}
-        total={total}
+        current={step}
+        total={step - 1 + longestRemainingPath(questions, idx)}
         question={question.q}
         options={question.options}
         onSelect={onSelect}

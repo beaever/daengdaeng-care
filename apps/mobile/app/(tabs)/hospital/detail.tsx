@@ -48,14 +48,11 @@ export default function HospitalDetailScreen() {
   const hasValidCoords = Number.isFinite(hospital.lat) && Number.isFinite(hospital.lng);
   const distanceLabel = formatDistance(hospital.distance);
 
-  async function handleCall() {
-    const url = `tel:${hospital.phone}`;
-    const canOpen = await Linking.canOpenURL(url);
-    if (!canOpen) {
-      Alert.alert('전화를 걸 수 없어요', '이 기기(시뮬레이터)에서는 전화 기능을 사용할 수 없어요.');
-      return;
-    }
-    Linking.openURL(url);
+  function handleCall() {
+    // canOpenURL 은 tel 을 Info.plist 에 선언하지 않으면 거부되므로 바로 열고 실패만 안내한다.
+    Linking.openURL(`tel:${hospital.phone}`).catch(() => {
+      Alert.alert('전화를 걸 수 없어요', `${hospital.phone} 번호로 직접 전화해 주세요.`);
+    });
   }
 
   function handleDirections() {

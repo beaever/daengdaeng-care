@@ -94,6 +94,15 @@ describe('pendingSummary', () => {
     expect(s.minutes).toBe(15);
     expect(s.pointCount).toBe(4);
   });
+
+  it('날짜는 저장하는 날이 아니라 산책을 시작한 날이다', () => {
+    const ts = new Date(2026, 10, 2, 23, 50).getTime();
+    const s = pendingSummary([
+      { seg: 0, ts, lat: 37, lng: 127 },
+      { seg: 0, ts: ts + 20 * 60_000, lat: 37.001, lng: 127 },
+    ]);
+    expect(s.date).toBe('2026-11-02');
+  });
 });
 
 describe('start', () => {
