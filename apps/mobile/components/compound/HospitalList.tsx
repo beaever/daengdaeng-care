@@ -94,7 +94,7 @@ export interface HospitalListLocationFallbackProps {
   error?: string | null;
 }
 
-// 위치 권한이 꺼져 있거나 현재 위치를 가져오지 못했을 때 보여주는 안내 + 지역 검색 폼.
+// 위치 권한이 꺼져 있거나 현재 위치를 가져오지 못했을 때(GPS 신호 없음 등) 보여주는 안내 + 지역 검색 폼.
 function LocationFallback({
   region,
   onRegionChange,
@@ -106,10 +106,10 @@ function LocationFallback({
     <View style={styles.fallback}>
       <Text style={styles.fallbackIcon}>📍</Text>
       <Text style={styles.fallbackTitle} maxFontSizeMultiplier={fontScale.heading}>
-        위치 권한이 꺼져 있어요
+        현재 위치를 확인하지 못했어요
       </Text>
       <Text style={styles.fallbackDesc}>
-        설정에서 위치 권한을 허용하거나, 지역을 검색해서 주변 병원을 찾아보세요.
+        위치 권한이 꺼져 있다면 설정에서 허용하거나, 지역을 검색해서 주변 병원을 찾아보세요.
       </Text>
       <Button variant="outline" size="sm" onPress={() => Linking.openSettings()}>
         설정 열기

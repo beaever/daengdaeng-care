@@ -11,6 +11,8 @@ import { searchHospitals, geocodeRegion, type Hospital, type LatLng } from '../.
 // fallback: 위치를 못 받음 → 지역 검색 / error: 병원 검색 실패(오프라인·API 오류) → 다시 시도
 type Status = 'loading' | 'ready' | 'fallback' | 'error';
 
+const LAST_KNOWN_MAX_AGE_MS = 5 * 60 * 1000;
+
 // SCR-012 · 병원 목록 (병원 탭) — 토글(목록/지도) + 거리순 카드 또는 지도+선택 카드.
 export default function HospitalListScreen() {
   const router = useRouter();
@@ -52,9 +54,9 @@ export default function HospitalListScreen() {
         }
 
         // GPS 가 느리면 "위치 확인 중…" 이 무한 대기할 수 있다(expo-location 57 에는 timeout 옵션이
-        // 없음). 캐시된 마지막 위치가 있으면 바로 쓰고, 없으면 10초 타임아웃과 경쟁시켜
-        // 타임아웃/에러면 지역 검색(LocationFallback)으로 넘어간다.
-        let pos = await Location.getLastKnownPositionAsync();
+        // 없음). 5분 안에 캐시된 위치가 있으면 바로 쓰고(더 오래되면 다른 지역 병원이 나올 수 있다),
+        // 없으면 10초 타임아웃과 경쟁시켜 타임아웃/에러면 지역 검색(LocationFallback)으로 넘어간다.
+        let pos = await Location.getLastKnownPositionAsync({ maxAge: LAST_KNOWN_MAX_AGE_MS });
         if (pos == null) {
           const posPromise = Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
           const timeout = new Promise<null>((resolve) => {

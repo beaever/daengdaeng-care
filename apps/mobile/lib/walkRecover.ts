@@ -18,7 +18,7 @@ export async function promptPendingWalk(db: SQLiteDatabase): Promise<void> {
           text: '저장',
           onPress: async () => {
             try {
-              await saveResult(db, pending, {});
+              await saveResult(db, pending, { date: pending.date });
             } catch {
               Alert.alert('저장하지 못했어요', '잠시 후 다시 시도해주세요.');
             }
