@@ -45,9 +45,13 @@ export async function searchHospitals(center: LatLng): Promise<Hospital[]> {
     sort: 'distance',
     size: '15',
   });
+  // 신호가 약할 때 시스템 기본 제한 시간까지 기다리지 않게 10초에서 끊는다 → 화면의 "다시 시도"로 간다.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10_000);
   const res = await fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?${params}`, {
     headers: { Authorization: `KakaoAK ${key}` },
-  });
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timer));
   if (!res.ok) throw new Error(`Kakao Local 검색 실패 (${res.status})`);
   const { documents } = (await res.json()) as { documents: KakaoPlace[] };
 

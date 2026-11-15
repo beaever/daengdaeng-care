@@ -3,7 +3,7 @@ import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import MapView, { Polyline } from 'react-native-maps';
 import { colors, space, radius, fontFamily, typography, fontScale } from '../../theme';
 import { Button, Field, Textarea, WalkRouteMap, StickerPhoto } from '../ui';
-import { formatDistance, type RoutePoint } from '../../lib/geo';
+import { formatDistance, routeSegments, type RoutePoint } from '../../lib/geo';
 import type { WalkPhase } from '../../lib/walk';
 
 // SCR · 산책 경로 기록 — 컴파운드(WalkSession + .Map/.Stats/.Controls/.Finish).
@@ -45,12 +45,7 @@ const WALK_CAMERA_ZOOM = 17;
 function WalkMap({ points }: { points: RoutePoint[] }) {
   const ref = useRef<MapView>(null);
   const zoomed = useRef(false);
-  const segs = new Map<number, { latitude: number; longitude: number }[]>();
-  for (const p of points) {
-    const line = segs.get(p.seg) ?? [];
-    line.push({ latitude: p.lat, longitude: p.lng });
-    segs.set(p.seg, line);
-  }
+  const segs = routeSegments(points);
   if (!useActive()) return null;
   return (
     <MapView
@@ -203,6 +198,5 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     overflow: 'hidden',
   },
-  photo: { width: '100%', aspectRatio: 4 / 3 },
   photoHint: { fontFamily, fontSize: typography.sub.size, fontWeight: '600', color: colors.text2 },
 });

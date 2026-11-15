@@ -38,5 +38,6 @@ jobs:
       - name: Test
         run: pnpm turbo test
 
-      - name: Build packages
-        run: pnpm turbo build --filter=./packages/*
+      # apps/web 정적 내보내기에 심사용 개인정보처리방침이 있어 함께 빌드한다
+      - name: Build packages · web
+        run: pnpm turbo build --filter='./packages/*' --filter=./apps/web

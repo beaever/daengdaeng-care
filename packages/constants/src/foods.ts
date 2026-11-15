@@ -484,5 +484,6 @@ export function searchFoods(query: string): FoodEntry[] {
 
 export function searchFood(query: string): FoodEntry | null {
   const q = query.trim().toLowerCase();
-  return FOODS[q] ?? searchFoods(query)[0] ?? null;
+  // hasOwn: 'constructor' 같은 프로토타입 키가 음식으로 잡히지 않게 (딥링크 입력)
+  return (Object.prototype.hasOwnProperty.call(FOODS, q) ? FOODS[q] : null) ?? searchFoods(query)[0] ?? null;
 }

@@ -5,13 +5,13 @@ import { useLocalSearchParams } from 'expo-router';
 import { colors, space } from '../../../theme';
 import { FoodResult } from '../../../components/compound';
 import { EmptyState } from '../../../components/ui';
-import { FOODS, searchFood } from '@daengdaeng/constants';
+import { searchFood } from '@daengdaeng/constants';
 
 // SCR-006 · 음식 결과 (음식 탭) — FoodResult 컴파운드.
 export default function FoodResultScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ name?: string }>();
-  const food = params.name != null ? (FOODS[params.name] ?? searchFood(params.name)) : null;
+  const food = params.name != null ? searchFood(params.name) : null;
 
   return (
     <View style={styles.root}>

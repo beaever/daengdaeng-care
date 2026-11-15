@@ -61,8 +61,9 @@ word-break: keep-all 을 모든 한글 텍스트 영역에 적용한다.
 
 ### 다크모드 대응
 ```
-시스템 다크모드 설정을 반드시 존중한다.
-테마 토큰을 사용하면 자동으로 대응된다.
+v1.0 앱은 라이트 전용이다 (app.json userInterfaceStyle: "light").
+다크모드는 v1.1에서 theme.ts 에 useColorScheme 을 연결해 도입한다.
+그때를 위해 색은 지금도 테마 토큰으로만 쓴다 (dark 토큰은 packages/tokens 에 있음).
 ```
 
 ### Safe Area

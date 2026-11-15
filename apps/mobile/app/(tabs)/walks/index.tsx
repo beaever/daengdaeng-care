@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Alert, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -7,7 +7,7 @@ import { colors, space, fontFamily, typography, fontScale } from '../../../theme
 import { Button } from '../../../components/ui';
 import { HealthRecord } from '../../../components/compound';
 import { promptPendingWalk } from '../../../lib/walkRecover';
-import { useRecords, deleteRecord } from '../../../lib/records';
+import { useRecords, confirmDeleteRecord } from '../../../lib/records';
 
 // 산책 탭 — 산책 시작 CTA + 산책 기록 타임라인(HealthRecord.Timeline 재사용). 화면은 조립만 한다(RULES 3).
 export default function WalksScreen() {
@@ -21,12 +21,7 @@ export default function WalksScreen() {
     router.push('/walk');
   };
 
-  const handleDelete = (id: number) => {
-    Alert.alert('기록을 삭제할까요?', undefined, [
-      { text: '취소', style: 'cancel' },
-      { text: '삭제', style: 'destructive', onPress: () => deleteRecord(db, id).then(reload) },
-    ]);
-  };
+  const handleDelete = (id: number) => confirmDeleteRecord(db, id, reload);
 
   return (
     <ScrollView

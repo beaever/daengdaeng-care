@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import MapView, { Polyline } from 'react-native-maps';
 import { colors, space } from '../../theme';
-import type { RoutePoint } from '../../lib/geo';
+import { routeSegments, type RoutePoint } from '../../lib/geo';
 
 // 읽기 전용 산책 경로 지도 — seg(일시정지 구간)별로 Polyline 을 따로 그려 구간끼리 잇지 않는다.
 // 병원 찾기와 같이 Apple 지도(provider 미지정). 산책 종료 요약·경로 보기에서 공용.
@@ -16,12 +16,7 @@ const EDGE_PADDING = { top: space[8], right: space[8], bottom: space[8], left: s
 export function WalkRouteMap({ points, style }: WalkRouteMapProps) {
   const ref = useRef<MapView>(null);
 
-  const segs = new Map<number, { latitude: number; longitude: number }[]>();
-  for (const p of points) {
-    const line = segs.get(p.seg) ?? [];
-    line.push({ latitude: p.lat, longitude: p.lng });
-    segs.set(p.seg, line);
-  }
+  const segs = routeSegments(points);
 
   const fit = () => {
     if (points.length === 0) return;

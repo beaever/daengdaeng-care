@@ -12,7 +12,6 @@ import {
   safetyColors,
   verdictGradients,
   rnShadow,
-  type ColorScheme,
 } from '@daengdaeng/tokens';
 
 export {
@@ -28,11 +27,6 @@ export {
   verdictGradients,
   rnShadow,
 };
-
-/** color scheme에 맞는 시맨틱 컬러 셋 반환 */
-export function getColors(scheme: ColorScheme | null | undefined) {
-  return scheme === 'dark' ? dark : light;
-}
 
 /** 기본(light) 컬러 — 다크모드 도입 전까지의 기본값 */
 export const colors = light;

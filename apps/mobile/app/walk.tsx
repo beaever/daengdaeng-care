@@ -58,8 +58,22 @@ export default function WalkScreen() {
   const onEnd = () =>
     Alert.alert('산책을 끝낼까요?', undefined, [
       { text: '계속 산책' },
-      { text: '종료', onPress: async () => setResult(await finish(db)) },
+      {
+        text: '종료',
+        onPress: () =>
+          finish(db)
+            .then(setResult)
+            .catch(() => Alert.alert('산책을 끝내지 못했어요', '잠시 후 다시 시도해주세요.')),
+      },
     ]);
+
+  const onResume = () =>
+    resume().catch(() =>
+      Alert.alert('산책을 다시 시작하지 못했어요', '위치 권한이 켜져 있는지 확인해 주세요.', [
+        { text: '설정 열기', onPress: () => Linking.openSettings() },
+        { text: '닫기' },
+      ])
+    );
 
   const onSave = async () => {
     setSaving(true);
@@ -87,7 +101,7 @@ export default function WalkScreen() {
       <WalkSession phase={phase}>
         <WalkSession.Map points={view.points} />
         <WalkSession.Stats elapsedMs={view.elapsedMs} distanceM={view.distanceM} />
-        <WalkSession.Controls onPause={pause} onResume={resume} onEnd={onEnd} bottomInset={insets.bottom} />
+        <WalkSession.Controls onPause={pause} onResume={onResume} onEnd={onEnd} bottomInset={insets.bottom} />
         <WalkSession.Finish
           {...fin}
           photo={photo}
