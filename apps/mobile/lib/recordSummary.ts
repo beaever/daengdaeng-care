@@ -109,3 +109,21 @@ export function groupByDate(records: HealthRecord[]): { date: string; items: Hea
   }
   return groups;
 }
+
+/** 쉼표를 점으로 치환하고 0 < kg < 100 숫자인지 검사한다. 유효하지 않으면 null. */
+export function normalizeWeight(raw: string): string | null {
+  const normalized = raw.trim().replace(',', '.');
+  if (!/^\d+(\.\d+)?$/.test(normalized)) return null;
+  const n = Number(normalized);
+  if (!(n > 0 && n < 100)) return null;
+  return normalized;
+}
+
+/** 산책 시간(분) — 비어 있으면 '', 1~600 정수가 아니면 null. */
+export function normalizeMinutes(raw: string): string | null {
+  const t = raw.trim();
+  if (t === '') return '';
+  if (!/^\d+$/.test(t)) return null;
+  const n = Number(t);
+  return n >= 1 && n <= 600 ? String(n) : null;
+}

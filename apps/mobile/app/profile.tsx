@@ -83,16 +83,25 @@ export default function ProfileScreen() {
     setSaving(true);
     try {
       const prevPhoto = pet?.photo ?? null;
-      const photo = pickedPhoto ? savePetPhoto(pickedPhoto) : prevPhoto;
-      await savePet(db, {
-        name: name.trim(),
-        breed: breed.trim() || null,
-        dob,
-        sex,
-        neutered: neuteredValue(neuter),
-        photo,
-      });
-      if (prevPhoto && prevPhoto !== photo) deletePetPhoto(prevPhoto);
+      const newPhoto = pickedPhoto ? savePetPhoto(pickedPhoto) : null;
+      const photo = newPhoto ?? prevPhoto;
+      try {
+        await savePet(db, {
+          name: name.trim(),
+          breed: breed.trim() || null,
+          dob,
+          sex,
+          neutered: neuteredValue(neuter),
+          photo,
+        });
+      } catch (e) {
+        if (newPhoto) deletePetPhoto(newPhoto); // 저장 실패 시 복사한 사진을 남기지 않는다 (add.tsx 와 같은 순서)
+        throw e;
+      }
+      // 옛 사진 정리 실패는 저장 실패가 아니다
+      try {
+        if (prevPhoto && prevPhoto !== photo) deletePetPhoto(prevPhoto);
+      } catch {}
       reload();
       if (editing) router.back();
       else router.replace('/home');

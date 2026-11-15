@@ -10,7 +10,7 @@ import { RECORD_META } from '../../../components/compound';
 import { addRecord, type RecordType, type NewRecord } from '../../../lib/records';
 import { pickWalkPhoto } from '../../../lib/walkPhoto';
 import { savePetPhoto, deletePetPhoto } from '../../../lib/pets';
-import { toLocalDateString, parseLocalDate, addYears } from '../../../lib/recordSummary';
+import { toLocalDateString, parseLocalDate, addYears, normalizeWeight, normalizeMinutes } from '../../../lib/recordSummary';
 
 const TYPE_ORDER: RecordType[] = ['vaccine', 'weight', 'vet', 'walk'];
 
@@ -22,24 +22,6 @@ const VACCINE_OPTIONS: PillGroupOption[] = [
   { label: '인플루엔자', value: '인플루엔자' },
   { label: '기타', value: '기타' },
 ];
-
-/** 쉼표를 점으로 치환하고 0 < kg < 100 숫자인지 검사한다. 유효하지 않으면 null. */
-function normalizeWeight(raw: string): string | null {
-  const normalized = raw.trim().replace(',', '.');
-  if (!/^\d+(\.\d+)?$/.test(normalized)) return null;
-  const n = Number(normalized);
-  if (!(n > 0 && n < 100)) return null;
-  return normalized;
-}
-
-/** 산책 시간(분) — 비어 있으면 '', 1~600 정수가 아니면 null. */
-function normalizeMinutes(raw: string): string | null {
-  const t = raw.trim();
-  if (t === '') return '';
-  if (!/^\d+$/.test(t)) return null;
-  const n = Number(t);
-  return n >= 1 && n <= 600 ? String(n) : null;
-}
 
 // SCR-015 · 기록 추가 (모달/시트) — 기록 종류 선택 → 종류별 동적 폼 → 저장하기.
 // 폼 자체는 화면 입력이므로 화면에서 조립. 종류 아이콘·라벨은 RECORD_META 단일 출처(RULES 2·3).

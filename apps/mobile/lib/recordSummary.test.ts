@@ -4,6 +4,8 @@ import {
   groupByDate,
   lastVisitLabel,
   latestWeight,
+  normalizeMinutes,
+  normalizeWeight,
   nextVaccineDays,
   parseLocalDate,
   toLocalDateString,
@@ -161,5 +163,33 @@ describe('formatDday', () => {
   });
   it('음수는 "D+N"', () => {
     expect(formatDday(-3)).toBe('D+3');
+  });
+});
+
+describe('normalizeWeight', () => {
+  it.each([
+    ['3,2', '3.2'],
+    [' 12.5 ', '12.5'],
+    ['0', null],
+    ['100', null],
+    ['99.9', '99.9'],
+    ['abc', null],
+    ['', null],
+  ])('%j → %j', (raw, expected) => {
+    expect(normalizeWeight(raw)).toBe(expected);
+  });
+});
+
+describe('normalizeMinutes', () => {
+  it.each([
+    ['', ''],
+    ['30', '30'],
+    ['007', '7'],
+    ['0', null],
+    ['600', '600'],
+    ['601', null],
+    ['1.5', null],
+  ])('%j → %j', (raw, expected) => {
+    expect(normalizeMinutes(raw)).toBe(expected);
   });
 });

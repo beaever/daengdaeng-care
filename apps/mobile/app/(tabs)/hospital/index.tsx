@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, ScrollView, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState, View, ScrollView, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import * as Location from 'expo-location';
 import { colors, space, fontFamily, typography } from '../../../theme';
 import { HospitalCard, HospitalList } from '../../../components/compound';
@@ -12,6 +12,9 @@ import { searchHospitals, geocodeRegion, type Hospital, type LatLng } from '../.
 type Status = 'loading' | 'ready' | 'fallback' | 'error';
 
 const LAST_KNOWN_MAX_AGE_MS = 5 * 60 * 1000;
+
+// 위치 재확인이 실패해도 이미 보이는 결과(지역 검색 결과 포함)는 지우지 않는다.
+const keepResults = (s: Status): Status => (s === 'ready' ? s : 'fallback');
 
 // SCR-012 · 병원 목록 (병원 탭) — 토글(목록/지도) + 거리순 카드 또는 지도+선택 카드.
 export default function HospitalListScreen() {
@@ -40,48 +43,58 @@ export default function HospitalListScreen() {
     }
   }
 
-  // 병원 탭에 들어올 때만 위치 권한을 요청한다. 거부/실패하면 지역 검색 안내로 대체한다.
-  useEffect(() => {
-    let mounted = true;
+  // 탭 화면은 계속 살아 있으므로 포커스·앱 복귀 때마다 위치를 다시 확인한다(설정에서 권한을 켜고 돌아온 경우,
+  // 멀리 이동한 경우). 마지막 성공 조회가 5분 안이면 건너뛴다. 거부/실패하면 지역 검색 안내로 대체한다.
+  const lastLocatedAt = useRef(0);
+  const locating = useRef(false);
+  const mounted = useRef(true);
+  useEffect(() => () => void (mounted.current = false), []);
+
+  const locate = useCallback(async () => {
+    if (locating.current || Date.now() - lastLocatedAt.current < LAST_KNOWN_MAX_AGE_MS) return;
+    locating.current = true;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-    (async () => {
-      try {
-        const { status: perm } = await Location.requestForegroundPermissionsAsync();
-        if (perm !== 'granted') {
-          if (mounted) setStatus('fallback');
-          return;
-        }
-
-        // GPS 가 느리면 "위치 확인 중…" 이 무한 대기할 수 있다(expo-location 57 에는 timeout 옵션이
-        // 없음). 5분 안에 캐시된 위치가 있으면 바로 쓰고(더 오래되면 다른 지역 병원이 나올 수 있다),
-        // 없으면 10초 타임아웃과 경쟁시켜 타임아웃/에러면 지역 검색(LocationFallback)으로 넘어간다.
-        let pos = await Location.getLastKnownPositionAsync({ maxAge: LAST_KNOWN_MAX_AGE_MS });
-        if (pos == null) {
-          const posPromise = Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-          const timeout = new Promise<null>((resolve) => {
-            timeoutId = setTimeout(() => resolve(null), 10_000);
-          });
-          pos = await Promise.race([posPromise, timeout]);
-          if (timeoutId != null) clearTimeout(timeoutId);
-          posPromise.catch(() => {}); // 타임아웃으로 진 뒤 늦게 reject 돼도 unhandled rejection 방지
-        }
-        if (pos == null) {
-          if (mounted) setStatus('fallback');
-          return;
-        }
-
-        if (mounted) await loadHospitals({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      } catch {
-        if (mounted) setStatus('fallback');
+    try {
+      const { status: perm } = await Location.requestForegroundPermissionsAsync();
+      if (perm !== 'granted') {
+        if (mounted.current) setStatus(keepResults);
+        return;
       }
-    })();
 
-    return () => {
-      mounted = false;
+      // GPS 가 느리면 "위치 확인 중…" 이 무한 대기할 수 있다(expo-location 57 에는 timeout 옵션이
+      // 없음). 5분 안에 캐시된 위치가 있으면 바로 쓰고(더 오래되면 다른 지역 병원이 나올 수 있다),
+      // 없으면 10초 타임아웃과 경쟁시켜 타임아웃/에러면 지역 검색(LocationFallback)으로 넘어간다.
+      let pos = await Location.getLastKnownPositionAsync({ maxAge: LAST_KNOWN_MAX_AGE_MS });
+      if (pos == null) {
+        const posPromise = Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+        const timeout = new Promise<null>((resolve) => {
+          timeoutId = setTimeout(() => resolve(null), 10_000);
+        });
+        pos = await Promise.race([posPromise, timeout]);
+        posPromise.catch(() => {}); // 타임아웃으로 진 뒤 늦게 reject 돼도 unhandled rejection 방지
+      }
+      if (pos == null) {
+        if (mounted.current) setStatus(keepResults);
+        return;
+      }
+
+      lastLocatedAt.current = Date.now();
+      if (mounted.current) await loadHospitals({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+    } catch {
+      if (mounted.current) setStatus(keepResults);
+    } finally {
       if (timeoutId != null) clearTimeout(timeoutId);
-    };
+      locating.current = false;
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      locate();
+      const sub = AppState.addEventListener('change', (s) => s === 'active' && locate());
+      return () => sub.remove();
+    }, [locate]),
+  );
 
   async function handleRegionSearch() {
     const query = regionText.trim();

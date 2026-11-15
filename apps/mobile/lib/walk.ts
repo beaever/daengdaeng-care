@@ -90,10 +90,19 @@ export async function pause(): Promise<void> {
 
 export async function resume(): Promise<void> {
   if (state.phase !== 'paused' || !walkSession.current) return;
+  const prev = { session: walkSession.current, state };
   walkSession.current = { ...walkSession.current, seg: walkSession.current.seg + 1 };
   state = { ...state, phase: 'recording', activeSince: Date.now() };
   notify();
-  await startUpdates();
+  try {
+    await startUpdates();
+  } catch (e) {
+    // 예: 일시정지 중 권한을 끈 경우 — 기록 중처럼 보이면서 경로가 안 쌓이지 않게 일시정지로 되돌린다
+    walkSession.current = prev.session;
+    state = prev.state;
+    notify();
+    throw e;
+  }
 }
 
 export async function listUnsavedPoints(db: SQLiteDatabase): Promise<RoutePoint[]> {
@@ -103,8 +112,14 @@ export async function listUnsavedPoints(db: SQLiteDatabase): Promise<RoutePoint[
 /** 수신을 멈추고 결과를 계산한다. 저장은 save, 취소는 discard. */
 export async function finish(db: SQLiteDatabase): Promise<WalkResult> {
   const ms = elapsed();
+  const session = walkSession.current;
   walkSession.current = null;
-  await stopUpdates();
+  try {
+    await stopUpdates();
+  } catch (e) {
+    walkSession.current = session; // 수신이 계속되는데 세션만 비면 포인트가 버려진다
+    throw e;
+  }
   const points = await listUnsavedPoints(db);
   const result = { minutes: Math.max(1, Math.round(ms / 60000)), distanceM: routeDistance(points), points };
   state = { phase: 'finished', accumMs: ms, activeSince: null, result };
@@ -200,16 +215,28 @@ export interface WalkSessionView {
   points: RoutePoint[];
 }
 
-/** 진행 화면용. 1초마다 경과 시간과 DB 포인트를 갱신한다 (이벤트 대신 단순 폴링). */
+/** 진행 화면용. 1초마다 경과 시간과 DB 포인트를 갱신한다 (이벤트 대신 단순 폴링). 새 포인트만 읽어 이어 붙인다. */
 export function useWalkSession(): WalkSessionView {
   const db = useSQLiteContext();
   const [view, setView] = useState<WalkSessionView>({ phase: state.phase, elapsedMs: 0, distanceM: 0, points: [] });
 
   useEffect(() => {
     let alive = true;
+    let cache: { lastId: number; points: RoutePoint[]; distanceM: number } = { lastId: 0, points: [], distanceM: 0 };
     const tick = async () => {
-      const points = state.result?.points ?? (state.phase === 'idle' ? [] : await listUnsavedPoints(db));
-      if (alive) setView({ phase: state.phase, elapsedMs: elapsed(), distanceM: routeDistance(points), points });
+      if (state.result || state.phase === 'idle') {
+        cache = { lastId: 0, points: state.result?.points ?? [], distanceM: state.result?.distanceM ?? 0 };
+      } else {
+        const rows = await db.getAllAsync<RoutePoint & { id: number }>(
+          'SELECT id, seg, ts, lat, lng FROM walk_points WHERE record_id IS NULL AND id > $id ORDER BY id',
+          { $id: cache.lastId }
+        );
+        if (rows.length) {
+          const points = [...cache.points, ...rows];
+          cache = { lastId: rows[rows.length - 1].id, points, distanceM: routeDistance(points) };
+        }
+      }
+      if (alive) setView({ phase: state.phase, elapsedMs: elapsed(), distanceM: cache.distanceM, points: cache.points });
     };
     tick();
     const id = setInterval(tick, 1000);

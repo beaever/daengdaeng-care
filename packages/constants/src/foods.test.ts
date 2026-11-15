@@ -118,3 +118,9 @@ describe('searchFoods()', () => {
     expect(results.map((f) => f.name)).toContain('커피');
   });
 });
+
+describe('searchFood 프로토타입 키', () => {
+  it.each(['constructor', 'toString', '__proto__'])('%s 는 음식이 아니다', (q) => {
+    expect(searchFood(q)).toBeNull();
+  });
+});

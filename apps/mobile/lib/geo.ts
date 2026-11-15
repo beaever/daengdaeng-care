@@ -79,3 +79,14 @@ export function acceptPoint(prev: RoutePoint | null, next: RawPoint, startedAt: 
   // 일시정지 후 재개 첫 포인트는 시간차가 커서 속도 검사를 자연 통과한다.
   return dt > 0 && d / dt <= MAX_SPEED_MPS;
 }
+
+/** seg(일시정지 구간)별 지도 좌표 묶음 — 구간끼리 선으로 잇지 않으려고 Polyline 을 따로 그린다. */
+export function routeSegments(points: RoutePoint[]): Map<number, { latitude: number; longitude: number }[]> {
+  const segs = new Map<number, { latitude: number; longitude: number }[]>();
+  for (const p of points) {
+    const line = segs.get(p.seg) ?? [];
+    line.push({ latitude: p.lat, longitude: p.lng });
+    segs.set(p.seg, line);
+  }
+  return segs;
+}

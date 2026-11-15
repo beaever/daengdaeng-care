@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, useRouter, type Href } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -7,7 +7,7 @@ import { colors, space, radius, fontFamily, fontScale } from '../../../theme';
 import { HealthRecord } from '../../../components/compound';
 import type { RecordTab } from '../../../components/compound';
 import { usePet } from '../../../lib/pets';
-import { useRecords, deleteRecord } from '../../../lib/records';
+import { useRecords, confirmDeleteRecord } from '../../../lib/records';
 
 // SCR-014 · 건강 기록 (기록 탭) — HealthRecord 컴파운드 + 우하단 FAB. 화면은 조립만 한다(RULES 3).
 export default function RecordScreen() {
@@ -20,18 +20,7 @@ export default function RecordScreen() {
 
   const goAdd = () => router.push('/record/add');
 
-  const handleDelete = (id: number) => {
-    Alert.alert('기록을 삭제할까요?', undefined, [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '삭제',
-        style: 'destructive',
-        onPress: () => {
-          deleteRecord(db, id).then(reload);
-        },
-      },
-    ]);
-  };
+  const handleDelete = (id: number) => confirmDeleteRecord(db, id, reload);
 
   if (!pet) return null; // 로딩 중이거나(undefined) 프로필 없음(null) — 라우팅으로 대부분 방지됨
 
