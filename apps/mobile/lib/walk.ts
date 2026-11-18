@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { type SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { formatDistance, routeDistance, type RoutePoint } from './geo';
-import { savePetPhoto, deletePetPhoto } from './pets';
+import { currentPetId, savePetPhoto, deletePetPhoto } from './pets';
 import { toLocalDateString } from './recordSummary';
 import { WALK_TASK, walkSession } from './walkTask';
 
@@ -28,6 +28,8 @@ export interface WalkResult {
 }
 
 export type StartResult = { ok: true; reducedAccuracy: boolean } | { ok: false; reason: 'denied' | 'error' };
+
+export const isWalkActive = () => state.phase !== 'idle';
 
 const elapsed = (now = Date.now()) => state.accumMs + (state.activeSince ? now - state.activeSince : 0);
 
@@ -132,6 +134,8 @@ export async function saveResult(
   r: { minutes: number; distanceM: number; pointCount: number },
   opts: { photo?: string | null; notes?: string | null; date?: string } = {}
 ): Promise<void> {
+  const petId = await currentPetId(db);
+  if (petId === null) throw new Error('반려견 프로필이 없어요');
   // 사진 복사는 트랜잭션 전에, 저장 실패 시 파일 삭제 (savePet 과 같은 순서)
   const photo = opts.photo ? savePetPhoto(opts.photo) : null;
   const hasRoute = r.pointCount >= 2;
@@ -139,8 +143,9 @@ export async function saveResult(
     await db.withTransactionAsync(async () => {
       const res = await db.runAsync(
         `INSERT INTO records (pet_id, type, date, title, sub, notes, photo)
-         VALUES (1, 'walk', $date, $title, $sub, $notes, $photo)`,
+         VALUES ($petId, 'walk', $date, $title, $sub, $notes, $photo)`,
         {
+          $petId: petId,
           $date: opts.date ?? toLocalDateString(new Date()),
           $title: `${r.minutes}분 산책`,
           $sub: hasRoute ? formatDistance(r.distanceM) : null,

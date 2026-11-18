@@ -1,7 +1,7 @@
 import React from 'react';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import { Pressable, View, Text, ScrollView, StyleSheet } from 'react-native';
 import { colors, radius, fontFamily, typography } from '../../theme';
-import { Avatar } from '../ui';
+import { Avatar, Chip } from '../ui';
 import { formatAge, photoUri, type Pet } from '../../lib/pets';
 import { formatDday } from '../../lib/recordSummary';
 
@@ -60,13 +60,41 @@ function NextVaccine({ days }: { days: number }) {
   );
 }
 
+/** 반려견 전환 칩 줄 — 선택된 반려견은 selected, 끝에 추가 칩(1마리여도 표시). */
+function Switcher({
+  pets,
+  currentId,
+  onSelect,
+  onAdd,
+}: {
+  pets: Pet[];
+  currentId: number | null;
+  onSelect: (id: number) => void;
+  onAdd: () => void;
+}) {
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.switcher}>
+      {pets.map((p) => (
+        <Chip key={p.id} variant={p.id === currentId ? 'selected' : 'default'} onPress={() => onSelect(p.id)}>
+          {`${p.id === currentId ? '🐶' : '🐕'} ${p.name}`}
+        </Chip>
+      ))}
+      <Chip variant="brand" onPress={onAdd}>
+        ＋ 추가
+      </Chip>
+    </ScrollView>
+  );
+}
+
 export const PetProfileCard = Object.assign(PetProfileCardRoot, {
+  Switcher,
   Avatar: PetAvatar,
   Info: PetInfo,
   NextVaccine,
 });
 
 const styles = StyleSheet.create({
+  switcher: { gap: 8, paddingVertical: 4 },
   card: {
     flexDirection: 'row',
     alignItems: 'center',

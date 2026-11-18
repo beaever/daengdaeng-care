@@ -20,7 +20,8 @@ function fakeDb() {
   const points: P[] = [];
   const sql: string[] = [];
   const db = {
-    getFirstAsync: jest.fn(async () => {
+    getFirstAsync: jest.fn(async (q: string) => {
+      if (/FROM pets/.test(q)) return { id: 4 }; // currentPetId
       const unsaved = points.filter((p) => p.record_id === null);
       return unsaved[unsaved.length - 1] ?? null;
     }),
@@ -69,7 +70,7 @@ describe('saveResult', () => {
     await saveResult(db, { minutes: 32, distanceM: 1200, pointCount: points.length }, { date: '2026-10-21' });
     expect(points.every((p) => p.record_id === 7)).toBe(true);
     const insert = (db.runAsync as jest.Mock).mock.calls.find(([q]) => /INSERT INTO records/.test(q));
-    expect(insert[1]).toMatchObject({ $title: '32분 산책', $sub: '1.2km' });
+    expect(insert[1]).toMatchObject({ $petId: 4, $title: '32분 산책', $sub: '1.2km' });
   });
 
   it('포인트 < 2 면 경로 없이 저장하고 포인트를 삭제한다', async () => {

@@ -1,10 +1,10 @@
-// 건강 기록 데이터 접근. v1.0은 단일 프로필(pet_id=1 고정)만 지원한다.
+// 건강 기록 데이터 접근. 현재 반려견(settings.current_pet_id)의 기록만 다룬다.
 // 컬럼 매핑은 docs/harness/BACKEND.md 를 단일 출처로 따른다.
 import { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { type SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { deletePetPhoto } from './pets';
+import { currentPetId, deletePetPhoto } from './pets';
 import type { RoutePoint } from './geo';
 
 export type RecordType = 'vaccine' | 'weight' | 'vet' | 'walk';
@@ -28,14 +28,14 @@ export interface HealthRecord {
 export type NewRecord = Pick<HealthRecord, 'type' | 'date' | 'title'> &
   Partial<Pick<HealthRecord, 'sub' | 'notes' | 'next_date' | 'photo'>>;
 
-const PET_ID = 1;
-
 export async function listRecords(db: SQLiteDatabase): Promise<HealthRecord[]> {
+  const petId = await currentPetId(db);
+  if (petId === null) return [];
   return db.getAllAsync<HealthRecord>(
     `SELECT id, pet_id, type, date, title, sub, notes, next_date, photo, created_at,
             EXISTS(SELECT 1 FROM walk_points WHERE record_id = records.id) AS has_route
      FROM records WHERE pet_id = $petId ORDER BY date DESC, id DESC`,
-    { $petId: PET_ID }
+    { $petId: petId }
   );
 }
 
@@ -56,11 +56,13 @@ export async function listRoutePoints(db: SQLiteDatabase, recordId: number): Pro
 }
 
 export async function addRecord(db: SQLiteDatabase, input: NewRecord): Promise<void> {
+  const petId = await currentPetId(db);
+  if (petId === null) throw new Error('반려견 프로필이 없어요');
   await db.runAsync(
     `INSERT INTO records (pet_id, type, date, title, sub, notes, next_date, photo)
      VALUES ($petId, $type, $date, $title, $sub, $notes, $nextDate, $photo)`,
     {
-      $petId: PET_ID,
+      $petId: petId,
       $type: input.type,
       $date: input.date,
       $title: input.title,

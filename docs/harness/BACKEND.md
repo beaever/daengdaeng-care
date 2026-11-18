@@ -79,7 +79,20 @@ CREATE TABLE walk_points (
   lng       REAL NOT NULL
 );
 CREATE INDEX idx_walk_points_record ON walk_points(record_id);
+
+-- 앱 설정 key-value (v5). 현재 키: current_pet_id (현재 선택된 반려견 id, 문자열)
+CREATE TABLE settings (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
 ```
+
+### 다견 프로필 규칙 (v5)
+
+- 현재 반려견 = `settings.current_pet_id`. 키가 없거나 가리키는 반려견이 삭제됐으면 가장 작은 `pets.id` (`currentPetId(db)`). 반려견이 없으면 null.
+- `records`·산책 저장은 항상 `currentPetId(db)` 로 `pet_id` 를 정한다 (id=1 하드코딩 금지). 반려견이 없으면 `listRecords` 는 `[]`, `addRecord`·`saveResult` 는 throw.
+- `savePet(db, input, id?)`: id 있으면 `ON CONFLICT DO UPDATE` (REPLACE 금지), 없으면 INSERT 후 새 id 를 현재 반려견으로 지정.
+- 외래키가 꺼져 있고 `pets.id` 는 AUTOINCREMENT 가 아니므로 `deletePet` 이 한 트랜잭션에서 `walk_points`(그 반려견 기록에 연결된 것만; `record_id IS NULL` 진행 중 포인트는 보존) → `records` → `pets` → 현재 반려견이었으면 settings 키 순으로 직접 지우고, 커밋 후 사진 파일(기록·프로필)을 각각 try/catch 로 지운다.
 
 `listRecords` 는 `EXISTS(SELECT 1 FROM walk_points WHERE record_id = records.id) AS has_route` (0 | 1) 를 함께 돌려준다.
 

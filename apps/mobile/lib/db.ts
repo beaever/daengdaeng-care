@@ -75,6 +75,15 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
     version = 4;
   }
 
+  if (version < 5) {
+    await db.withTransactionAsync(async () => {
+      // 다견 프로필: current_pet_id 등 앱 설정. 데이터 이동 없음(키가 없으면 가장 작은 pets.id 가 현재)
+      await db.execAsync('CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);');
+      await db.execAsync('PRAGMA user_version = 5');
+    });
+    version = 5;
+  }
+
   // 다음 마이그레이션은 이어 붙인다:
-  // if (version < 5) { await db.withTransactionAsync(async () => { ...; await db.execAsync('PRAGMA user_version = 5'); }); version = 5; }
+  // if (version < 6) { await db.withTransactionAsync(async () => { ...; await db.execAsync('PRAGMA user_version = 6'); }); version = 6; }
 }
