@@ -5,6 +5,7 @@ import { Alert } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { type SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { currentPetId, deletePetPhoto } from './pets';
+import { rescheduleAll } from './notifications';
 import type { RoutePoint } from './geo';
 
 export type RecordType = 'vaccine' | 'weight' | 'vet' | 'walk';
@@ -72,6 +73,7 @@ export async function addRecord(db: SQLiteDatabase, input: NewRecord): Promise<v
       $photo: input.photo ?? null,
     }
   );
+  await rescheduleAll(db);
 }
 
 export async function deleteRecord(db: SQLiteDatabase, id: number): Promise<void> {
@@ -85,6 +87,7 @@ export async function deleteRecord(db: SQLiteDatabase, id: number): Promise<void
   try {
     if (row?.photo) deletePetPhoto(row.photo);
   } catch {}
+  await rescheduleAll(db);
 }
 
 /** 삭제 확인 → 삭제 → 목록 새로고침(실패해도). 기록 탭·산책 탭 공용. */

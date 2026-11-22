@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SQLiteProvider } from 'expo-sqlite';
 import { colors } from '../theme';
 import { DATABASE_NAME, migrate } from '../lib/db';
+import { rescheduleAll } from '../lib/notifications';
 import { stopLeftoverUpdates } from '../lib/walk';
 
 export default function RootLayout() {
@@ -17,7 +18,10 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
-      <SQLiteProvider databaseName={DATABASE_NAME} onInit={migrate}>
+      <SQLiteProvider databaseName={DATABASE_NAME} onInit={async (db) => {
+          await migrate(db);
+          void rescheduleAll(db); // 시작 지연 방지로 기다리지 않는다
+        }}>
         <Stack
           screenOptions={{
             headerShown: false,
@@ -30,6 +34,7 @@ export default function RootLayout() {
             options={{
               headerShown: true,
               title: '설정',
+              headerBackTitle: '',
               headerStyle: { backgroundColor: colors.surface },
               headerTintColor: colors.text,
             }}

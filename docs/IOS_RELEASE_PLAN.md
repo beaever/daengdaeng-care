@@ -119,7 +119,7 @@
 > 계획 페이지(전/후 목업): https://claude.ai/artifact/Uo7Q1APDejxMcd3Ndi7TDd
 > 기본값(사용자 확정): 알림 오전 9시, 산책 목표 주 5회, 저녁 산책 알림 기본 꺼짐.
 
-- [ ] **T2.5.1 다견 프로필** · `data-engineer` → `mobile-engineer`
+- [x] **T2.5.1 다견 프로필** · `data-engineer` → `mobile-engineer`
   - DB v5: `pets` 여러 행, 현재 반려견 선택 저장. `PET_ID = 1` 고정 쿼리를 현재 반려견 기준으로 교체
   - 프로필 추가·수정·삭제(기록·사진·경로 함께 삭제), 홈 상단 반려견 전환
   - 뒤 태스크가 모두 반려견별 데이터를 쓰므로 가장 먼저

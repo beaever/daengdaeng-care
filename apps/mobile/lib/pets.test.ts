@@ -1,6 +1,9 @@
 import { savePet, deletePet, photoUri, type Pet } from './pets';
 import { File } from 'expo-file-system';
+import { rescheduleAll } from './notifications';
 import type { SQLiteDatabase } from 'expo-sqlite';
+
+jest.mock('./notifications', () => ({ rescheduleAll: jest.fn() }));
 
 describe('photoUri', () => {
   it('photo 가 null 이면 undefined', () => {
@@ -36,6 +39,7 @@ describe('savePet', () => {
     expect(sql).toMatch(/ON CONFLICT\(id\) DO UPDATE/);
     expect(sql).not.toMatch(/REPLACE/i);
     expect(params).toMatchObject({ $id: 3, $name: '초코', $photo: 'pet-1.jpg' });
+    expect(rescheduleAll).toHaveBeenCalledWith(db);
   });
 
   it('id 가 없으면 INSERT 후 새 id 를 current_pet_id 로 지정한다', async () => {
@@ -80,8 +84,10 @@ describe('deletePet', () => {
   afterEach(() => jest.restoreAllMocks());
 
   it('walk_points → records → pets → settings 순으로 한 트랜잭션에서 지우고, 파일은 커밋 뒤에 지운다', async () => {
-    await deletePet(mockDb(), 2);
+    const db = mockDb();
+    await deletePet(db, 2);
 
+    expect(rescheduleAll).toHaveBeenCalledWith(db);
     expect(order[0]).toMatch(/DELETE FROM walk_points WHERE record_id IN/);
     expect(order[1]).toMatch(/DELETE FROM records/);
     expect(order[2]).toMatch(/DELETE FROM pets/);

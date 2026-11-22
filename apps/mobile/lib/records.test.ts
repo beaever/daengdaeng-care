@@ -1,8 +1,10 @@
 import { addRecord, deleteRecord, listRecords } from './records';
 import { currentPetId, deletePetPhoto } from './pets';
+import { rescheduleAll } from './notifications';
 import type { SQLiteDatabase } from 'expo-sqlite';
 
 jest.mock('./pets', () => ({ deletePetPhoto: jest.fn(), currentPetId: jest.fn() }));
+jest.mock('./notifications', () => ({ rescheduleAll: jest.fn() }));
 
 function mockDb(transaction: () => Promise<void>) {
   return {
@@ -28,6 +30,7 @@ describe('deleteRecord', () => {
     const db = mockDb(() => Promise.resolve());
     await expect(deleteRecord(db, 1)).resolves.toBeUndefined();
     expect(deletePetPhoto).toHaveBeenCalledWith('walk-1.jpg');
+    expect(rescheduleAll).toHaveBeenCalledWith(db);
   });
 });
 
@@ -41,6 +44,7 @@ describe('현재 반려견 id 사용', () => {
     await addRecord(db, rec);
     expect(jest.mocked(db.getAllAsync).mock.calls[0][1]).toEqual({ $petId: 4 });
     expect(jest.mocked(db.runAsync).mock.calls[0][1]).toMatchObject({ $petId: 4 });
+    expect(rescheduleAll).toHaveBeenCalledWith(db);
   });
 
   it('반려견이 없으면 listRecords 는 [], addRecord 는 throw', async () => {

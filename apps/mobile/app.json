@@ -51,7 +51,8 @@
           "motionUsagePermission": false
         }
       ],
-      "./plugins/withoutBackgroundFetch"
+      "./plugins/withoutBackgroundFetch",
+      "./plugins/withoutApsEnvironment"
     ],
     "experiments": {
       "typedRoutes": true
