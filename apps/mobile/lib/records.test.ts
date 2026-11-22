@@ -1,8 +1,8 @@
-import { deleteRecord } from './records';
-import { deletePetPhoto } from './pets';
+import { addRecord, deleteRecord, listRecords } from './records';
+import { currentPetId, deletePetPhoto } from './pets';
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-jest.mock('./pets', () => ({ deletePetPhoto: jest.fn() }));
+jest.mock('./pets', () => ({ deletePetPhoto: jest.fn(), currentPetId: jest.fn() }));
 
 function mockDb(transaction: () => Promise<void>) {
   return {
@@ -28,5 +28,27 @@ describe('deleteRecord', () => {
     const db = mockDb(() => Promise.resolve());
     await expect(deleteRecord(db, 1)).resolves.toBeUndefined();
     expect(deletePetPhoto).toHaveBeenCalledWith('walk-1.jpg');
+  });
+});
+
+describe('현재 반려견 id 사용', () => {
+  const rec = { type: 'weight', date: '2026-11-17', title: '3.2' } as const;
+
+  it('listRecords·addRecord 가 currentPetId 로 조회·저장한다', async () => {
+    jest.mocked(currentPetId).mockResolvedValue(4);
+    const db = { getAllAsync: jest.fn().mockResolvedValue([]), runAsync: jest.fn() } as unknown as SQLiteDatabase;
+    await listRecords(db);
+    await addRecord(db, rec);
+    expect(jest.mocked(db.getAllAsync).mock.calls[0][1]).toEqual({ $petId: 4 });
+    expect(jest.mocked(db.runAsync).mock.calls[0][1]).toMatchObject({ $petId: 4 });
+  });
+
+  it('반려견이 없으면 listRecords 는 [], addRecord 는 throw', async () => {
+    jest.mocked(currentPetId).mockResolvedValue(null);
+    const db = { getAllAsync: jest.fn(), runAsync: jest.fn() } as unknown as SQLiteDatabase;
+    await expect(listRecords(db)).resolves.toEqual([]);
+    await expect(addRecord(db, rec)).rejects.toThrow();
+    expect(db.getAllAsync).not.toHaveBeenCalled();
+    expect(db.runAsync).not.toHaveBeenCalled();
   });
 });

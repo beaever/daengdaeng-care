@@ -1,13 +1,14 @@
 import React, { useCallback, useRef } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Alert, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { colors, space, fontFamily, typography, fontScale } from '../../theme';
 import { SectionHeading, IconButton } from '../../components/ui';
 import { PetProfileCard, QuickMenu, HealthSummaryCard } from '../../components/compound';
+import { isWalkActive } from '../../lib/walk';
 import { promptPendingWalk } from '../../lib/walkRecover';
-import { usePet } from '../../lib/pets';
+import { usePet, setCurrentPet } from '../../lib/pets';
 import { useRecords } from '../../lib/records';
 import { latestWeight, lastVisitLabel, nextVaccineDays, formatDday } from '../../lib/recordSummary';
 
@@ -15,8 +16,8 @@ import { latestWeight, lastVisitLabel, nextVaccineDays, formatDday } from '../..
 export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { pet } = usePet();
-  const { records } = useRecords();
+  const { pet, pets, reload: reloadPet } = usePet();
+  const { records, reload: reloadRecords } = useRecords();
   const db = useSQLiteContext();
 
   // 홈 진입 시 끊긴 산책이 있으면 1회 묻는다
@@ -30,6 +31,19 @@ export default function HomeScreen() {
   );
 
   if (!pet) return null; // 로딩 중이거나(undefined) 프로필 없음(null) — 라우팅으로 대부분 방지됨
+
+  // 산책 기록이 현재 반려견에 묶이므로 산책 중에는 전환·추가를 막는다
+  const guardWalk = () => {
+    if (!isWalkActive()) return false;
+    Alert.alert('산책 중이에요', '산책을 마친 뒤 바꿀 수 있어요.');
+    return true;
+  };
+  const selectPet = async (id: number) => {
+    if (guardWalk()) return;
+    await setCurrentPet(db, id);
+    reloadPet();
+    reloadRecords();
+  };
 
   const list = records ?? [];
   const weight = latestWeight(list);
@@ -49,6 +63,14 @@ export default function HomeScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + space[8] }]}
         showsVerticalScrollIndicator={false}
       >
+        <PetProfileCard.Switcher
+          pets={pets}
+          currentId={pet.id}
+          onSelect={selectPet}
+          onAdd={() => {
+            if (!guardWalk()) router.push('/profile?new=1');
+          }}
+        />
         <PetProfileCard pet={pet} nextVaccineDays={nextDays} onPress={() => router.push('/settings')} />
 
         <View>

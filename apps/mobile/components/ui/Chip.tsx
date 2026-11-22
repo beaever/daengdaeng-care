@@ -17,6 +17,7 @@ export function Chip({ variant = 'default', onPress, onRemove, children }: ChipP
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={children}
+      accessibilityState={{ selected: variant === 'selected' }}
       hitSlop={{ top: 4, bottom: 4 }} // 높이 36 + 4·4 = 44pt 터치 영역 (RULES 최소 터치 타깃)
       style={({ pressed }) => [
         styles.chip,

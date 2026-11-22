@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, Pressable, ScrollView, Alert, Keyboard, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import * as ImagePicker from 'expo-image-picker';
 import { BREEDS, POPULAR_BREEDS, searchBreeds } from '@daengdaeng/constants';
 import { colors, radius, space, fontFamily, typography, fontScale } from '../theme';
 import { Field, Input, PillGroup, Button, Chip, DateField } from '../components/ui';
-import { usePet, savePet, savePetPhoto, deletePetPhoto, photoUri } from '../lib/pets';
+import { usePet, savePet, deletePet, listPets, savePetPhoto, deletePetPhoto, photoUri } from '../lib/pets';
+import { isWalkActive } from '../lib/walk';
 import { toLocalDateString, parseLocalDate } from '../lib/recordSummary';
 
 const SEX = [
@@ -31,13 +32,14 @@ function neuteredValue(label: string): 0 | 1 | null {
   return null;
 }
 
-// SCR-003 · 프로필 등록/수정. pet 이 없으면 등록 모드(최초 1회, 완료 시 홈으로),
-// 있으면 수정 모드(헤더 노출, 저장 후 뒤로가기).
+// SCR-003 · 프로필 등록/추가/수정. pet 이 없으면 등록 모드(최초 1회, 완료 시 홈으로),
+// new=1 이면 추가 모드(빈 폼, 저장 후 뒤로), 그 외 pet 이 있으면 수정 모드.
 export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const db = useSQLiteContext();
   const { pet, reload } = usePet();
+  const adding = useLocalSearchParams<{ new?: string }>().new === '1';
 
   const [name, setName] = useState('');
   const [breed, setBreed] = useState('');
@@ -49,7 +51,7 @@ export default function ProfileScreen() {
   const seeded = useRef(false);
 
   useEffect(() => {
-    if (pet && !seeded.current) {
+    if (pet && !adding && !seeded.current) {
       seeded.current = true;
       setName(pet.name);
       setBreed(pet.breed ?? '');
@@ -57,12 +59,12 @@ export default function ProfileScreen() {
       setSex(pet.sex ?? '남아');
       setNeuter(neuteredLabel(pet.neutered ?? null));
     }
-  }, [pet]);
+  }, [pet, adding]);
 
   if (pet === undefined) return null; // 로딩 중 — 깜빡임 방지
 
-  const editing = pet != null;
-  const avatarUri = pickedPhoto ?? photoUri(pet?.photo ?? null);
+  const editing = pet != null && !adding;
+  const avatarUri = pickedPhoto ?? photoUri(editing ? pet.photo : null);
   const canSave = name.trim().length > 0 && !saving;
   const breedMatches = searchBreeds(breed).slice(0, 6);
   const breedSelected = BREEDS.some((b) => b.name === breed.trim());
@@ -82,7 +84,7 @@ export default function ProfileScreen() {
   const save = async () => {
     setSaving(true);
     try {
-      const prevPhoto = pet?.photo ?? null;
+      const prevPhoto = editing ? pet.photo : null;
       const newPhoto = pickedPhoto ? savePetPhoto(pickedPhoto) : null;
       const photo = newPhoto ?? prevPhoto;
       try {
@@ -93,7 +95,7 @@ export default function ProfileScreen() {
           sex,
           neutered: neuteredValue(neuter),
           photo,
-        });
+        }, editing ? pet.id : undefined); // id 없으면 신규 추가 — 수정 시 기존 id 유지
       } catch (e) {
         if (newPhoto) deletePetPhoto(newPhoto); // 저장 실패 시 복사한 사진을 남기지 않는다 (add.tsx 와 같은 순서)
         throw e;
@@ -103,7 +105,7 @@ export default function ProfileScreen() {
         if (prevPhoto && prevPhoto !== photo) deletePetPhoto(prevPhoto);
       } catch {}
       reload();
-      if (editing) router.back();
+      if (pet != null) router.back();
       else router.replace('/home');
     } catch {
       Alert.alert('저장하지 못했어요', '잠시 후 다시 시도해주세요.');
@@ -112,14 +114,43 @@ export default function ProfileScreen() {
     }
   };
 
+  const confirmDelete = () => {
+    if (!editing) return;
+    Alert.alert('프로필 삭제', `${pet.name}의 기록·사진·산책 경로가 모두 삭제돼요`, [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        style: 'destructive',
+        onPress: async () => {
+          if (isWalkActive()) {
+            Alert.alert('산책 중이에요', '산책을 마친 뒤 삭제할 수 있어요.');
+            return;
+          }
+          try {
+            await deletePet(db, pet.id);
+            if ((await listPets(db)).length > 0) {
+              reload();
+              router.back();
+            } else {
+              if (router.canDismiss()) router.dismissAll();
+              router.replace('/onboarding');
+            }
+          } catch {
+            Alert.alert('삭제하지 못했어요', '잠시 후 다시 시도해주세요.');
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.root}>
       <Stack.Screen
         options={
-          editing
+          pet != null
             ? {
                 headerShown: true,
-                title: '프로필 수정',
+                title: adding ? '반려견 추가' : '프로필 수정',
                 headerStyle: { backgroundColor: colors.surface },
                 headerTintColor: colors.text,
               }
@@ -133,7 +164,7 @@ export default function ProfileScreen() {
         ]}
         keyboardShouldPersistTaps="handled"
       >
-        {!editing && (
+        {pet == null && (
           <Text style={styles.heading} maxFontSizeMultiplier={fontScale.heading}>
             우리 아이를{'\n'}알려주세요
           </Text>
@@ -211,8 +242,13 @@ export default function ProfileScreen() {
         </View>
 
         <Button block size="lg" disabled={!canSave} onPress={save}>
-          {editing ? '저장' : '시작하기'}
+          {pet != null ? '저장' : '시작하기'}
         </Button>
+        {editing && (
+          <Button block size="lg" variant="danger" onPress={confirmDelete}>
+            프로필 삭제
+          </Button>
+        )}
       </ScrollView>
     </View>
   );
