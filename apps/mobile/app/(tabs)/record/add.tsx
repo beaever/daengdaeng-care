@@ -9,6 +9,7 @@ import type { PillGroupOption } from '../../../components/ui';
 import { RECORD_META } from '../../../components/compound';
 import { addRecord, type RecordType, type NewRecord } from '../../../lib/records';
 import { pickWalkPhoto } from '../../../lib/walkPhoto';
+import { requestPermissionAndReschedule } from '../../../lib/notifications';
 import { savePetPhoto, deletePetPhoto } from '../../../lib/pets';
 import { toLocalDateString, parseLocalDate, addYears, normalizeWeight, normalizeMinutes } from '../../../lib/recordSummary';
 
@@ -109,7 +110,10 @@ export default function AddRecordScreen() {
     let photo: string | null = null;
     try {
       if (type === 'walk' && pickedPhoto) photo = savePetPhoto(pickedPhoto);
-      await addRecord(db, { ...buildInput(), photo });
+      const input = buildInput();
+      await addRecord(db, { ...input, photo });
+      // 접종 예정일 알림 권한(iOS는 첫 1회만 팝업). 실패해도 저장 흐름은 계속.
+      if (input.type === 'vaccine' && input.next_date) await requestPermissionAndReschedule(db).catch(() => {});
       router.back();
     } catch {
       if (photo) deletePetPhoto(photo); // DB 저장 실패 시 복사한 파일이 고아로 남지 않게

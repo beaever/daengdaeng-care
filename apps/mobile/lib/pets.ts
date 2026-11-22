@@ -4,6 +4,8 @@ import { useFocusEffect } from 'expo-router';
 import { File, Paths } from 'expo-file-system';
 import { type SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 
+import { rescheduleAll } from './notifications';
+
 export { formatAge } from './age';
 
 export interface Pet {
@@ -62,6 +64,7 @@ export async function savePet(db: SQLiteDatabase, input: Omit<Pet, 'id'>, id?: n
          photo = excluded.photo`,
       { $id: id, ...params }
     );
+    await rescheduleAll(db);
     return id;
   }
   const res = await db.runAsync(
@@ -70,6 +73,7 @@ export async function savePet(db: SQLiteDatabase, input: Omit<Pet, 'id'>, id?: n
     params
   );
   await setCurrentPet(db, res.lastInsertRowId);
+  await rescheduleAll(db);
   return res.lastInsertRowId;
 }
 
@@ -95,6 +99,7 @@ export async function deletePet(db: SQLiteDatabase, id: number): Promise<void> {
       if (photo) deletePetPhoto(photo);
     } catch {}
   }
+  await rescheduleAll(db);
 }
 
 /**

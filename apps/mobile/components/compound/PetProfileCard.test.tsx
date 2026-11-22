@@ -3,6 +3,8 @@ import { render, fireEvent } from '@testing-library/react-native';
 import { PetProfileCard } from './PetProfileCard';
 import type { Pet } from '../../lib/pets';
 
+jest.mock('../../lib/notifications', () => ({ rescheduleAll: jest.fn() }));
+
 const mk = (id: number, name: string): Pet =>
   ({ id, name, breed: null, dob: null, sex: null, neutered: null, photo: null } as Pet);
 const pets = [mk(1, '뭉치'), mk(2, '콩이')];
