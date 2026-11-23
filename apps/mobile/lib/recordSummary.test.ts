@@ -1,4 +1,5 @@
 import {
+  addMonths,
   addYears,
   formatDday,
   groupByDate,
@@ -48,6 +49,28 @@ describe('addYears', () => {
 
   it('윤년 2/29 + 4년은 다시 윤년이라 2/29를 유지한다', () => {
     expect(addYears('2024-02-29', 4)).toBe('2028-02-29');
+  });
+});
+
+describe('addMonths', () => {
+  it('말일 보정', () => {
+    expect(addMonths('2026-01-31', 1)).toBe('2026-02-28');
+    expect(addMonths('2024-01-31', 1)).toBe('2024-02-29');
+    expect(addMonths('2026-11-30', 3)).toBe('2027-02-28');
+  });
+
+  it('연도 넘김·일반 날짜', () => {
+    expect(addMonths('2026-12-15', 1)).toBe('2027-01-15');
+    expect(addMonths('2026-05-10', 3)).toBe('2026-08-10');
+  });
+});
+
+describe('nextVaccineDays 와 medicine', () => {
+  it('medicine 기록이 있어도 결과가 변하지 않는다', () => {
+    const now = new Date(2026, 10, 23);
+    const v = { id: 1, pet_id: 1, type: 'vaccine', title: 'a', date: '2026-01-01', next_date: '2026-12-01' } as HealthRecord;
+    const m = { id: 2, pet_id: 1, type: 'medicine', title: 'b', date: '2026-11-01', next_date: '2026-11-24' } as HealthRecord;
+    expect(nextVaccineDays([v, m], now)).toBe(nextVaccineDays([v], now));
   });
 });
 

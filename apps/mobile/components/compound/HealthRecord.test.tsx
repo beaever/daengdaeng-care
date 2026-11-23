@@ -29,3 +29,28 @@ describe('HealthRecord.Entry — onOpen', () => {
     expect(queryByText(/경로 보기/)).toBeNull();
   });
 });
+
+describe('HealthRecord — 예방약', () => {
+  const med: Rec = {
+    id: 2, pet_id: 1, type: 'medicine', date: '2026-11-01', title: '심장사상충', sub: null,
+    notes: null, next_date: '2026-12-01', photo: null, has_route: 0, created_at: '',
+  };
+  const walk: Rec = { ...base, id: 3, has_route: 0 };
+
+  it('라벨·아이콘·다음 투약일을 표시한다', async () => {
+    const { getByText } = await render(
+      <HealthRecord.Entry rec={med} records={[med]} onDelete={jest.fn()} />
+    );
+    expect(getByText('예방약')).toBeTruthy();
+    expect(getByText('💊')).toBeTruthy();
+    expect(getByText('다음 투약: 2026.12.01')).toBeTruthy();
+  });
+
+  it('예방약 탭은 예방약 기록만 보여준다', async () => {
+    const { getByText, queryByText } = await render(
+      <HealthRecord.Timeline records={[med, walk]} tab="medicine" onDelete={jest.fn()} onAdd={jest.fn()} />
+    );
+    expect(getByText('심장사상충')).toBeTruthy();
+    expect(queryByText('32분 산책')).toBeNull();
+  });
+});
