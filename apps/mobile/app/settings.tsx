@@ -81,7 +81,7 @@ export default function SettingsScreen() {
             <Row
               icon="🔔"
               title="알림 받기"
-              sub="접종 예정일 당일 설정한 시각에 알려드려요."
+              sub="접종(7일 전·당일)과 예방약(전날·당일) 예정일을 설정한 시각에 알려드려요."
               chevron={false}
               trailing={
                 <Switch

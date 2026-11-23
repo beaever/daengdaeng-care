@@ -25,18 +25,21 @@ function diffInDays(from: Date, to: Date): number {
 }
 
 /**
- * ISO 날짜 문자열에 n년을 더한다. `new Date(y, m, d)` 생성자는 목표 연도에 그 날이
- * 없으면(2/29 + 1년처럼) 다음 달로 넘겨버린다(2/29 -> 3/1) — 월이 밀렸으면 해당 월의
- * 마지막 날(2/28)로 보정한다.
+ * ISO 날짜 문자열에 n개월을 더한다. `new Date(y, m, d)` 는 목표 월에 그 날이 없으면
+ * (1/31 + 1개월, 2/29 + 12개월) 다음 달로 넘겨버린다 — 월이 밀렸으면 목표 월의 말일로 보정한다.
  */
-export function addYears(iso: string, n: number): string {
+export function addMonths(iso: string, n: number): string {
   const d = parseLocalDate(iso);
-  const month = d.getMonth();
-  const result = new Date(d.getFullYear() + n, month, d.getDate());
-  if (result.getMonth() !== month) {
+  const target = (d.getMonth() + n) % 12;
+  const result = new Date(d.getFullYear(), d.getMonth() + n, d.getDate());
+  if (result.getMonth() !== (target + 12) % 12) {
     result.setDate(0); // 밀려난 달의 0일 = 목표 월의 말일
   }
   return toLocalDateString(result);
+}
+
+export function addYears(iso: string, n: number): string {
+  return addMonths(iso, 12 * n);
 }
 
 function latestByDate(records: HealthRecord[]): HealthRecord | undefined {

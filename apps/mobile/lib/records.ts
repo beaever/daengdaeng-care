@@ -8,7 +8,7 @@ import { currentPetId, deletePetPhoto } from './pets';
 import { rescheduleAll } from './notifications';
 import type { RoutePoint } from './geo';
 
-export type RecordType = 'vaccine' | 'weight' | 'vet' | 'walk';
+export type RecordType = 'vaccine' | 'weight' | 'vet' | 'walk' | 'medicine';
 
 export interface HealthRecord {
   id: number;

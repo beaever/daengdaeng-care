@@ -14,6 +14,7 @@ import { groupByDate, weightDelta } from '../../lib/recordSummary';
 /** 기록 종류 메타 — 아이콘·라벨 단일 출처 */
 export const RECORD_META: Record<RecordType, { emoji: string; label: string }> = {
   vaccine: { emoji: '💉', label: '예방접종' },
+  medicine: { emoji: '💊', label: '예방약' },
   weight: { emoji: '⚖️', label: '체중' },
   vet: { emoji: '🏥', label: '병원 방문' },
   walk: { emoji: '🐾', label: '산책' },
@@ -56,6 +57,7 @@ function PetHeader({ pet }: { pet: Pick<Pet, 'name' | 'photo'> }) {
 const TAB_OPTIONS: { value: RecordTab; label: string }[] = [
   { value: 'all', label: '전체' },
   { value: 'vaccine', label: '접종' },
+  { value: 'medicine', label: '예방약' },
   { value: 'weight', label: '체중' },
   { value: 'vet', label: '병원' },
   { value: 'walk', label: '산책' },
@@ -128,6 +130,9 @@ function entryTitle(rec: LibHealthRecord): string {
 function entrySub(rec: LibHealthRecord, records: LibHealthRecord[]): string | undefined {
   if (rec.type === 'vaccine') {
     return rec.next_date ? `다음 접종: ${rec.next_date.replace(/-/g, '.')}` : undefined;
+  }
+  if (rec.type === 'medicine') {
+    return rec.next_date ? `다음 투약: ${rec.next_date.replace(/-/g, '.')}` : undefined;
   }
   if (rec.type === 'weight') {
     const delta = weightDelta(records, rec);

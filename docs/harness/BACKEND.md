@@ -59,12 +59,12 @@ CREATE TABLE pets (
 CREATE TABLE records (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   pet_id     INTEGER REFERENCES pets(id),
-  type       TEXT NOT NULL,  -- 'vaccine' | 'weight' | 'vet' | 'walk'
+  type       TEXT NOT NULL,  -- 'vaccine' | 'weight' | 'vet' | 'walk' | 'medicine'
   date       TEXT NOT NULL,  -- ISO date string
   title      TEXT NOT NULL,
   sub        TEXT,
   notes      TEXT,
-  next_date  TEXT,           -- YYYY-MM-DD, type='vaccine'에서만 사용 (v2, PRAGMA user_version 2)
+  next_date  TEXT,           -- YYYY-MM-DD, type='vaccine'·'medicine'에서 사용 (v2, PRAGMA user_version 2)
   photo      TEXT,           -- document 디렉터리 기준 파일명, type='walk'에서만 사용 (v3)
   created_at TEXT DEFAULT (datetime('now'))
 );
@@ -105,6 +105,7 @@ CREATE TABLE settings (
 | `vaccine` | 백신 종류       | (미사용)  | 다음 접종 예정일. 기본값 = 접종일(date) + 1년, 사용자가 수정 가능 (백신별 주기표 없음) | 메모 |
 | `weight`  | kg 숫자 문자열 (예: `"3.2"`) | (미사용) | (미사용) | 메모 |
 | `vet`     | 병원 이름       | 방문 사유 | (미사용) | 메모 |
+| `medicine` | 예방약 이름 (예: `"심장사상충"`) | (미사용) | 다음 투약 예정일. 기본값 = 투약일(date) + 주기(`addMonths`, 종류별 기본: 구충 3개월·그 외 1개월, 1·3개월 선택), 사용자가 수정 가능 | 메모 |
 | `walk`    | `"30분 산책"` 또는 `"산책"` | 경로 기록 시 거리 `formatDistance` (예: `"1.2km"`), 수동 입력은 미사용 | (미사용) | 메모. 사진은 `photo` 컬럼 |
 
 ---
